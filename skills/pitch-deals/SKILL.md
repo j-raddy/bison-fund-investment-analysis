@@ -1,7 +1,6 @@
 ---
 name: pitch-deals
 description: "Use when drafting the Key Deals section of a Bison Fund pitch: the transactions and partnerships that shape the thesis."
-version: 2.0.0
 author: Jacob Radke
 license: MIT
 ---

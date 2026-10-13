@@ -1,7 +1,6 @@
 ---
 name: grounding-lanes
 description: "Use when gathering what the business, the street, and the news have independently said about a company, before any thesis exists."
-version: 2.0.0
 author: Jacob Radke
 license: MIT
 ---
@@ -11,7 +10,7 @@ license: MIT
 Phase 1 of the pitch loop. Four lanes of independent research, run before the analyst has stated a
 view, so the record is on the table before anyone forms an opinion.
 
-The rule that makes this phase worth its cost: **no thesis, no judgment, no recommendation.** Each
+No thesis, no judgment, no recommendation. Each
 lane returns what was said and when it was said. The analyst forms the view afterward, after reading
 the record and before seeing what the street concluded.
 

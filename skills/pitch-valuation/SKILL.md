@@ -1,7 +1,6 @@
 ---
 name: pitch-valuation
 description: "Use when drafting the Valuation and Outlook section of a Bison Fund pitch: the DCF, scenarios, risk matrix, catalysts, and the thesis."
-version: 2.0.0
 author: Jacob Radke
 license: MIT
 ---

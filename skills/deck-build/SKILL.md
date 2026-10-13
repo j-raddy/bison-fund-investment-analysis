@@ -1,7 +1,6 @@
 ---
 name: deck-build
 description: "Use when building or changing a Bison Fund pitch deck: the deck standard, the writing rules, the tokens, the templates, and the render audit."
-version: 2.0.0
 author: Jacob Radke
 license: MIT
 ---

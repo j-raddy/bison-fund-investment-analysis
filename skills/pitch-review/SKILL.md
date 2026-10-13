@@ -1,7 +1,6 @@
 ---
 name: pitch-review
 description: "Use when a draft section or deck needs the red-team pass, the verification pass, or the independent review loop."
-version: 2.0.0
 author: Jacob Radke
 license: MIT
 ---

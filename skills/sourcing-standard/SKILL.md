@@ -1,7 +1,6 @@
 ---
 name: sourcing-standard
 description: "Use when checking or establishing that every figure in the pitch carries a source and an as-of date, or when running the sign-off list."
-version: 2.0.0
 author: Jacob Radke
 license: MIT
 ---

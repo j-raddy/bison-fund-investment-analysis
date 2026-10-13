@@ -1,7 +1,6 @@
 ---
 name: dcf-model
 description: "Use when valuing a company with the fund's discounted cash flow: building the model, running the script, or pulling market data."
-version: 2.0.0
 author: Jacob Radke
 license: MIT
 ---

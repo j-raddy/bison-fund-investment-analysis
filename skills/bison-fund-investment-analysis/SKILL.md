@@ -1,7 +1,6 @@
 ---
 name: bison-fund-investment-analysis
 description: "Use when starting a Bison Fund equity pitch or any equity-research task: read first to classify the request, then load the skill it routes to."
-version: 2.0.0
 author: Jacob Radke
 license: MIT
 ---

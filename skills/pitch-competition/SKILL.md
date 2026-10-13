@@ -1,7 +1,6 @@
 ---
 name: pitch-competition
 description: "Use when drafting the Competition section of a Bison Fund pitch: peer comparison, moat, regulation, M&A, and management."
-version: 2.0.0
 author: Jacob Radke
 license: MIT
 ---

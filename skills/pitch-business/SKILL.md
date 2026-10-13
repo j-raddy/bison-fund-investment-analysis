@@ -1,7 +1,6 @@
 ---
 name: pitch-business
 description: "Use when drafting the Business section of a Bison Fund pitch, or when the analyst asks what the company does, how it makes money, or how big the market is."
-version: 2.0.0
 author: Jacob Radke
 license: MIT
 ---
