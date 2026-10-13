@@ -1,7 +1,6 @@
 {
   "name": "bison-fund-investment-analysis",
   "description": "Guide equity-pitch research with Socratic gates and sources.",
-  "version": "2.0.0",
   "author": {
     "name": "Jacob Radke"
   },

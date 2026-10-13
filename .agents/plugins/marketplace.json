@@ -7,8 +7,8 @@
     {
       "name": "bison-fund-investment-analysis",
       "source": {
-        "source": "local",
-        "path": "./plugins/bison-fund-investment-analysis"
+        "source": "url",
+        "url": "https://github.com/j-raddy/bison-fund-investment-analysis.git"
       },
       "category": "Education"
     }

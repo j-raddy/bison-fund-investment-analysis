@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "bison-fund-investment-analysis",
-      "source": "./plugins/bison-fund-investment-analysis",
+      "source": "./",
       "description": "Guide equity-pitch research with Socratic gates and a source and date on every number.",
       "category": "education",
       "author": {

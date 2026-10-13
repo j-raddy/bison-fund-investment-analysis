@@ -4,12 +4,12 @@ A skill for building an equity pitch with an AI assistant. Written for the NDSU 
 and anyone learning to do equity research with an AI. It installs as a plugin in Claude Code,
 Codex, and Hermes, and as a plain skill anywhere that reads `SKILL.md`.
 
-It is built on one idea: the AI should help you **think and analyze faster**, not think for
+It is built on one idea: the AI should help you think and analyze faster, not think for
 you. Two rules run through everything:
 
-1. **Think first, draft second.** Before the AI researches anything, it asks you what *you*
+1. Think first, draft second. Before the AI researches anything, it asks you what you
    believe about the business. You answer first.
-2. **Every number has a source.** Every figure carries a source and an as-of date, or it is
+2. Every number has a source. Every figure carries a source and an as-of date, or it is
    flagged unverified and cannot go into the pitch.
 
 The AI will never invent a number, and it will never write your price target, your thesis
@@ -22,39 +22,39 @@ Business, Competition, Key Deals, Financials, Valuation.
 
 One line per tool. Each line runs the two steps behind it in order.
 
-**Claude Code** (adds the marketplace, then installs the plugin):
+Claude Code, which adds the marketplace and then installs the plugin:
 
 ```bash
 claude plugin marketplace add j-raddy/bison-fund-investment-analysis && claude plugin install bison-fund-investment-analysis@bison-fund
 ```
 
-**Codex** (adds the marketplace, then installs the plugin):
+Codex, the same two steps:
 
 ```bash
 codex plugin marketplace add j-raddy/bison-fund-investment-analysis && codex plugin add bison-fund-investment-analysis@bison-fund
 ```
 
-**Hermes** (installs the plugin, then enables it; a portable package installs disabled):
+Hermes. A portable package installs disabled, so the second command activates it:
 
 ```bash
 hermes plugins install j-raddy/bison-fund-investment-analysis && hermes plugins enable bison-fund-investment-analysis
 ```
 
-**Any other tool that reads skills from a directory** (also the Claude Code and Codex
-fallback): clone once and link the skill folder into that tool's skills directory.
+Any other tool that reads skills from a directory, and the Claude Code and Codex fallback:
+clone once and link the skill folder into that tool's skills directory.
 
 ```bash
-git clone --depth 1 https://github.com/j-raddy/bison-fund-investment-analysis.git ~/bison-fund-investment-analysis && ln -s ~/bison-fund-investment-analysis/plugins/bison-fund-investment-analysis/skills/bison-fund-investment-analysis ~/.claude/skills/bison-fund-investment-analysis
+git clone --depth 1 https://github.com/j-raddy/bison-fund-investment-analysis.git ~/bison-fund-investment-analysis && ln -s ~/bison-fund-investment-analysis/skills/bison-fund-investment-analysis ~/.claude/skills/bison-fund-investment-analysis
 ```
 
 Swap the last path for the directory your tool reads: `~/.codex/skills/` or `~/.agents/skills/`
 for Codex, `$HERMES_HOME/skills/finance/` (default `~/.hermes/skills/finance/`) for Hermes,
 `.claude/skills/` or `.agents/skills/` inside a project to commit the skill with your pitch.
 
-**Plain chat window (ChatGPT, Claude web, Gemini):** open
-`plugins/bison-fund-investment-analysis/skills/bison-fund-investment-analysis/SKILL.md`, paste
-its body in as a custom instruction or your first message, then start with your company and
-why it interests you. Paste `references/section-method.md` when you reach the drafting phase.
+Plain chat windows (ChatGPT, Claude web, Gemini): open
+`skills/bison-fund-investment-analysis/SKILL.md`, paste its body in as a custom instruction or
+your first message, then start with your company and why it interests you. Paste the section
+skill you are working on when you reach it.
 
 Start a new session after installing, then ask for the skill by name:
 `bison-fund-investment-analysis`.
@@ -80,8 +80,7 @@ drafts, a bear case, a verification pass, and a pitch-ready map, in that order.
 
 ## What's in here
 
-Eleven skills in one plugin. The hub is the entry point; the specialists load when the loop reaches
-them.
+Eleven skills. The hub is the entry point; the specialists load when the loop reaches them.
 
 ```
 bison-fund-investment-analysis   the hub: classification, the two non-negotiables, the six hard rules,
@@ -98,13 +97,40 @@ sourcing-standard                the evidence tag, source quality, the sign-off 
 pitch-review                     the red team, the verification pass, the independent review loop
 ```
 
-Each skill holds its own `SKILL.md` and its own `references/` under
-`plugins/bison-fund-investment-analysis/skills/`. The design record, including which skill owns which
-rule and why, is [docs/design-v2.md](docs/design-v2.md).
+Each skill holds its own `SKILL.md` and its own `references/` under `skills/`. The design
+record, including which skill owns which rule and why, is [docs/design-v2.md](docs/design-v2.md).
 
-The hub keeps the name students already invoke, so nothing about installing changes. The root `skills`
-symlink points at the plugin's skill folder so the portable manifest at the repo root resolves for
-Hermes.
+The hub keeps the name students already invoke, so nothing about installing changes.
+
+## Repository layout
+
+Same shape as other published skill packages: the plugin lives at the repository root, so one
+directory holds the manifests and the skills.
+
+```
+plugin.json                      portable plugin manifest (Agent Plugins v1), read by Hermes
+.claude-plugin/plugin.json       the one plugin manifest Claude Code and Codex both read
+.claude-plugin/marketplace.json  the marketplace Claude Code reads
+.agents/plugins/marketplace.json the marketplace Codex reads
+skills/<skill-name>/             one directory per skill, each with SKILL.md and references/
+docs/design-v2.md                the design record
+```
+
+Four manifest files, kept to the ones a harness actually reads. Each cut was tested by removing the
+file and reinstalling, not by reading documentation:
+
+- There is no `.codex-plugin/plugin.json`. Codex installs this plugin with only the Claude manifest
+  present, so a second manifest would be a second copy of the same facts.
+- There are no `version` fields. Claude Code and Codex both install without one, and a version has to
+  be bumped in every manifest for a change to reach anyone who already installed, which is a chore
+  that silently ships nothing when one is missed. Without a version, users track the newest commit,
+  which is the intent for a public teaching package. The one cost is an advisory warning from
+  `claude plugin validate` suggesting semver.
+
+Two structural notes. The Codex marketplace entry points at the repository URL rather than a relative
+path, because Codex will not install a plugin whose marketplace source is the marketplace root. And
+the skill files have to be real files: Codex copies only the directory it resolves and skips symlinked
+skills, which is why every skill lives in its own directory under `skills/` with no links.
 
 ## The DCF script
 
@@ -112,7 +138,7 @@ Hermes.
 Modeling Prep data. It needs Python 3 and the standard library only.
 
 ```bash
-python3 plugins/bison-fund-investment-analysis/skills/dcf-model/scripts/fmp_dcf.py --demo
+python3 skills/dcf-model/scripts/fmp_dcf.py --demo
 ```
 
 A live run needs your own FMP API key. The script reads `$FMP_API_KEY` first, then
@@ -121,21 +147,15 @@ tier keys are rate limited to roughly 250 calls a day, so one key per analyst.
 
 ## Maintaining this repo
 
-- Bump `version` in `plugin.json` (the portable manifest at the repo root), and in
-  `plugins/bison-fund-investment-analysis/.claude-plugin/plugin.json` and
-  `plugins/bison-fund-investment-analysis/.codex-plugin/plugin.json`, together when a skill changes.
-  The plugin directory's manifests are the ones Claude Code and Codex install, so bumping only the
-  root manifest ships nothing. Claude Code keeps users on the version they installed until the
-  number moves.
+- There are no `version` fields to keep in sync. A change reaches anyone who installed it as soon as
+  they update, because a plugin without a version tracks the newest commit. Setting a version is the
+  option to reach for if this ever needs pinned releases.
 - One rule, one home. Before adding a rule to a skill, check [docs/design-v2.md](docs/design-v2.md)
   for which skill already owns it; if a second file needs the rule, it names the owning skill
   instead of restating it.
-- The plugin directory has to hold real files. Codex copies only the plugin directory it
-  resolves and skips symlinked skills, which is why the skill lives under `plugins/` and the
-  root `skills` is the link, not the other way around.
 - No client or household data belongs in this repo. It is public.
-- Bloomberg's BLPAPI guides are not redistributed here. `references/bloomberg-terminal.md`
-  links to Bloomberg's own download page instead.
+- Bloomberg's BLPAPI guides are not redistributed here.
+  `skills/dcf-model/references/bloomberg-terminal.md` links to Bloomberg's own download page instead.
 
 ## Scope
 

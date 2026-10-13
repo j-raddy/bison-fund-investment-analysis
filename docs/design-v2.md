@@ -68,6 +68,36 @@ The package does not fork brainstorming, writing-plans, or subagent-driven-devel
 the harness has them, the hub points at them for the pitch proposal, the section plan, and the
 parallel section drafts. When it does not, the loop in the hub is the whole method.
 
+## Repo layout
+
+The plugin is the repository root: manifests at the top, one directory per skill under `skills/`.
+
+```
+plugin.json                       portable Agent Plugins v1 manifest (Hermes)
+.claude-plugin/marketplace.json   Claude Code marketplace, plugin source "./"
+.claude-plugin/plugin.json        the one plugin manifest Claude Code and Codex both read
+.agents/plugins/marketplace.json  Codex marketplace
+skills/<skill-name>/              SKILL.md plus references/ per skill
+```
+
+Four manifest files, each with a consumer that was verified by deleting the file and reinstalling:
+
+- **Codex needs `.agents/plugins/marketplace.json`.** Delete it and Codex finds no plugins at all,
+  even though the Claude marketplace is still there. It has no fallback to the other file.
+- **Codex needs a plugin manifest, but not a Codex-specific one.** With no manifest it fails with
+  "missing plugin.json"; with only `.claude-plugin/plugin.json` it installs the skill set correctly.
+  So there is no `.codex-plugin/` directory here.
+- **Claude Code accepts the marketplace root as the plugin**, so its entry stays the relative `"./"`.
+  **Codex does not**: it fails with "missing plugin.json" for a relative source, and its entry
+  therefore points at the repository URL instead.
+- **Hermes installs from the repository root only** (`hermes plugins install <owner>/<repo>`), and a
+  local path is parsed as `owner/repo`, so the portable `plugin.json` stays at the top level.
+
+No file carries a `version`. Both harnesses install without one; a version would have to be bumped
+in every manifest to reach anyone who already installed, a chore that silently ships nothing when one
+file is missed. Unversioned plugins track the newest commit, which is what a public teaching package
+wants. The only cost is a semver advisory from `claude plugin validate`.
+
 ## Naming
 
 - The hub keeps the name students already invoke, so installed copies and the README install
@@ -78,6 +108,7 @@ parallel section drafts. When it does not, the loop in the hub is the whole meth
 
 ## Versioning
 
-`version` moves in `plugin.json`, `.claude-plugin/plugin.json`, and `.codex-plugin/plugin.json`
-together. Claude Code holds users on the version they installed until the number moves, so a
-restructure without a bump never reaches them. Version 2.0.0 is this restructure.
+There is none, on purpose. Manifests carry no `version`, so both harnesses track the newest commit
+and a change reaches everyone on their next update. Add a version to the one manifest a harness reads
+only if pinned releases ever become necessary; a version that has to be bumped in four files is a
+maintenance trap that fails silently.
