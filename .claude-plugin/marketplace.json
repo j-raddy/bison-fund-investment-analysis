@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "bison-fund",
+  "description": "The NDSU Bison Fund equity-pitch research skill",
+  "owner": {
+    "name": "Jacob Radke"
+  },
+  "plugins": [
+    {
+      "name": "bison-fund-investment-analysis",
+      "source": "./",
+      "description": "Guide equity-pitch research with Socratic gates and a source and date on every number.",
+      "category": "education",
+      "author": {
+        "name": "Jacob Radke"
+      }
+    }
+  ]
+}

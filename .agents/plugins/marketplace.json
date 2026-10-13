@@ -1,0 +1,16 @@
+{
+  "name": "bison-fund",
+  "interface": {
+    "displayName": "Bison Fund"
+  },
+  "plugins": [
+    {
+      "name": "bison-fund-investment-analysis",
+      "source": {
+        "source": "local",
+        "path": "/Users/jacobradke/bison-fund-investment-analysis"
+      },
+      "category": "Education"
+    }
+  ]
+}

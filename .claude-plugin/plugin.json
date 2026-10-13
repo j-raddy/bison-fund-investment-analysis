@@ -1,0 +1,20 @@
+{
+  "name": "bison-fund-investment-analysis",
+  "description": "Guide equity-pitch research with Socratic gates and sources.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jacob Radke"
+  },
+  "homepage": "https://github.com/j-raddy/bison-fund-investment-analysis",
+  "repository": "https://github.com/j-raddy/bison-fund-investment-analysis",
+  "license": "MIT",
+  "keywords": [
+    "equity-research",
+    "investing",
+    "bison-fund",
+    "ndsu",
+    "citations",
+    "socratic",
+    "dcf"
+  ]
+}
