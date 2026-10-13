@@ -24,7 +24,7 @@ base itself, including the numeric pulls, so there is no separate evidence phase
 | 3. News flow | What has happened in the trailing 6 to 12 months? | Dated headlines: deals, regulatory moves, executive changes, litigation, product events |
 | 4. Peer intelligence | How does the market read the two or three closest competitors? | The same grounding for each peer, scaled down (one page each) |
 
-Each lane's brief carries the evidence-tag standard (`references/citation-rules.md`) and the
+Each lane's brief carries the evidence-tag standard (see the `sourcing-standard` skill) and the
 provider key rule: read the key at runtime from the secrets path, never print it.
 
 ## The brief (one per lane, fully self-contained)

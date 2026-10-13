@@ -95,11 +95,11 @@ Conventions:
 3. Wrap it in the commentable harness (`templates/commentable-deck-harness.html`), one screen per
    section plus Overview, with `data-region` on slides and key cards.
 4. Run the browser audit in `references/deck-build-checklist.md`.
-5. Run the review loop in `references/review-agent.md` until zero blockers.
+5. Run the review loop in the `pitch-review` skill until zero blockers.
 6. Hand it to the analyst for the Phase 6 sign-off (the Verification pass slide).
 
 ## Relationship to the required sections
 
-`references/section-method.md` defines the content each of the five sections must carry. This
+The five `pitch-*` section skills define the content each of the five sections must carry. This
 file defines the deck that presents them. Where they overlap, the section method wins on content
 and this file wins on structure, slide inventory, and design.

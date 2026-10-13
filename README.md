@@ -80,49 +80,39 @@ drafts, a bear case, a verification pass, and a pitch-ready map, in that order.
 
 ## What's in here
 
+Eleven skills in one plugin. The hub is the entry point; the specialists load when the loop reaches
+them.
+
 ```
-plugin.json                                   portable plugin manifest (Agent Plugins v1)
-.claude-plugin/marketplace.json               the marketplace Claude Code reads
-.claude-plugin/plugin.json                    the Claude Code plugin manifest
-.codex-plugin/plugin.json                     the Codex plugin manifest
-.agents/plugins/marketplace.json              the marketplace Codex reads
-plugins/bison-fund-investment-analysis/       the plugin itself
-  skills/bison-fund-investment-analysis/
-    SKILL.md                                  the workflow, the hard rules, how to run it in your tool
-    references/section-method.md              what each of the 5 pitch sections requires, plus the slide map
-    references/socratic-question-bank.md      the questions the AI asks you first
-    references/citation-rules.md              the evidence standard and the sign-off checklist
-    references/grounding-method.md            Phase 1: the four grounding lanes and their merge rules
-    references/worked-example-hood.md         the Robinhood (HOOD) pitch as a described example, no deck file
-    references/deck-standard.md               the house deck bar: slide inventory, design system, workflow
-    references/deck-build-checklist.md        the render rules and the browser audit before a deck ships
-    references/review-agent.md                the independent review agent brief for Phase 7
-    references/dcf-method.md                  how to build the discounted cash flow
-    references/fmp-api-docs.md                the Financial Modeling Prep API documentation
-    references/bloomberg-terminal.md          the terminal path for analysts with access
-    references/creative-slides.md             optional slides beyond the core five sections
-    references/ai-writing-check.md            the AI-ism tells to flag in deck copy
-    references/brand-and-design-tokens.md     NDSU Bison Fund palette, type, and shadcn token map
-    references/design-tokens-preview.html     open in a browser to see the tokens rendered
-    scripts/fmp_dcf.py                        the discounted cash flow script (Python 3, stdlib only)
-    templates/deck-house.css                  the shared deck stylesheet, the fund's design system
-    templates/deck-skeleton.html              a ready-to-fill deck with the full standard slide inventory
-    templates/commentable-deck-harness.html   the commentable review wrapper and the PDF export
-    templates/ndsu-design-tokens.css          drop-in shadcn / Tailwind token file in the fund's colors
-    templates/pitch-outline.md                a blank text skeleton to fill for your own company
+bison-fund-investment-analysis   the hub: classification, the two non-negotiables, the six hard rules,
+                                 the gated loop and its order, routing, the done checklist
+pitch-business                   section 01, what the business is and whether its market is growing
+pitch-competition                section 02, peers, moat, regulation, M&A, management
+pitch-deals                      section 03, the transactions that shape the thesis
+pitch-financials                 section 04, revenue, unit economics, returns, margins, cash
+pitch-valuation                  section 05, the DCF, scenarios, risk matrix, catalysts, the thesis
+grounding-lanes                  phase 1, the four lanes of research run before any thesis exists
+dcf-model                        the valuation method, the working script, market data access
+deck-build                       the deck standard, the writing rules, tokens, templates, render audit
+sourcing-standard                the evidence tag, source quality, the sign-off checklist
+pitch-review                     the red team, the verification pass, the independent review loop
 ```
 
-The skill folder name has to stay `bison-fund-investment-analysis`, because that is the name
-you invoke it by. The root `skills` symlink points at the plugin's skill folder so the
-portable manifest at the repo root resolves for Hermes.
+Each skill holds its own `SKILL.md` and its own `references/` under
+`plugins/bison-fund-investment-analysis/skills/`. The design record, including which skill owns which
+rule and why, is [docs/design-v2.md](docs/design-v2.md).
+
+The hub keeps the name students already invoke, so nothing about installing changes. The root `skills`
+symlink points at the plugin's skill folder so the portable manifest at the repo root resolves for
+Hermes.
 
 ## The DCF script
 
-`scripts/fmp_dcf.py` builds the discounted cash flow from Financial Modeling Prep data. It
-needs Python 3 and the standard library only.
+`scripts/fmp_dcf.py` under the `dcf-model` skill builds the discounted cash flow from Financial
+Modeling Prep data. It needs Python 3 and the standard library only.
 
 ```bash
-python3 plugins/bison-fund-investment-analysis/skills/bison-fund-investment-analysis/scripts/fmp_dcf.py --demo
+python3 plugins/bison-fund-investment-analysis/skills/dcf-model/scripts/fmp_dcf.py --demo
 ```
 
 A live run needs your own FMP API key. The script reads `$FMP_API_KEY` first, then
@@ -131,9 +121,15 @@ tier keys are rate limited to roughly 250 calls a day, so one key per analyst.
 
 ## Maintaining this repo
 
-- Bump `version` in `plugin.json`, `.claude-plugin/plugin.json`, and `.codex-plugin/plugin.json`
-  together when the skill changes. Claude Code keeps users on the version they installed
-  until the number moves.
+- Bump `version` in `plugin.json` (the portable manifest at the repo root), and in
+  `plugins/bison-fund-investment-analysis/.claude-plugin/plugin.json` and
+  `plugins/bison-fund-investment-analysis/.codex-plugin/plugin.json`, together when a skill changes.
+  The plugin directory's manifests are the ones Claude Code and Codex install, so bumping only the
+  root manifest ships nothing. Claude Code keeps users on the version they installed until the
+  number moves.
+- One rule, one home. Before adding a rule to a skill, check [docs/design-v2.md](docs/design-v2.md)
+  for which skill already owns it; if a second file needs the rule, it names the owning skill
+  instead of restating it.
 - The plugin directory has to hold real files. Codex copies only the plugin directory it
   resolves and skips symlinked skills, which is why the skill lives under `plugins/` and the
   root `skills` is the link, not the other way around.
