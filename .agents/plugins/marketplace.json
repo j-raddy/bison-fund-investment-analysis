@@ -8,7 +8,7 @@
       "name": "bison-fund-investment-analysis",
       "source": {
         "source": "local",
-        "path": "/Users/jacobradke/bison-fund-investment-analysis"
+        "path": "./plugins/bison-fund-investment-analysis"
       },
       "category": "Education"
     }
