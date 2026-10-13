@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bison Fund Equity Pitch - skeleton</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+/* Bison Fund deck house style (design system)
+ * ---------------------------------------------------------------------------
+ * The shared design system every Bison Fund pitch deck uses, so decks are
+ * consistent across analysts and tools. Extracted from the fund's reference
+ * deck (the Uber equity pitch, 41 slides) as the standard.
+ *
+ * Use: paste this whole file into the <style> of the plain deck html, then
+ * build slides from the classes below. The commentable harness wraps the deck
+ * afterwards (templates/commentable-deck-harness.html). The full slide
+ * inventory and conventions are in references/deck-standard.md.
+ *
+ * Structure of a slide:
+ *   <section class="slide">            (or "slide dark" for title/section dividers)
+ *     <div class="eyebrow">01 Business</div>      section label, omitted on Overview slides
+ *     <h2 class="title">Plain Title</h2>
+ *     <p class="sub">One plain sentence, or omit.</p>
+ *     <div class="content"> ... grids, cards, tables, charts ... </div>
+ *     <div class="note">Sources: ...</div>         optional, sits above the foot
+ *     <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">07 / 36</span></div>
+ *   </section>
+ * ---------------------------------------------------------------------------
+ * Brand source values: NDSU Green #00583D, NDSU Yellow #FFC425, green dark #003524,
+ * body text #282C2F, background #F2F3F3, border #D7DADB.
+ */
+:root{
+  --font-sans:"Montserrat","Gotham",ui-sans-serif,system-ui,sans-serif;
+  --font-serif:"Source Serif 4","New Spirit",ui-serif,Georgia,serif;
+  --background:#F2F3F3; --foreground:#282C2F; --card:#FFFFFF; --offwhite:#FBFBF9;
+  --primary:#00583D; --primary-fg:#FFFFFF; --secondary:#FFC425; --secondary-fg:#003524;
+  --muted:#F2F3F3; --muted-fg:#686E6D; --accent:#D4ECE6; --accent-fg:#003524;
+  --destructive:#C62828; --border:#D7DADB; --ring:#00583D;
+  --green-dark:#003524; --green-deep:#00221B; --teal:#51AB9F; --harvest:#BE5D27;
+  --night:#0E364B; --subtle:#686E6D; --link:#785D03;
+  --chart-1:#00583D; --chart-2:#FFC425; --chart-3:#51AB9F; --chart-4:#BE5D27; --chart-5:#0E364B;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body { height:100%; }
+body { font-family:var(--font-sans); color:var(--foreground); font-size:14px; line-height:1.5;
+       display:flex; flex-direction:column; overflow:hidden; -webkit-font-smoothing:antialiased; }
+a { color:var(--primary); text-decoration:none; }
+.slide { width:1280px; height:720px; margin:0 auto; flex:none; background:var(--background);
+  position:relative; padding:52px 64px 64px; overflow:hidden; display:flex; flex-direction:column; }
+.slide.dark { background:var(--green-dark); color:var(--offwhite); }
+.serif { font-family:var(--font-serif); font-weight:300; }
+.eyebrow { font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--primary); font-weight:700; margin-bottom:8px; }
+.dark .eyebrow { color:var(--secondary); }
+h2.title { font-family:var(--font-serif); font-weight:300; font-size:34px; line-height:1.12; color:var(--green-dark); margin-bottom:6px; }
+.dark h2.title { color:var(--offwhite); }
+p.sub { font-size:14px; color:var(--subtle); margin-bottom:22px; max-width:75ch; }
+.dark p.sub { color:rgba(251,251,249,.75); }
+.slide:has(.note) .content { padding-bottom:42px; }
+.content { flex:1; display:flex; flex-direction:column; gap:16px; min-height:0; justify-content:space-evenly; }
+.foot { position:absolute; left:64px; right:64px; bottom:26px; display:flex; justify-content:space-between;
+  font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--subtle); }
+.dark .foot { color:rgba(251,251,249,.55); }
+.foot .pageno { font-variant-numeric:tabular-nums; }
+.grid { display:grid; gap:14px; }
+.g2 { grid-template-columns:1fr 1fr; } .g3 { grid-template-columns:repeat(3,1fr); } .g4 { grid-template-columns:repeat(4,1fr); }
+.card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px 20px; }
+.card h4 { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--subtle); margin-bottom:8px; font-weight:600; }
+.card .v { font-family:var(--font-serif); font-weight:300; font-size:32px; color:var(--green-dark);
+  font-variant-numeric:tabular-nums; line-height:1.1; }
+.card .d { font-size:12px; color:var(--subtle); margin-top:6px; line-height:1.5; }
+.card .v.pos { color:var(--primary); } .card .v.neg { color:var(--destructive); }
+.card.y { background:#FFF4D6; border-color:#FFE68A; }
+.card.y h4, .card.y .v { color:var(--secondary-fg); }
+.card.y .d { color:#5A4A16; }
+.card.g { background:var(--accent); border-color:#A9D9CE; }
+.card.g h4, .card.g .v { color:var(--green-dark); }
+.card.g .d { color:#3D5B52; }
+.bullets { list-style:none; }
+.bullets li { font-size:14px; line-height:1.55; padding:9px 0 9px 22px; position:relative; border-bottom:1px solid var(--border); }
+.bullets li:last-child { border-bottom:0; }
+.bullets li:before { content:""; position:absolute; left:4px; top:16px; width:8px; height:8px; border-radius:50%; background:var(--secondary); }
+.bullets b { font-weight:600; color:var(--green-dark); }
+.note { font-size:10.5px; color:var(--subtle); line-height:1.5; position:absolute; left:64px; right:64px; bottom:48px; }
+.src { color:var(--muted-fg); font-style:italic; }
+table { width:100%; border-collapse:collapse; font-size:13px; background:var(--card);
+  border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+th, td { padding:9px 12px; text-align:right; border-bottom:1px solid var(--border); font-variant-numeric:tabular-nums; }
+th:first-child, td:first-child { text-align:left; font-variant-numeric:normal; font-weight:500; }
+thead th { background:var(--primary); color:#fff; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; font-weight:600; text-align:right; }
+thead th:first-child { text-align:left; }
+tbody tr:last-child td { border-bottom:0; }
+tbody tr:hover { background:var(--muted); }
+td.hi { color:var(--green-dark); font-weight:600; } td.neg { color:var(--destructive); }
+.chart { display:flex; align-items:flex-end; gap:18px; height:230px; margin-top:14px; }
+.bar { flex:1; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:6px; }
+.bar .col { width:100%; border-radius:6px 6px 0 0; position:relative; }
+.bar .lab { font-size:11.5px; color:var(--subtle); font-variant-numeric:tabular-nums; }
+.bar .cat { font-size:10.5px; color:var(--subtle); margin-top:2px; }
+.divider-num { font-family:var(--font-serif); font-weight:300; font-size:120px; line-height:1; color:var(--secondary); }
+.divider-list { margin-top:28px; font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:rgba(251,251,249,.65); line-height:2.2; }
+.divider-list b { color:var(--secondary); font-weight:600; }
+.own { border:1px solid #A9D9CE; background:var(--accent); border-radius:10px; padding:16px 20px; }
+.own h4 { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--green-dark); font-weight:700; margin-bottom:6px; }
+.own p { font-size:13px; color:#2C4A41; line-height:1.55; }
+.blank { display:inline-block; min-width:120px; border-bottom:2px solid var(--green-dark); height:16px; vertical-align:baseline; }
+.deal { background:var(--card); border:1px solid var(--border); border-left:5px solid var(--primary); border-radius:8px; padding:16px 20px; }
+.deal h3 { font-family:var(--font-serif); font-weight:400; font-size:19px; color:var(--green-dark); margin-bottom:6px; }
+.deal .meta { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--harvest); font-weight:600; margin-bottom:8px; }
+.deal p { font-size:13px; line-height:1.6; color:var(--foreground); }
+.pill { display:inline-block; background:var(--accent); color:var(--accent-fg); font-size:11px; font-weight:600; padding:4px 10px; border-radius:999px; margin:0 6px 6px 0; }
+.badge-buy { display:inline-block; background:var(--secondary); color:var(--secondary-fg); font-size:13px; font-weight:700; letter-spacing:.12em; padding:8px 22px; border-radius:6px; }
+
+</style>
+</head>
+<body>
+
+<section class="slide dark">
+ <div class="content">
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+  <h1 class="serif" style="font-size:64px;line-height:1.05;color:#fff">[Company]</h1>
+  <div style="margin-top:14px;font-size:16px;letter-spacing:.18em;color:var(--secondary);font-weight:600">[EXCHANGE: TICKER]</div>
+  <p style="margin-top:26px;font-size:15px;max-width:60ch;line-height:1.7;color:rgba(251,251,249,.8)">[One-line thesis in plain words.]</p>
+  <div style="margin-top:34px;font-size:12px;color:rgba(251,251,249,.6)">Data as of [date].</div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">01 / 41</span></div>
+</section>
+
+<section class="slide">
+ <h2 class="title">Executive Summary</h2>
+ <div class="content">
+<div class="grid g4">
+  <div class="card"><h4>[Metric]</h4><div class="v">[value]</div><div class="d">[context]</div></div>
+  <div class="card"><h4>[Metric]</h4><div class="v">[value]</div><div class="d">[context]</div></div>
+  <div class="card"><h4>[Metric]</h4><div class="v">[value]</div><div class="d">[context]</div></div>
+  <div class="card y"><h4>[Metric]</h4><div class="v">[value]</div><div class="d">[context]</div></div>
+ </div>
+ <div class="grid g2">
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13.5px;line-height:1.65">[2-3 plain sentences drawn from the fact sheet.]</p></div>
+  <div class="own"><h4>[Label]</h4><p>[Analyst note, or leave open.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">02 / 41</span></div>
+</section>
+
+<section class="slide">
+ <h2 class="title">What the market says</h2>
+ <div class="content">
+<div class="grid g2">
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13.5px;line-height:1.65">[Text from the fact sheet.]</p></div>
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13.5px;line-height:1.65">[Text from the fact sheet.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">03 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">Overview</div>
+ <h2 class="title">Recommendation</h2>
+ <div class="content">
+<div class="grid g4">
+  <div class="card g"><h4>Recommendation</h4><div class="v">[BUY / HOLD / SELL]</div><div class="d">The analyst's call</div></div>
+  <div class="card"><h4>Current price</h4><div class="v" style="font-size:26px;padding-top:8px">[$]</div><div class="d">[EXCHANGE: TICKER]</div></div>
+  <div class="card g"><h4>Price target</h4><div class="v" style="font-size:26px;padding-top:8px">[$]</div><div class="d">Discounted cash flow</div></div>
+  <div class="card g"><h4>Implied upside</h4><div class="v" style="font-size:26px;padding-top:8px">[+/-%]</div><div class="d">versus the current price</div></div>
+ </div>
+ <div class="card"><h4>Key risk</h4><p>[The strongest single risk, in plain words.]</p></div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">04 / 41</span></div>
+</section>
+
+<section class="slide">
+ <h2 class="title">The big idea</h2>
+ <div class="content">
+<div class="content" style="justify-content:center">
+  <p class="serif" style="font-size:30px;line-height:1.4;color:var(--green-dark);max-width:60ch">[One sentence: what this company looks like in ten years if the thesis is right, in the analyst's own words.]</p>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">05 / 41</span></div>
+</section>
+
+<section class="slide dark">
+ <div class="content">
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+  <div class="divider-num">[NN]</div>
+  <h2 class="title" style="font-size:40px;margin-top:10px">[Section name]</h2>
+  <div class="divider-list"><b>This section</b><br/>[slide, slide, slide]</div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">06 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">01 Business</div>
+ <h2 class="title">Who is the company?</h2>
+ <div class="content">
+<div class="grid g2">
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13px;line-height:1.7">[Text from the fact sheet.]</p></div>
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13px;line-height:1.7">[Text from the fact sheet.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">07 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">01 Business</div>
+ <h2 class="title">Products and services</h2>
+ <div class="content">
+<div class="grid g3">
+  <div class="card"><h4>[Item]</h4><p style="font-size:12.5px;line-height:1.6">[Detail]</p></div>
+  <div class="card"><h4>[Item]</h4><p style="font-size:12.5px;line-height:1.6">[Detail]</p></div>
+  <div class="card"><h4>[Item]</h4><p style="font-size:12.5px;line-height:1.6">[Detail]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">08 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">01 Business</div>
+ <h2 class="title">Platform key metrics</h2>
+ <div class="content">
+<div class="grid g4">
+  <div class="card"><h4>[Metric]</h4><div class="v">[value]</div><div class="d">[context]</div></div>
+  <div class="card"><h4>[Metric]</h4><div class="v">[value]</div><div class="d">[context]</div></div>
+  <div class="card"><h4>[Metric]</h4><div class="v">[value]</div><div class="d">[context]</div></div>
+  <div class="card y"><h4>[Metric]</h4><div class="v">[value]</div><div class="d">[context]</div></div>
+ </div>
+ <div class="grid g2">
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13.5px;line-height:1.65">[2-3 plain sentences drawn from the fact sheet.]</p></div>
+  <div class="own"><h4>[Label]</h4><p>[Analyst note, or leave open.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">09 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">01 Business</div>
+ <h2 class="title">Industry outlook</h2>
+ <div class="content">
+<div class="chart">
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:40%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:60%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:80%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:100%;background:var(--chart-2)"></div><div class="cat">[yr]</div></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">10 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">01 Business</div>
+ <h2 class="title">The market opportunity</h2>
+ <div class="content">
+<div class="grid g2">
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13px;line-height:1.7">[Text from the fact sheet.]</p></div>
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13px;line-height:1.7">[Text from the fact sheet.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">11 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">01 Business</div>
+ <h2 class="title">Where it operates</h2>
+ <div class="content">
+<div class="grid g3">
+  <div class="card"><h4>[Item]</h4><p style="font-size:12.5px;line-height:1.6">[Detail]</p></div>
+  <div class="card"><h4>[Item]</h4><p style="font-size:12.5px;line-height:1.6">[Detail]</p></div>
+  <div class="card"><h4>[Item]</h4><p style="font-size:12.5px;line-height:1.6">[Detail]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">12 / 41</span></div>
+</section>
+
+<section class="slide dark">
+ <div class="content">
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+  <div class="divider-num">[NN]</div>
+  <h2 class="title" style="font-size:40px;margin-top:10px">[Section name]</h2>
+  <div class="divider-list"><b>This section</b><br/>[slide, slide, slide]</div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">13 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">02 Competition</div>
+ <h2 class="title">Competitive landscape</h2>
+ <div class="content">
+<table>
+  <thead><tr><th>[Column]</th><th>[Column]</th><th>[Column]</th></tr></thead>
+  <tbody>
+   <tr><td>[Company]</td><td>[figure]</td><td>[read]</td></tr>
+   <tr><td>[Company]</td><td>[figure]</td><td>[read]</td></tr>
+   <tr><td>[Company]</td><td>[figure]</td><td>[read]</td></tr>
+  </tbody>
+ </table>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">14 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">02 Competition</div>
+ <h2 class="title">Flagship asset</h2>
+ <div class="content">
+<div class="grid g2">
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13.5px;line-height:1.65">[Text from the fact sheet.]</p></div>
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13.5px;line-height:1.65">[Text from the fact sheet.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">15 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">02 Competition</div>
+ <h2 class="title">Regulatory landscape</h2>
+ <div class="content">
+<div class="grid g2">
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13px;line-height:1.7">[Text from the fact sheet.]</p></div>
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13px;line-height:1.7">[Text from the fact sheet.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">16 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">02 Competition</div>
+ <h2 class="title">Competitive moat</h2>
+ <div class="content">
+<div class="grid g3">
+  <div class="card"><h4>[Item]</h4><p style="font-size:12.5px;line-height:1.6">[Detail]</p></div>
+  <div class="card"><h4>[Item]</h4><p style="font-size:12.5px;line-height:1.6">[Detail]</p></div>
+  <div class="card"><h4>[Item]</h4><p style="font-size:12.5px;line-height:1.6">[Detail]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">17 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">02 Competition</div>
+ <h2 class="title">Recent acquisitions</h2>
+ <div class="content">
+<div class="grid g3">
+  <div class="card"><h4>[Item]</h4><p style="font-size:12.5px;line-height:1.6">[Detail]</p></div>
+  <div class="card"><h4>[Item]</h4><p style="font-size:12.5px;line-height:1.6">[Detail]</p></div>
+  <div class="card"><h4>[Item]</h4><p style="font-size:12.5px;line-height:1.6">[Detail]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">18 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">02 Competition</div>
+ <h2 class="title">Management and compensation</h2>
+ <div class="content">
+<div class="grid g2">
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13.5px;line-height:1.65">[Text from the fact sheet.]</p></div>
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13.5px;line-height:1.65">[Text from the fact sheet.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">19 / 41</span></div>
+</section>
+
+<section class="slide dark">
+ <div class="content">
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+  <div class="divider-num">[NN]</div>
+  <h2 class="title" style="font-size:40px;margin-top:10px">[Section name]</h2>
+  <div class="divider-list"><b>This section</b><br/>[slide, slide, slide]</div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">20 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">03 Key Deals</div>
+ <h2 class="title">The deal strategy</h2>
+ <div class="content">
+<div class="grid g2">
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13px;line-height:1.7">[Text from the fact sheet.]</p></div>
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13px;line-height:1.7">[Text from the fact sheet.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">21 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">03 Key Deals</div>
+ <h2 class="title">The headline deal</h2>
+ <div class="content">
+<div class="grid g2">
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13.5px;line-height:1.65">[Text from the fact sheet.]</p></div>
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13.5px;line-height:1.65">[Text from the fact sheet.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">22 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">03 Key Deals</div>
+ <h2 class="title">The rest of the portfolio</h2>
+ <div class="content">
+<div class="grid g3">
+  <div class="card"><h4>[Item]</h4><p style="font-size:12.5px;line-height:1.6">[Detail]</p></div>
+  <div class="card"><h4>[Item]</h4><p style="font-size:12.5px;line-height:1.6">[Detail]</p></div>
+  <div class="card"><h4>[Item]</h4><p style="font-size:12.5px;line-height:1.6">[Detail]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">23 / 41</span></div>
+</section>
+
+<section class="slide dark">
+ <div class="content">
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+  <div class="divider-num">[NN]</div>
+  <h2 class="title" style="font-size:40px;margin-top:10px">[Section name]</h2>
+  <div class="divider-list"><b>This section</b><br/>[slide, slide, slide]</div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">24 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">04 Financials</div>
+ <h2 class="title">Revenue</h2>
+ <div class="content">
+<div class="chart">
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:40%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:60%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:80%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:100%;background:var(--chart-2)"></div><div class="cat">[yr]</div></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">25 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">04 Financials</div>
+ <h2 class="title">Unit economics</h2>
+ <div class="content">
+<div class="grid g4">
+  <div class="card"><h4>[Metric]</h4><div class="v">[value]</div><div class="d">[context]</div></div>
+  <div class="card"><h4>[Metric]</h4><div class="v">[value]</div><div class="d">[context]</div></div>
+  <div class="card"><h4>[Metric]</h4><div class="v">[value]</div><div class="d">[context]</div></div>
+  <div class="card y"><h4>[Metric]</h4><div class="v">[value]</div><div class="d">[context]</div></div>
+ </div>
+ <div class="grid g2">
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13.5px;line-height:1.65">[2-3 plain sentences drawn from the fact sheet.]</p></div>
+  <div class="own"><h4>[Label]</h4><p>[Analyst note, or leave open.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">26 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">04 Financials</div>
+ <h2 class="title">Margins</h2>
+ <div class="content">
+<div class="chart">
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:40%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:60%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:80%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:100%;background:var(--chart-2)"></div><div class="cat">[yr]</div></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">27 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">04 Financials</div>
+ <h2 class="title">Profitability</h2>
+ <div class="content">
+<table>
+  <thead><tr><th>[Column]</th><th>[Column]</th><th>[Column]</th></tr></thead>
+  <tbody>
+   <tr><td>[Company]</td><td>[figure]</td><td>[read]</td></tr>
+   <tr><td>[Company]</td><td>[figure]</td><td>[read]</td></tr>
+   <tr><td>[Company]</td><td>[figure]</td><td>[read]</td></tr>
+  </tbody>
+ </table>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">28 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">04 Financials</div>
+ <h2 class="title">Cash flow</h2>
+ <div class="content">
+<div class="chart">
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:40%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:60%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:80%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:100%;background:var(--chart-2)"></div><div class="cat">[yr]</div></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">29 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">04 Financials</div>
+ <h2 class="title">Balance sheet and quality of earnings</h2>
+ <div class="content">
+<div class="grid g2">
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13.5px;line-height:1.65">[Text from the fact sheet.]</p></div>
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13.5px;line-height:1.65">[Text from the fact sheet.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">30 / 41</span></div>
+</section>
+
+<section class="slide dark">
+ <div class="content">
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+  <div class="divider-num">[NN]</div>
+  <h2 class="title" style="font-size:40px;margin-top:10px">[Section name]</h2>
+  <div class="divider-list"><b>This section</b><br/>[slide, slide, slide]</div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">31 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">05 Valuation</div>
+ <h2 class="title">Capital allocation</h2>
+ <div class="content">
+<div class="grid g2">
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13px;line-height:1.7">[Text from the fact sheet.]</p></div>
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13px;line-height:1.7">[Text from the fact sheet.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">32 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">05 Valuation</div>
+ <h2 class="title">Share performance</h2>
+ <div class="content">
+<div class="chart">
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:40%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:60%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:80%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>
+  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:100%;background:var(--chart-2)"></div><div class="cat">[yr]</div></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">33 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">05 Valuation</div>
+ <h2 class="title">Discounted cash flow</h2>
+ <div class="content">
+<div class="grid g3">
+  <div class="card"><h4>Inputs</h4><table style="font-size:11.5px"><tbody><tr><td>Free cash flow</td><td class="hi">[$]</td></tr><tr><td>Free cash flow margin</td><td class="hi">[%]</td></tr><tr><td>Growth, years 1 to 5</td><td class="hi">[..]</td></tr><tr><td>Discount rate</td><td class="hi">[%]</td></tr><tr><td>Terminal growth</td><td class="hi">[%]</td></tr><tr><td>Diluted shares</td><td class="hi">[..]</td></tr></tbody></table></div>
+  <div class="card"><h4>Projection</h4><table style="font-size:11.5px"><thead><tr><th>Year</th><th>FCF</th><th>PV</th></tr></thead><tbody><tr><td>[yr]</td><td>[$]</td><td>[$]</td></tr><tr><td>Terminal value</td><td>[$]</td><td>[$]</td></tr></tbody></table></div>
+  <div class="card"><h4>Sensitivity</h4><table style="font-size:11.5px"><thead><tr><th>Discount rate</th><th>1.5%</th><th>2.5%</th></tr></thead><tbody><tr><td>[%]</td><td>[v]</td><td>[v]</td></tr></tbody></table><p style="font-size:11px;color:var(--subtle);margin-top:8px">Columns are terminal growth.</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">34 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">05 Valuation</div>
+ <h2 class="title">The bull case</h2>
+ <div class="content">
+<div class="grid g2">
+  <div class="card"><h4>1. [Point]</h4><p style="font-size:12.5px;line-height:1.6">[Evidence.]</p></div>
+  <div class="card"><h4>2. [Point]</h4><p style="font-size:12.5px;line-height:1.6">[Evidence.]</p></div>
+ </div>
+ <div class="grid g2">
+  <div class="card"><h4>3. [Point]</h4><p style="font-size:12.5px;line-height:1.6">[Evidence.]</p></div>
+  <div class="card"><h4>4. [Point]</h4><p style="font-size:12.5px;line-height:1.6">[Evidence.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">35 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">05 Valuation</div>
+ <h2 class="title">The bear case</h2>
+ <div class="content">
+<div class="grid g2">
+  <div class="card"><h4>1. [Point]</h4><p style="font-size:12.5px;line-height:1.6">[Evidence.]</p></div>
+  <div class="card"><h4>2. [Point]</h4><p style="font-size:12.5px;line-height:1.6">[Evidence.]</p></div>
+ </div>
+ <div class="grid g2">
+  <div class="card"><h4>3. [Point]</h4><p style="font-size:12.5px;line-height:1.6">[Evidence.]</p></div>
+  <div class="card"><h4>4. [Point]</h4><p style="font-size:12.5px;line-height:1.6">[Evidence.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">36 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">05 Valuation</div>
+ <h2 class="title">Risk matrix</h2>
+ <div class="content">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:8px;flex:1;min-height:0">
+  <div class="card" style="padding:12px"><h4>Impact: high</h4><p style="font-size:12px"><b>[risk]</b><br/><span style="color:var(--harvest)">Probability: [..]</span></p></div>
+  <div class="card" style="padding:12px"><h4></h4></div>
+  <div class="card" style="padding:12px"><h4>Impact: high</h4><p style="font-size:12px"><b>[risk]</b><br/><span style="color:var(--harvest)">Probability: [..]</span></p></div>
+  <div class="card" style="padding:12px"><h4>Impact: medium</h4><p style="font-size:12px"><b>[risk]</b><br/><span style="color:var(--harvest)">Probability: [..]</span></p></div>
+  <div class="card" style="padding:12px"><h4>Impact: medium</h4><p style="font-size:12px"><b>[risk]</b><br/><span style="color:var(--harvest)">Probability: [..]</span></p></div>
+  <div class="card" style="padding:12px"><h4>Impact: medium</h4><p style="font-size:12px"><b>[risk]</b><br/><span style="color:var(--harvest)">Probability: [..]</span></p></div>
+  <div class="card" style="padding:12px"><h4>Impact: low</h4><p style="font-size:12px"><b>[risk]</b><br/><span style="color:var(--harvest)">Probability: [..]</span></p></div>
+  <div class="card" style="padding:12px"><h4>Impact: low</h4><p style="font-size:12px"><b>[risk]</b><br/><span style="color:var(--harvest)">Probability: [..]</span></p></div>
+  <div class="card" style="padding:12px"><h4>Impact: low</h4><p style="font-size:12px"><b>[risk]</b><br/><span style="color:var(--harvest)">Probability: [..]</span></p></div>
+ </div>
+ <div class="own" style="flex:0 0 auto"><h4>Analyst rules on each</h4><p>Confirm, move, or dismiss each placement.</p></div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">37 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">05 Valuation</div>
+ <h2 class="title">Investment thesis</h2>
+ <div class="content">
+<div class="grid g3" style="flex:1">
+  <div class="card" style="border-top:5px solid var(--primary)"><h4>Pillar 01</h4><p class="serif" style="font-size:17px;line-height:1.5;color:var(--green-dark);margin-bottom:10px">[Pillar in one sentence.]</p><p style="font-size:11.5px;color:var(--subtle);line-height:1.6">Evidence: [source-backed evidence].</p></div>
+  <div class="card" style="border-top:5px solid var(--primary)"><h4>Pillar 02</h4><p class="serif" style="font-size:17px;line-height:1.5;color:var(--green-dark);margin-bottom:10px">[Pillar in one sentence.]</p><p style="font-size:11.5px;color:var(--subtle);line-height:1.6">Evidence: [source-backed evidence].</p></div>
+  <div class="card" style="border-top:5px solid var(--primary)"><h4>Pillar 03</h4><p class="serif" style="font-size:17px;line-height:1.5;color:var(--green-dark);margin-bottom:10px">[Pillar in one sentence.]</p><p style="font-size:11.5px;color:var(--subtle);line-height:1.6">Evidence: [source-backed evidence].</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">38 / 41</span></div>
+</section>
+
+<section class="slide">
+ <div class="eyebrow">Outlook</div>
+ <h2 class="title">Upcoming milestones</h2>
+ <div class="content">
+<div class="grid g2">
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13px;line-height:1.7">[Text from the fact sheet.]</p></div>
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13px;line-height:1.7">[Text from the fact sheet.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">39 / 41</span></div>
+</section>
+
+<section class="slide">
+ <h2 class="title">Verification pass</h2>
+ <div class="content">
+<div class="grid g2">
+  <div class="card"><h4>Analyst checks before presenting</h4><ul class="bullets" style="font-size:12.5px"><li>Reopen every source; confirm each figure against the original</li><li>Refresh market data the day of the presentation</li><li>Confirm every open judgment call is the analyst's</li></ul></div>
+  <div class="card"><h4>What remains open</h4><ul class="bullets" style="font-size:12.5px"><li>[Open item]</li><li>[Open item]</li></ul></div>
+ </div>
+ <div class="own"><h4>Sign-off</h4><p>Analyst sign-off, every figure verified against source: <span class="blank" style="min-width:90px"></span> &nbsp; Date: <span class="blank" style="min-width:60px"></span></p></div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">40 / 41</span></div>
+</section>
+
+<section class="slide">
+ <h2 class="title">Sources</h2>
+ <div class="content">
+<div class="grid g2">
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13px;line-height:1.7">[Text from the fact sheet.]</p></div>
+  <div class="card"><h4>[Sub-head]</h4><p style="font-size:13px;line-height:1.7">[Text from the fact sheet.]</p></div>
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">41 / 41</span></div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bison Fund — Design Tokens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet" />
+<style>
+/* ---- Tokens (mirrors templates/ndsu-design-tokens.css), flat for preview ---- */
+:root{
+  --font-sans:"Montserrat","Gotham",ui-sans-serif,system-ui,sans-serif;
+  --font-serif:"Source Serif 4","New Spirit",ui-serif,Georgia,serif;
+  --background:#F2F3F3; --foreground:#282C2F;
+  --card:#FFFFFF; --card-foreground:#282C2F;
+  --primary:#00583D; --primary-foreground:#FFFFFF;
+  --secondary:#FFC425; --secondary-foreground:#003524;
+  --muted:#F2F3F3; --muted-foreground:#686E6D;
+  --accent:#D4ECE6; --accent-foreground:#003524;
+  --destructive:#C62828; --border:#D7DADB; --input:#D7DADB; --ring:#00583D;
+  --chart-1:#00583D; --chart-2:#FFC425; --chart-3:#51AB9F; --chart-4:#BE5D27; --chart-5:#0E364B;
+  --sidebar:#003524; --sidebar-foreground:#F2F3F3; --sidebar-primary:#FFC425;
+  --radius:.5rem;
+  --ndsu-green:#00583D; --ndsu-green-dark:#003524; --ndsu-green-deepest:#00221B;
+  --ndsu-green-100:#D4ECE6; --ndsu-teal:#51AB9F; --ndsu-yellow:#FFC425; --ndsu-gold:#E5B01A;
+  --ndsu-harvest:#BE5D27; --offwhite:#FBFBF9; --subtle:#686E6D; --link:#785D03;
+}
+.dark-scope{
+  --background:#282C2F; --foreground:#F2F3F3;
+  --card:#33383B; --card-foreground:#F2F3F3;
+  --primary:#51AB9F; --primary-foreground:#00221B;
+  --secondary:#FFC425; --secondary-foreground:#00221B;
+  --muted:#404447; --muted-foreground:#BCC2C3;
+  --accent:#404447; --accent-foreground:#F2F3F3;
+  --destructive:#E57373; --border:rgba(255,255,255,.12); --input:rgba(255,255,255,.16); --ring:#51AB9F;
+  --chart-1:#7EC5B6; --chart-2:#FFC425; --chart-3:#A9D9CE; --chart-4:#FDF389; --chart-5:#9DD9F6;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#E7E9E9;color:var(--foreground);font-family:var(--font-sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1100px;margin:0 auto;padding:0 0 64px}
+.topbar{background:var(--primary);color:#fff;padding:28px 40px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.topbar h1{font-family:var(--font-serif);font-weight:300;font-size:30px;margin:0;letter-spacing:.3px}
+.topbar .eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:.8;margin-bottom:6px;font-weight:500}
+.topbar .meta{font-size:12px;text-align:right;line-height:1.7;opacity:.9}
+section{padding:38px 40px 8px}
+h2.sec{font-family:var(--font-serif);font-weight:300;font-size:22px;margin:0 0 4px;color:var(--ndsu-green-dark)}
+p.note{margin:0 0 20px;color:var(--subtle);font-size:13px;max-width:70ch;line-height:1.6}
+.grid{display:grid;gap:14px}
+.sw-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.sw{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--card)}
+.sw .chip{height:76px}
+.sw .lab{padding:9px 11px;font-size:11.5px;line-height:1.5}
+.sw .lab b{display:block;font-weight:600;font-size:12px}
+.sw .lab span{color:var(--subtle);font-variant-numeric:tabular-nums}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.panel{border:1px solid var(--border);border-radius:calc(var(--radius)*1.4);padding:20px;background:var(--card)}
+.panel.dark{background:var(--background);color:var(--foreground);border-color:rgba(255,255,255,.1)}
+.panel h3{margin:0 0 14px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted-foreground);font-weight:600;font-family:var(--font-sans)}
+.tok{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px dashed var(--border)}
+.tok:last-child{border-bottom:0}
+.tok .dab{width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,.12);flex:0 0 auto}
+.tok code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;font-weight:600}
+.tok .val{margin-left:auto;color:var(--muted-foreground);font-size:11.5px;font-variant-numeric:tabular-nums}
+.type-row{display:flex;align-items:baseline;gap:18px;padding:10px 0;border-bottom:1px solid var(--border)}
+.type-row:last-child{border-bottom:0}
+.type-row .tag{width:120px;flex:0 0 auto;color:var(--subtle);font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+.serif{font-family:var(--font-serif);font-weight:300;color:var(--ndsu-green-dark)}
+.d1{font-size:40px;line-height:1.05}.d2{font-size:28px}.d3{font-size:20px}
+.body-lg{font-size:16px}.body-md{font-size:14px}.cap{font-size:12px;color:var(--subtle)}
+.btn{font-family:var(--font-sans);font-size:13px;font-weight:600;border-radius:var(--radius);padding:10px 16px;border:1px solid transparent;cursor:default;display:inline-block;margin:0 8px 8px 0}
+.btn.primary{background:var(--primary);color:var(--primary-foreground)}
+.btn.secondary{background:var(--secondary);color:var(--secondary-foreground)}
+.btn.outline{border-color:var(--border);color:var(--foreground);background:transparent}
+.btn.ghost{background:var(--accent);color:var(--accent-foreground)}
+.btn.destr{background:var(--destructive);color:#fff}
+.badge{display:inline-block;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;margin-right:6px}
+.badge.g{background:var(--accent);color:var(--accent-foreground)}
+.badge.y{background:var(--secondary);color:var(--secondary-foreground)}
+.badge.r{background:var(--destructive);color:#fff}
+.stat{display:flex;gap:16px;flex-wrap:wrap;margin-top:6px}
+.statcard{flex:1 1 150px;border:1px solid var(--border);border-radius:calc(var(--radius)*1.2);padding:14px;background:var(--offwhite)}
+.statcard .k{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--subtle);margin-bottom:6px}
+.statcard .v{font-family:var(--font-serif);font-weight:300;font-size:26px;color:var(--ndsu-green-dark);font-variant-numeric:tabular-nums}
+.statcard .v.pos{color:var(--primary)}.statcard .v.neg{color:var(--destructive)}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}
+th,td{text-align:right;padding:9px 10px;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left;font-variant-numeric:normal}
+thead th{background:var(--accent);color:var(--accent-foreground);font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+tbody tr:hover{background:var(--muted)}
+.chart{display:flex;align-items:flex-end;gap:14px;height:150px;margin-top:8px}
+.bar{flex:1;border-radius:6px 6px 0 0;position:relative}
+.bar span{position:absolute;top:-20px;left:0;right:0;text-align:center;font-size:11px;color:var(--subtle)}
+.bar i{position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-size:10.5px;color:var(--subtle);font-style:normal;font-variant-numeric:tabular-nums}
+.footer{padding:26px 40px 0;color:var(--subtle);font-size:11.5px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div>
+      <div class="eyebrow">NDSU Bison Fund</div>
+      <h1>Design Tokens</h1>
+    </div>
+    <div class="meta">
+      shadcn/ui token contract<br/>
+      palette sourced from ndsu.edu/business<br/>
+      captured October 2026
+    </div>
+  </div>
+
+  <section>
+    <h2 class="sec">Brand palette</h2>
+    <p class="note">The raw swatches pulled from the College of Business / Bison Fund site CSS. Everything below is derived from these.</p>
+    <div class="grid sw-grid">
+      <div class="sw"><div class="chip" style="background:#00583D"></div><div class="lab"><b>NDSU Green</b><span>#00583D</span></div></div>
+      <div class="sw"><div class="chip" style="background:#003524"></div><div class="lab"><b>Green dark</b><span>#003524</span></div></div>
+      <div class="sw"><div class="chip" style="background:#00221B"></div><div class="lab"><b>Green deepest</b><span>#00221B</span></div></div>
+      <div class="sw"><div class="chip" style="background:#D4ECE6"></div><div class="lab"><b>Green 100</b><span>#D4ECE6</span></div></div>
+      <div class="sw"><div class="chip" style="background:#51AB9F"></div><div class="lab"><b>Teal</b><span>#51AB9F</span></div></div>
+      <div class="sw"><div class="chip" style="background:#FFC425"></div><div class="lab"><b>NDSU Yellow</b><span>#FFC425</span></div></div>
+      <div class="sw"><div class="chip" style="background:#E5B01A"></div><div class="lab"><b>Gold</b><span>#E5B01A</span></div></div>
+      <div class="sw"><div class="chip" style="background:#BE5D27"></div><div class="lab"><b>Harvest</b><span>#BE5D27</span></div></div>
+      <div class="sw"><div class="chip" style="background:#F2F3F3"></div><div class="lab"><b>Background</b><span>#F2F3F3</span></div></div>
+      <div class="sw"><div class="chip" style="background:#FBFBF9"></div><div class="lab"><b>Off-white</b><span>#FBFBF9</span></div></div>
+      <div class="sw"><div class="chip" style="background:#D7DADB"></div><div class="lab"><b>Border</b><span>#D7DADB</span></div></div>
+      <div class="sw"><div class="chip" style="background:#282C2F"></div><div class="lab"><b>Body text</b><span>#282C2F</span></div></div>
+      <div class="sw"><div class="chip" style="background:#686E6D"></div><div class="lab"><b>Subtle text</b><span>#686E6D</span></div></div>
+      <div class="sw"><div class="chip" style="background:#785D03"></div><div class="lab"><b>Link</b><span>#785D03</span></div></div>
+      <div class="sw"><div class="chip" style="background:#C62828"></div><div class="lab"><b>Error</b><span>#C62828</span></div></div>
+      <div class="sw"><div class="chip" style="background:#0E364B"></div><div class="lab"><b>Night</b><span>#0E364B</span></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec">Semantic tokens — light</h2>
+    <p class="note">What the components actually read. Each row is one shadcn token name and the value it resolves to on the light theme.</p>
+    <div class="panel">
+      <div class="tok"><span class="dab" style="background:#F2F3F3"></span><code>--background</code><span class="val">#F2F3F3</span></div>
+      <div class="tok"><span class="dab" style="background:#282C2F"></span><code>--foreground</code><span class="val">#282C2F</span></div>
+      <div class="tok"><span class="dab" style="background:#FFFFFF"></span><code>--card</code><span class="val">#FFFFFF</span></div>
+      <div class="tok"><span class="dab" style="background:#00583D"></span><code>--primary</code><span class="val">#00583D</span></div>
+      <div class="tok"><span class="dab" style="background:#FFC425"></span><code>--secondary</code><span class="val">#FFC425</span></div>
+      <div class="tok"><span class="dab" style="background:#F2F3F3"></span><code>--muted</code><span class="val">#F2F3F3</span></div>
+      <div class="tok"><span class="dab" style="background:#D4ECE6"></span><code>--accent</code><span class="val">#D4ECE6</span></div>
+      <div class="tok"><span class="dab" style="background:#C62828"></span><code>--destructive</code><span class="val">#C62828</span></div>
+      <div class="tok"><span class="dab" style="background:#D7DADB"></span><code>--border / --input</code><span class="val">#D7DADB</span></div>
+      <div class="tok"><span class="dab" style="background:#00583D;box-shadow:0 0 0 3px #D4ECE6"></span><code>--ring</code><span class="val">#00583D</span></div>
+      <div class="tok"><span class="dab" style="background:#003524"></span><code>--sidebar</code><span class="val">#003524</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec">Semantic tokens — dark</h2>
+    <p class="note">Same token names, overridden under <code>.dark</code>. Green lifts to teal so it stays legible on a dark surface.</p>
+    <div class="panel dark dark-scope">
+      <div class="tok"><span class="dab" style="background:var(--background)"></span><code>--background</code><span class="val">#282C2F</span></div>
+      <div class="tok"><span class="dab" style="background:var(--foreground)"></span><code>--foreground</code><span class="val">#F2F3F3</span></div>
+      <div class="tok"><span class="dab" style="background:var(--card)"></span><code>--card</code><span class="val">#33383B</span></div>
+      <div class="tok"><span class="dab" style="background:var(--primary)"></span><code>--primary</code><span class="val">#51AB9F</span></div>
+      <div class="tok"><span class="dab" style="background:var(--secondary)"></span><code>--secondary</code><span class="val">#FFC425</span></div>
+      <div class="tok"><span class="dab" style="background:var(--muted)"></span><code>--muted</code><span class="val">#404447</span></div>
+      <div class="tok"><span class="dab" style="background:var(--accent)"></span><code>--accent</code><span class="val">#404447</span></div>
+      <div class="tok"><span class="dab" style="background:var(--destructive)"></span><code>--destructive</code><span class="val">#E57373</span></div>
+      <div class="tok"><span class="dab" style="background:var(--border)"></span><code>--border</code><span class="val">white / 12%</span></div>
+      <div class="tok"><span class="dab" style="background:var(--ring)"></span><code>--ring</code><span class="val">#51AB9F</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec">Typography</h2>
+    <p class="note">NDSU uses Gotham (body) and New Spirit (headings, weight 300). Both are licensed, so this board renders the free substitutes that ship in the token file's font stack — Montserrat and Source Serif 4.</p>
+    <div class="panel">
+      <div class="type-row"><div class="tag">Display 1 · serif 300</div><div class="serif d1">Learn by investing.</div></div>
+      <div class="type-row"><div class="tag">Display 2 · serif 300</div><div class="serif d2">Equity Research</div></div>
+      <div class="type-row"><div class="tag">Heading 3 · serif 300</div><div class="serif d3">Financial Analysis</div></div>
+      <div class="type-row"><div class="tag">Body large · sans</div><div class="body-lg">Members generate original investment ideas, conduct equity research, and make buy and sell decisions.</div></div>
+      <div class="type-row"><div class="tag">Body · sans</div><div class="body-md">The fund focuses on teaching students how to analyze businesses and markets using fundamental principles.</div></div>
+      <div class="type-row"><div class="tag">Caption · sans</div><div class="cap">Price as of September 2, 2026.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec">Components in brand</h2>
+    <p class="note">The token set driving real shadcn/ui primitives — buttons, badges, stat cards, and a data table.</p>
+    <div class="panel">
+      <div>
+        <span class="btn primary">Primary</span>
+        <span class="btn secondary">Secondary</span>
+        <span class="btn outline">Outline</span>
+        <span class="btn ghost">Accent</span>
+        <span class="btn destr">Destructive</span>
+      </div>
+      <div style="margin:14px 0 4px">
+        <span class="badge g">BUY</span>
+        <span class="badge y">HOLD</span>
+        <span class="badge r">SELL</span>
+      </div>
+      <div class="stat">
+        <div class="statcard"><div class="k">Net revenue</div><div class="v">$1,308M</div></div>
+        <div class="statcard"><div class="k">Revenue Y/Y</div><div class="v pos">+32%</div></div>
+        <div class="statcard"><div class="k">Net income</div><div class="v">$573M</div></div>
+        <div class="statcard"><div class="k">Peer Y/Y</div><div class="v neg">(19%)</div></div>
+      </div>
+      <table>
+        <thead><tr><th>Metric</th><th>Robinhood</th><th>Coinbase</th><th>Schwab</th></tr></thead>
+        <tbody>
+          <tr><td>Net revenue</td><td>$1,308M</td><td>$1,220M</td><td>$7,072M</td></tr>
+          <tr><td>Revenue growth Y/Y</td><td>+32%</td><td>(19%)</td><td>+21%</td></tr>
+          <tr><td>Client assets</td><td>$369B</td><td>n/d</td><td>$13.1T</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec">Chart palette</h2>
+    <p class="note">chart-1 … chart-5, in order: green, yellow, teal, harvest, night.</p>
+    <div class="panel">
+      <div class="chart">
+        <div class="bar" style="height:100%;background:#00583D"><span>#00583D</span><i>chart-1</i></div>
+        <div class="bar" style="height:78%;background:#FFC425"><span>#FFC425</span><i>chart-2</i></div>
+        <div class="bar" style="height:62%;background:#51AB9F"><span>#51AB9F</span><i>chart-3</i></div>
+        <div class="bar" style="height:46%;background:#BE5D27"><span>#BE5D27</span><i>chart-4</i></div>
+        <div class="bar" style="height:34%;background:#0E364B"><span>#0E364B</span><i>chart-5</i></div>
+      </div>
+      <div style="height:26px"></div>
+    </div>
+  </section>
+
+  <div class="footer">
+    Values read from the NDSU College of Business / Bison Fund site CSS, October 2026. Structure follows
+    the shadcn/ui theming convention — semantic background/foreground pairs, chart-1…5, and sidebar tokens.<br/>
+    Drop-in file: <b>templates/ndsu-design-tokens.css</b>. NDSU name and marks remain governed by university brand rules.
+  </div>
+
+</div>
+</body>
+</html>

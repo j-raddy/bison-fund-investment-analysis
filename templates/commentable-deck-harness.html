@@ -1,0 +1,727 @@
+<!--
+  Bison Fund commentable-deck harness (branded copy of the design-mockup harness).
+
+  Copy this file, then:
+    1. Put your slides inside <section class="mock-screen" data-screen="..."> —
+       one screen per pitch section, plus an Overview screen.
+    2. Give every commentable element a data-region="kebab.name"
+       (slide-level region on the <section class="slide">, finer regions on cards/tables).
+    3. Keep the harness bar, comment-layer CSS/JS as-is. Comments persist in
+       localStorage under the STORE key in the script — change it per deck.
+    4. Open from disk. No build, no server.
+
+  Built from the design-mockup skill (Jacob Radke), rebranded on the NDSU Bison Fund
+  design tokens (see templates/ndsu-design-tokens.css).
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bison Fund · commentable deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+/* ==== 1. Bison Fund design tokens (templates/ndsu-design-tokens.css) ==== */
+:root{
+  --font-sans:"Montserrat","Gotham",ui-sans-serif,system-ui,sans-serif;
+  --font-serif:"Source Serif 4","New Spirit",ui-serif,Georgia,serif;
+  --background:#F2F3F3; --foreground:#282C2F; --card:#FFFFFF; --offwhite:#FBFBF9;
+  --primary:#00583D; --primary-fg:#FFFFFF; --secondary:#FFC425; --secondary-fg:#003524;
+  --muted:#F2F3F3; --muted-fg:#686E6D; --accent:#D4ECE6; --accent-fg:#003524;
+  --destructive:#C62828; --border:#D7DADB; --ring:#00583D;
+  --green-dark:#003524; --green-deep:#00221B; --teal:#51AB9F; --harvest:#BE5D27;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body { height:100%; }
+body { font-family:var(--font-sans); color:var(--foreground); font-size:14px; line-height:1.5;
+       display:flex; flex-direction:column; overflow:hidden; -webkit-font-smoothing:antialiased; }
+button { font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+
+/* ==== 2. YOUR SLIDE STYLES GO HERE — copy from your deck's <style> ==== */
+.slide { width:1280px; height:720px; margin:0 auto; background:var(--background);
+         position:relative; padding:52px 64px 64px; overflow:hidden; display:flex; flex-direction:column; }
+
+/* ==== 3. Harness chrome + comment layer — keep as-is ==== */
+/* ============================================================
+   1. Harness chrome — deliberately unlike the product. Keep as-is.
+   ============================================================ */
+#cx-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+  height: 44px;
+  background: var(--cx-bar);
+  color: var(--cx-bar-fg);
+  font-size: 12px;
+  z-index: 60;
+}
+#cx-bar .cx-brand {
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 11px;
+  opacity: 0.65;
+}
+#cx-bar .cx-spacer { flex: 1; }
+#cx-bar .cx-btn {
+  padding: 4px 10px;
+  border: 1px solid rgba(255,255,255,0.25);
+  white-space: nowrap;
+}
+#cx-bar .cx-btn:hover { border-color: rgba(255,255,255,0.6); }
+#cx-bar .cx-btn[aria-pressed="true"] {
+  background: var(--cx-accent);
+  border-color: var(--cx-accent);
+  color: #fff;
+  font-weight: 600;
+}
+#cx-bar .cx-screens { display: flex; gap: 2px; }
+#cx-bar .cx-screens button {
+  padding: 4px 10px;
+  opacity: 0.6;
+  border-bottom: 2px solid transparent;
+}
+#cx-bar .cx-screens button[aria-current="true"] {
+  opacity: 1;
+  border-bottom-color: var(--cx-accent);
+}
+#cx-bar .cx-count {
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+#cx-toast {
+  position: fixed;
+  left: 50%;
+  top: 54px;
+  transform: translateX(-50%);
+  background: var(--cx-bar);
+  color: var(--cx-bar-fg);
+  padding: 6px 14px;
+  font-size: 12px;
+  z-index: 80;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s;
+}
+#cx-toast.cx-show { opacity: 1; }
+
+/* ============================================================
+   2. Comment layer — keep as-is.
+   ============================================================ */
+body.cx-on [data-region] { cursor: crosshair; }
+body.cx-on [data-region]:hover {
+  outline: 2px dashed var(--cx-accent);
+  outline-offset: -2px;
+}
+body.cx-on [data-region]:hover [data-region]:not(:hover) { outline: none; }
+
+[data-region] { position: relative; }
+
+.cx-pin {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  background: var(--cx-accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 40;
+  font-variant-numeric: tabular-nums;
+}
+.cx-pin:hover, .cx-pin.cx-flash { outline: 3px solid rgba(109,40,217,0.35); }
+
+#cx-pop {
+  position: fixed;
+  width: 280px;
+  background: var(--card);
+  border: 1px solid var(--cx-bar);
+  padding: 10px;
+  z-index: 70;
+  display: none;
+}
+#cx-pop.cx-show { display: block; }
+#cx-pop .cx-pop-region {
+  font-size: 11px;
+  color: var(--muted-foreground);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  margin-bottom: 6px;
+  word-break: break-all;
+}
+#cx-pop textarea {
+  width: 100%;
+  min-height: 76px;
+  font: inherit;
+  font-size: 13px;
+  padding: 6px;
+  border: 1px solid var(--input);
+  background: #fff;
+  resize: vertical;
+}
+#cx-pop .cx-pop-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  align-items: center;
+}
+#cx-pop .cx-save {
+  background: var(--cx-bar);
+  color: var(--cx-bar-fg);
+  padding: 4px 12px;
+  font-size: 12px;
+}
+#cx-pop .cx-del {
+  color: var(--destructive);
+  font-size: 12px;
+  margin-left: auto;
+}
+
+#cx-panel {
+  position: fixed;
+  right: 0;
+  top: 44px;
+  bottom: 0;
+  width: 300px;
+  background: var(--cx-bar);
+  color: var(--cx-bar-fg);
+  z-index: 65;
+  display: none;
+  flex-direction: column;
+}
+#cx-panel.cx-show { display: flex; }
+#cx-panel header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+#cx-panel header button { margin-left: auto; opacity: 0.7; font-size: 16px; line-height: 1; }
+#cx-list { flex: 1; overflow-y: auto; padding: 8px; }
+#cx-list .cx-item {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+  font-size: 12.5px;
+}
+#cx-list .cx-item:hover { background: rgba(255,255,255,0.06); }
+#cx-list .cx-n {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  background: var(--cx-accent);
+  color: #fff;
+  text-align: center;
+  line-height: 18px;
+  font-size: 11px;
+  font-weight: 600;
+}
+#cx-list .cx-body { min-width: 0; }
+#cx-list .cx-region {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  opacity: 0.55;
+  word-break: break-all;
+}
+#cx-list .cx-text { display: block; white-space: pre-wrap; }
+#cx-list .cx-empty { padding: 14px 8px; opacity: 0.5; font-size: 12px; }
+#cx-panel footer {
+  flex: none;
+  padding: 10px 12px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  font-size: 11px;
+  opacity: 0.55;
+}
+
+
+
+
+/* Bison Fund branding for the harness (bar green, accent yellow, dark ink) */
+:root{ --cx-bar:#00583D; --cx-bar-fg:#FBFBF9; --cx-accent:#FFC425; --cx-accent-ink:#003524; }
+#cx-bar .cx-brand{ opacity:.85; }
+#cx-bar .cx-btn[aria-pressed="true"]{ color:var(--cx-accent-ink); }
+#cx-bar .cx-screens button[aria-current="true"]{ border-bottom-color:var(--cx-accent); }
+.cx-pin{ color:var(--cx-accent-ink); }
+#cx-list .cx-n{ color:var(--cx-accent-ink); }
+#cx-pop{ border:1px solid var(--cx-bar); }
+#cx-bar .cx-hint{ opacity:.6; }
+.mock-screen{ flex-direction:column; align-items:center; gap:26px; padding:26px; background:#DDE1E1; overflow-y:auto; }
+.slide{ flex:none; margin:0 auto; }
+@media print{ .mock-screen{display:block !important} }
+
+
+
+
+#cx-stage { flex:1; min-height:0; display:flex; }
+.mock-screen { flex:1; min-width:0; display:none; flex-direction:column; align-items:center;
+  gap:26px; padding:26px; background:#DDE1E1; overflow-y:auto; }
+.mock-screen.cx-active { display:flex; }
+:root { --cx-bar:#00583D; --cx-bar-fg:#FBFBF9; --cx-accent:#FFC425; --cx-accent-ink:#003524; }
+#cx-bar .cx-brand { opacity:.85; }
+#cx-bar .cx-btn[aria-pressed="true"] { color:var(--cx-accent-ink); }
+#cx-bar .cx-screens button[aria-current="true"] { border-bottom-color:var(--cx-accent); }
+.cx-pin { color:var(--cx-accent-ink); }
+#cx-list .cx-n { color:var(--cx-accent-ink); }
+@media print {
+  @page { size: 1280px 720px; margin: 0; }
+  html, body { height:auto !important; overflow:visible !important; display:block !important; background:#fff !important; margin:0 !important; padding:0 !important; }
+  #cx-bar, #cx-panel, #cx-pop, #cx-toast { display:none !important; }
+  #cx-stage { display:block !important; overflow:visible !important; }
+  .mock-screen { display:block !important; overflow:visible !important; background:#fff !important; padding:0 !important; gap:0 !important; }
+  .slide { page-break-after:always; break-after:page; box-shadow:none; margin:0; }
+  .cx-pin { display:none !important; }
+  body.cx-on [data-region]:hover { outline:none !important; }
+}
+/* Print / PDF export — each PDF page IS one slide (16:9), chrome hidden */
+@media print{
+  @page { size: 1280px 720px; margin: 0; }
+  html, body { height:auto !important; overflow:visible !important; display:block !important; background:#fff !important; margin:0 !important; padding:0 !important; }
+  #cx-bar, #cx-panel, #cx-pop, #cx-toast { display:none !important; }
+  #cx-stage { display:block !important; overflow:visible !important; }
+  .mock-screen { display:block !important; overflow:visible !important; background:#fff !important; padding:0 !important; gap:0 !important; }
+  .slide { page-break-after:always; break-after:page; box-shadow:none; margin:0; }
+  .cx-pin { display:none !important; }
+  body.cx-on [data-region]:hover { outline:none !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="cx-bar">
+  <span class="cx-brand">Bison Fund · Uber pitch — review</span>
+  <div class="cx-screens" id="cx-screens">
+    <button type="button" data-goto="overview" aria-current="true">Overview</button><button type="button" data-goto="s01">01 Business</button><button type="button" data-goto="s02">02 Competition</button><button type="button" data-goto="s03">03 Key Deals</button><button type="button" data-goto="s04">04 Financials</button><button type="button" data-goto="s05">05 Valuation</button>
+  </div>
+  <span class="cx-spacer"></span>
+  <span class="cx-count" id="cx-count">0 comments</span>
+  <button type="button" class="cx-btn" id="cx-toggle" aria-pressed="false">Comment mode</button>
+  <button type="button" class="cx-btn" id="cx-open-panel">List</button>
+  <button type="button" class="cx-btn" id="cx-copy">Copy feedback</button>
+  <button type="button" class="cx-btn" id="cx-pdf">Download PDF</button>
+  <button type="button" class="cx-btn" id="cx-clear">Clear all</button>
+</div>
+
+<div id="cx-toast"></div>
+
+<div id="cx-stage">
+  <!-- One screen per pitch section. Example: -->
+  <section class="mock-screen cx-active" data-screen="overview">
+    <!-- your slides here, each <section class="slide" data-region="sNN.slug"> ... </section> -->
+  </section>
+</div>
+
+<div id="cx-pop">
+  <div class="cx-pop-region" id="cx-pop-region"></div>
+  <textarea id="cx-pop-text" placeholder="What should change here?"></textarea>
+  <div class="cx-pop-actions">
+    <button class="cx-save" id="cx-pop-save">Save</button>
+    <button id="cx-pop-cancel" style="font-size:12px;color:var(--muted-fg)">Cancel</button>
+    <button class="cx-del" id="cx-pop-del">Delete</button>
+  </div>
+</div>
+
+<div id="cx-panel">
+  <header><span>Comments</span><button type="button" id="cx-panel-close" aria-label="Close comments">&times;</button></header>
+  <div id="cx-list"></div>
+  <footer>Click an item to jump to its pin. Copy feedback exports all of it as markdown.</footer>
+</div>
+
+
+
+<div id="cx-panel">
+  <header><span>Comments</span><button type="button" id="cx-panel-close" aria-label="Close comments">&times;</button></header>
+  <div id="cx-list"></div>
+  <footer>Click an item to jump to its pin. Copy feedback exports all of it as markdown.</footer>
+</div>
+
+<script>
+
+
+/* ============================================================
+   Comment layer. Comments are stored in localStorage and
+   exported as markdown via "Copy feedback". Each one is anchored
+   to a data-region name so the exported note says WHERE it applies.
+   Keep as-is.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  // Per-mockup storage key — change for each new mockup.
+  var STORE = 'bison-<deck-name>-comments-v1';
+  var comments = [];
+  var mode = false;
+  var editing = null;
+  var isNew = false;
+
+  // Screens in DOM order; the first is the default.
+  var SCREENS = Array.prototype.map.call(
+    document.querySelectorAll('.mock-screen'),
+    function (s) { return s.getAttribute('data-screen'); }
+  );
+
+  /* ---------- storage ---------- */
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORE);
+      comments = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(comments)) comments = [];
+    } catch (e) {
+      comments = [];  // private window / blocked storage must not break the mockup
+    }
+  }
+  function save() {
+    try {
+      localStorage.setItem(STORE, JSON.stringify(comments));
+    } catch (e) { /* pins still work for this session */ }
+  }
+
+  /* ---------- element lookups ---------- */
+  function $(id) { return document.getElementById(id); }
+  function regionEl(name) {
+    return document.querySelector('[data-region="' + name + '"]');
+  }
+  function activeScreenEl() {
+    return document.querySelector('.mock-screen.cx-active');
+  }
+  function activeScreen() {
+    var el = activeScreenEl();
+    return el ? el.getAttribute('data-screen') : (SCREENS[0] || '');
+  }
+  function gotoScreen(name) {
+    Array.prototype.forEach.call(document.querySelectorAll('.mock-screen'), function (s) {
+      s.classList.toggle('cx-active', s.getAttribute('data-screen') === name);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#cx-screens [data-goto]'), function (b) {
+      if (b.getAttribute('data-goto') === name) b.setAttribute('aria-current', 'true');
+      else b.removeAttribute('aria-current');
+    });
+    renderPins();
+  }
+
+  /* ---------- rendering ---------- */
+  function renumber() {
+    comments.forEach(function (c, i) { c.n = i + 1; });
+  }
+
+  function renderPins() {
+    Array.prototype.forEach.call(document.querySelectorAll('.cx-pin'), function (p) {
+      p.parentNode.removeChild(p);
+    });
+    comments.forEach(function (c) {
+      var host = regionEl(c.region);
+      if (!host) return;
+      var pin = document.createElement('button');
+      pin.type = 'button';
+      pin.className = 'cx-pin';
+      pin.textContent = c.n;
+      pin.style.left = c.x + '%';
+      pin.style.top = c.y + '%';
+      pin.title = c.text || '(empty)';
+      pin.setAttribute('data-cid', c.id);
+      host.appendChild(pin);
+    });
+  }
+
+  function renderList() {
+    var list = $('cx-list');
+    list.innerHTML = '';
+    if (!comments.length) {
+      list.innerHTML = '<div class="cx-empty">No comments yet. Turn on comment mode and click anything.</div>';
+      return;
+    }
+    comments.forEach(function (c) {
+      var item = document.createElement('div');
+      item.className = 'cx-item';
+      item.setAttribute('data-cid', c.id);
+      var n = document.createElement('span');
+      n.className = 'cx-n';
+      n.textContent = c.n;
+      var body = document.createElement('span');
+      body.className = 'cx-body';
+      var reg = document.createElement('span');
+      reg.className = 'cx-region';
+      reg.textContent = (c.screen ? c.screen + ':' : '') + c.region;
+      var txt = document.createElement('span');
+      txt.className = 'cx-text';
+      txt.textContent = c.text || '(empty)';
+      body.appendChild(reg);
+      body.appendChild(txt);
+      item.appendChild(n);
+      item.appendChild(body);
+      list.appendChild(item);
+    });
+  }
+
+  function renderCount() {
+    var n = comments.length;
+    $('cx-count').textContent = n === 1 ? '1 comment' : n + ' comments';
+  }
+
+  function render() {
+    renumber();
+    renderPins();
+    renderList();
+    renderCount();
+  }
+
+  /* ---------- popover ---------- */
+  function openPop(c, atX, atY, created) {
+    editing = c;
+    isNew = !!created;
+    $('cx-pop-region').textContent = c.region;
+    $('cx-pop-text').value = c.text || '';
+    var pop = $('cx-pop');
+    pop.classList.add('cx-show');
+    var w = 280, h = pop.offsetHeight || 160;
+    var left = Math.min(atX + 12, window.innerWidth - w - 8);
+    var top = Math.min(atY + 12, window.innerHeight - h - 8);
+    pop.style.left = Math.max(8, left) + 'px';
+    pop.style.top = Math.max(8, top) + 'px';
+    $('cx-pop-text').focus();
+  }
+  function closePop(discardEmptyNew) {
+    if (discardEmptyNew && editing && isNew && !editing.text.trim()) {
+      comments = comments.filter(function (c) { return c.id !== editing.id; });
+      save();
+      render();
+    }
+    editing = null;
+    isNew = false;
+    $('cx-pop').classList.remove('cx-show');
+  }
+
+  /* ---------- toast ---------- */
+  var toastTimer = null;
+  function toast(msg) {
+    var t = $('cx-toast');
+    t.textContent = msg;
+    t.classList.add('cx-show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('cx-show'); }, 1800);
+  }
+
+  /* ---------- comment mode ---------- */
+  function setMode(on) {
+    mode = on;
+    document.body.classList.toggle('cx-on', mode);
+    $('cx-toggle').setAttribute('aria-pressed', mode ? 'true' : 'false');
+    if (mode) toast('Comment mode on — click any part of the mockup.');
+  }
+  $('cx-toggle').addEventListener('click', function () { setMode(!mode); });
+
+  // Capture phase + stopPropagation so a comment click never triggers the
+  // mockup's own controls underneath it.
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (t.closest('#cx-bar, #cx-panel, #cx-pop, #cx-toast')) return;
+
+    var pin = t.closest('.cx-pin');
+    if (pin) {
+      e.preventDefault();
+      e.stopPropagation();
+      var cid = pin.getAttribute('data-cid');
+      var c = comments.filter(function (x) { return x.id === cid; })[0];
+      if (c) {
+        var r = pin.getBoundingClientRect();
+        openPop(c, r.left, r.bottom, false);
+      }
+      return;
+    }
+
+    // Screen navigation — only when comment mode is off, so a comment
+    // click on a nav element comments instead of navigating.
+    var nav = t.closest('[data-nav]');
+    if (nav && !mode) {
+      e.preventDefault();
+      e.stopPropagation();
+      gotoScreen(nav.getAttribute('data-nav'));
+      return;
+    }
+
+    if (!mode) return;
+    var region = t.closest('[data-region]');
+    if (!region) return;
+    // Regions on a hidden screen can't be clicked, but guard anyway so a
+    // stale event can't anchor a comment to the wrong screen.
+    if (!activeScreenEl().contains(region)) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    var box = region.getBoundingClientRect();
+    var c2 = {
+      id: 'c' + Date.now() + Math.floor(Math.random() * 1000),
+      screen: activeScreen(),
+      region: region.getAttribute('data-region'),
+      text: '',
+      x: +(((e.clientX - box.left) / box.width) * 100).toFixed(2),
+      y: +(((e.clientY - box.top) / box.height) * 100).toFixed(2)
+    };
+    comments.push(c2);
+    save();
+    render();
+    openPop(c2, e.clientX, e.clientY, true);
+  }, true);
+
+  /* ---------- popover actions ---------- */
+  $('cx-pop-save').addEventListener('click', function () {
+    if (!editing) return;
+    editing.text = $('cx-pop-text').value.trim();
+    if (!editing.text) {
+      comments = comments.filter(function (c) { return c.id !== editing.id; });
+    }
+    save();
+    var wasNew = isNew;
+    editing = null;
+    isNew = false;
+    $('cx-pop').classList.remove('cx-show');
+    render();
+    if (wasNew) toast('Comment saved.');
+  });
+  $('cx-pop-cancel').addEventListener('click', function () { closePop(true); });
+  $('cx-pop-del').addEventListener('click', function () {
+    if (!editing) return;
+    comments = comments.filter(function (c) { return c.id !== editing.id; });
+    save();
+    editing = null;
+    isNew = false;
+    $('cx-pop').classList.remove('cx-show');
+    render();
+  });
+  // Cmd/Ctrl+Enter saves; Escape backs out.
+  $('cx-pop-text').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); $('cx-pop-save').click(); }
+    if (e.key === 'Escape') { e.preventDefault(); closePop(true); }
+  });
+
+  /* ---------- panel ---------- */
+  $('cx-open-panel').addEventListener('click', function () {
+    $('cx-panel').classList.toggle('cx-show');
+  });
+  $('cx-panel-close').addEventListener('click', function () {
+    $('cx-panel').classList.remove('cx-show');
+  });
+  $('cx-list').addEventListener('click', function (e) {
+    var item = e.target.closest('.cx-item');
+    if (!item) return;
+    var cid = item.getAttribute('data-cid');
+    var pin = document.querySelector('.cx-pin[data-cid="' + cid + '"]');
+    if (!pin) return;
+    pin.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    pin.classList.add('cx-flash');
+    setTimeout(function () { pin.classList.remove('cx-flash'); }, 1200);
+  });
+
+  /* ---------- export ---------- */
+  function toMarkdown() {
+    if (!comments.length) return '';
+    var out = ['## Mockup feedback — ' + new Date().toISOString().slice(0, 10)];
+    out.push('');
+    SCREENS.forEach(function (scr) {
+      var mine = comments.filter(function (c) { return (c.screen || SCREENS[0]) === scr; });
+      if (!mine.length) return;
+      out.push('### screen: ' + scr);
+      mine.forEach(function (c) {
+        out.push(c.n + '. [' + c.region + '] ' + (c.text || '(empty)'));
+      });
+      out.push('');
+    });
+    return out.join('\n');
+  }
+
+  function copyText(text) {
+    // file:// pages can't always reach the async clipboard API, so fall back
+    // to the execCommand path rather than silently failing.
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(
+        function () { toast('Copied — paste it into your session.'); },
+        function () { toast(fallback() ? 'Copied — paste it into your session.' : 'Copy failed — select from the List panel.'); }
+      );
+    } else {
+      toast(fallback() ? 'Copied — paste it into your session.' : 'Copy failed — select from the List panel.');
+    }
+  }
+
+  $('cx-copy').addEventListener('click', function () {
+    var md = toMarkdown();
+    if (!md) { toast('No comments to copy yet.'); return; }
+    copyText(md);
+  });
+
+  $('cx-pdf').addEventListener('click', function(){ toast('Opening the print dialog — choose “Save as PDF”.'); setTimeout(function(){ window.print(); }, 350); });
+
+  $('cx-clear').addEventListener('click', function () {
+    if (!comments.length) { toast('Nothing to clear.'); return; }
+    if (!confirm('Delete all ' + comments.length + ' comments?')) return;
+    comments = [];
+    save();
+    closePop(false);
+    render();
+    toast('Cleared.');
+  });
+
+  /* ---------- screens bar ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll('#cx-screens [data-goto]'), function (b) {
+    b.addEventListener('click', function () {
+      gotoScreen(b.getAttribute('data-goto'));
+    });
+  });
+
+  /* ---------- keyboard ---------- */
+  document.addEventListener('keydown', function (e) {
+    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+    if (e.key === 'c' && !e.metaKey && !e.ctrlKey && !e.altKey) { setMode(!mode); }
+    if (e.key === 'Escape') { closePop(true); $('cx-panel').classList.remove('cx-show'); }
+  });
+
+  /* ---------- boot ---------- */
+  load();
+  render();
+  gotoScreen(SCREENS[0]);
+  window.addEventListener('resize', renderPins);
+})();
+
+
+</script>
+
+<script>
+/* Download PDF, wired independent of the harness IIFE */
+(function () {
+  var b = document.getElementById('cx-pdf');
+  if (!b) return;
+  b.addEventListener('click', function () {
+    var t = document.getElementById('cx-toast');
+    if (t) { t.textContent = 'Opening the print dialog. Choose Save as PDF.'; t.classList.add('cx-show');
+             setTimeout(function(){ t.classList.remove('cx-show'); }, 1800); }
+    setTimeout(function () { window.print(); }, 250);
+  });
+})();
+</script>
+</body>
+</html>

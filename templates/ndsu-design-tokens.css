@@ -1,0 +1,172 @@
+/* NDSU Bison Fund — shadcn/ui design tokens
+ * -------------------------------------------------------------------------
+ * Palette values are lifted from the NDSU College of Business / Bison Fund
+ * site (ndsu.edu/business) so student materials match the fund's own design.
+ * Structure follows the shadcn/ui theming convention (Tailwind v4).
+ *
+ * Use: paste into a shadcn/Tailwind v4 global stylesheet (after the tailwind
+ * imports), then style with semantic utilities: bg-background, text-foreground,
+ * bg-primary, text-primary-foreground, border-border, ring-ring, and the brand
+ * extras bg-ndsu-green / bg-ndsu-yellow.
+ * -------------------------------------------------------------------------
+ * Brand source values (hex):
+ *   NDSU Green   #00583D (rgb 0,88,61)      NDSU Yellow  #FFC425 (rgb 255,196,37)
+ *   Green dark   #003524 / #00221B          Yellow dark  #E5B01A / #B28B13
+ *   Body text    #282C2F                    Background   #F2F3F3
+ *   Border       #D7DADB                    Link/button  #785D03
+ * ------------------------------------------------------------------------- */
+
+@import "tailwindcss";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  /* brand extras */
+  --color-ndsu-green: var(--ndsu-green);
+  --color-ndsu-green-dark: var(--ndsu-green-dark);
+  --color-ndsu-green-100: var(--ndsu-green-100);
+  --color-ndsu-teal: var(--ndsu-teal);
+  --color-ndsu-yellow: var(--ndsu-yellow);
+  --color-ndsu-gold: var(--ndsu-gold);
+  --color-ndsu-harvest: var(--ndsu-harvest);
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+}
+
+:root {
+  --radius: 0.5rem;
+
+  /* Type: NDSU uses Gotham (body) and New Spirit (headings, light).
+   * Both are licensed. Free stand-ins are listed first-after so decks render
+   * correctly on machines without the brand fonts. */
+  --font-sans: "Gotham", "Montserrat", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "new-spirit", "New Spirit", "Source Serif 4", "Spectral", ui-serif, Georgia, serif;
+
+  --background: #F2F3F3;          /* site bg (neutral-100) */
+  --foreground: #282C2F;          /* body text */
+  --card: #FFFFFF;
+  --card-foreground: #282C2F;
+  --popover: #FFFFFF;
+  --popover-foreground: #282C2F;
+  --primary: #00583D;             /* NDSU Green */
+  --primary-foreground: #FFFFFF;
+  --secondary: #FFC425;           /* NDSU Yellow */
+  --secondary-foreground: #003524;
+  --muted: #F2F3F3;
+  --muted-foreground: #686E6D;
+  --accent: #D4ECE6;              /* green-100, hover surfaces */
+  --accent-foreground: #003524;
+  --destructive: #C62828;
+  --border: #D7DADB;
+  --input: #D7DADB;
+  --ring: #00583D;
+  --chart-1: #00583D;             /* green */
+  --chart-2: #FFC425;             /* yellow */
+  --chart-3: #51AB9F;             /* teal (green-400) */
+  --chart-4: #BE5D27;             /* harvest */
+  --chart-5: #0E364B;             /* night */
+  --sidebar: #003524;             /* dark green rail */
+  --sidebar-foreground: #F2F3F3;
+  --sidebar-primary: #FFC425;
+  --sidebar-primary-foreground: #003524;
+  --sidebar-accent: #00583D;
+  --sidebar-accent-foreground: #FFF4D6;
+  --sidebar-border: rgba(255, 255, 255, 0.14);
+  --sidebar-ring: #FFC425;
+
+  /* brand swatches for direct use */
+  --ndsu-green: #00583D;
+  --ndsu-green-dark: #003524;
+  --ndsu-green-100: #D4ECE6;
+  --ndsu-teal: #51AB9F;
+  --ndsu-yellow: #FFC425;
+  --ndsu-gold: #E5B01A;
+  --ndsu-harvest: #BE5D27;
+}
+
+.dark {
+  --background: #282C2F;
+  --foreground: #F2F3F3;
+  --card: #33383B;
+  --card-foreground: #F2F3F3;
+  --popover: #33383B;
+  --popover-foreground: #F2F3F3;
+  --primary: #51AB9F;             /* green lifts for contrast on dark */
+  --primary-foreground: #00221B;
+  --secondary: #FFC425;
+  --secondary-foreground: #00221B;
+  --muted: #404447;
+  --muted-foreground: #BCC2C3;
+  --accent: #404447;
+  --accent-foreground: #F2F3F3;
+  --destructive: #E57373;
+  --border: rgba(255, 255, 255, 0.12);
+  --input: rgba(255, 255, 255, 0.16);
+  --ring: #51AB9F;
+  --chart-1: #7EC5B6;
+  --chart-2: #FFC425;
+  --chart-3: #A9D9CE;
+  --chart-4: #FDF389;
+  --chart-5: #9DD9F6;
+  --sidebar: #00221B;
+  --sidebar-foreground: #F2F3F3;
+  --sidebar-primary: #FFC425;
+  --sidebar-primary-foreground: #00221B;
+  --sidebar-accent: #00583D;
+  --sidebar-accent-foreground: #FFF4D6;
+  --sidebar-border: rgba(255, 255, 255, 0.12);
+  --sidebar-ring: #FFC425;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+  }
+  h1, h2, h3 {
+    font-family: var(--font-serif);
+    font-weight: 300;
+  }
+}

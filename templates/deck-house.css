@@ -1,0 +1,104 @@
+/* Bison Fund deck house style (design system)
+ * ---------------------------------------------------------------------------
+ * The shared design system every Bison Fund pitch deck uses, so decks are
+ * consistent across analysts and tools. Extracted from the fund's reference
+ * deck (the Uber equity pitch, 41 slides) as the standard.
+ *
+ * Use: paste this whole file into the <style> of the plain deck html, then
+ * build slides from the classes below. The commentable harness wraps the deck
+ * afterwards (templates/commentable-deck-harness.html). The full slide
+ * inventory and conventions are in references/deck-standard.md.
+ *
+ * Structure of a slide:
+ *   <section class="slide">            (or "slide dark" for title/section dividers)
+ *     <div class="eyebrow">01 Business</div>      section label, omitted on Overview slides
+ *     <h2 class="title">Plain Title</h2>
+ *     <p class="sub">One plain sentence, or omit.</p>
+ *     <div class="content"> ... grids, cards, tables, charts ... </div>
+ *     <div class="note">Sources: ...</div>         optional, sits above the foot
+ *     <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">07 / 36</span></div>
+ *   </section>
+ * ---------------------------------------------------------------------------
+ * Brand source values: NDSU Green #00583D, NDSU Yellow #FFC425, green dark #003524,
+ * body text #282C2F, background #F2F3F3, border #D7DADB.
+ */
+:root{
+  --font-sans:"Montserrat","Gotham",ui-sans-serif,system-ui,sans-serif;
+  --font-serif:"Source Serif 4","New Spirit",ui-serif,Georgia,serif;
+  --background:#F2F3F3; --foreground:#282C2F; --card:#FFFFFF; --offwhite:#FBFBF9;
+  --primary:#00583D; --primary-fg:#FFFFFF; --secondary:#FFC425; --secondary-fg:#003524;
+  --muted:#F2F3F3; --muted-fg:#686E6D; --accent:#D4ECE6; --accent-fg:#003524;
+  --destructive:#C62828; --border:#D7DADB; --ring:#00583D;
+  --green-dark:#003524; --green-deep:#00221B; --teal:#51AB9F; --harvest:#BE5D27;
+  --night:#0E364B; --subtle:#686E6D; --link:#785D03;
+  --chart-1:#00583D; --chart-2:#FFC425; --chart-3:#51AB9F; --chart-4:#BE5D27; --chart-5:#0E364B;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body { height:100%; }
+body { font-family:var(--font-sans); color:var(--foreground); font-size:14px; line-height:1.5;
+       display:flex; flex-direction:column; overflow:hidden; -webkit-font-smoothing:antialiased; }
+a { color:var(--primary); text-decoration:none; }
+.slide { width:1280px; height:720px; margin:0 auto; flex:none; background:var(--background);
+  position:relative; padding:52px 64px 64px; overflow:hidden; display:flex; flex-direction:column; }
+.slide.dark { background:var(--green-dark); color:var(--offwhite); }
+.serif { font-family:var(--font-serif); font-weight:300; }
+.eyebrow { font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--primary); font-weight:700; margin-bottom:8px; }
+.dark .eyebrow { color:var(--secondary); }
+h2.title { font-family:var(--font-serif); font-weight:300; font-size:34px; line-height:1.12; color:var(--green-dark); margin-bottom:6px; }
+.dark h2.title { color:var(--offwhite); }
+p.sub { font-size:14px; color:var(--subtle); margin-bottom:22px; max-width:75ch; }
+.dark p.sub { color:rgba(251,251,249,.75); }
+.slide:has(.note) .content { padding-bottom:42px; }
+.content { flex:1; display:flex; flex-direction:column; gap:16px; min-height:0; justify-content:space-evenly; }
+.foot { position:absolute; left:64px; right:64px; bottom:26px; display:flex; justify-content:space-between;
+  font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--subtle); }
+.dark .foot { color:rgba(251,251,249,.55); }
+.foot .pageno { font-variant-numeric:tabular-nums; }
+.grid { display:grid; gap:14px; }
+.g2 { grid-template-columns:1fr 1fr; } .g3 { grid-template-columns:repeat(3,1fr); } .g4 { grid-template-columns:repeat(4,1fr); }
+.card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px 20px; }
+.card h4 { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--subtle); margin-bottom:8px; font-weight:600; }
+.card .v { font-family:var(--font-serif); font-weight:300; font-size:32px; color:var(--green-dark);
+  font-variant-numeric:tabular-nums; line-height:1.1; }
+.card .d { font-size:12px; color:var(--subtle); margin-top:6px; line-height:1.5; }
+.card .v.pos { color:var(--primary); } .card .v.neg { color:var(--destructive); }
+.card.y { background:#FFF4D6; border-color:#FFE68A; }
+.card.y h4, .card.y .v { color:var(--secondary-fg); }
+.card.y .d { color:#5A4A16; }
+.card.g { background:var(--accent); border-color:#A9D9CE; }
+.card.g h4, .card.g .v { color:var(--green-dark); }
+.card.g .d { color:#3D5B52; }
+.bullets { list-style:none; }
+.bullets li { font-size:14px; line-height:1.55; padding:9px 0 9px 22px; position:relative; border-bottom:1px solid var(--border); }
+.bullets li:last-child { border-bottom:0; }
+.bullets li:before { content:""; position:absolute; left:4px; top:16px; width:8px; height:8px; border-radius:50%; background:var(--secondary); }
+.bullets b { font-weight:600; color:var(--green-dark); }
+.note { font-size:10.5px; color:var(--subtle); line-height:1.5; position:absolute; left:64px; right:64px; bottom:48px; }
+.src { color:var(--muted-fg); font-style:italic; }
+table { width:100%; border-collapse:collapse; font-size:13px; background:var(--card);
+  border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+th, td { padding:9px 12px; text-align:right; border-bottom:1px solid var(--border); font-variant-numeric:tabular-nums; }
+th:first-child, td:first-child { text-align:left; font-variant-numeric:normal; font-weight:500; }
+thead th { background:var(--primary); color:#fff; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; font-weight:600; text-align:right; }
+thead th:first-child { text-align:left; }
+tbody tr:last-child td { border-bottom:0; }
+tbody tr:hover { background:var(--muted); }
+td.hi { color:var(--green-dark); font-weight:600; } td.neg { color:var(--destructive); }
+.chart { display:flex; align-items:flex-end; gap:18px; height:230px; margin-top:14px; }
+.bar { flex:1; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:6px; }
+.bar .col { width:100%; border-radius:6px 6px 0 0; position:relative; flex-shrink:0; }
+.bar .lab { font-size:11.5px; color:var(--subtle); font-variant-numeric:tabular-nums; }
+.bar .cat { font-size:10.5px; color:var(--subtle); margin-top:2px; }
+.divider-num { font-family:var(--font-serif); font-weight:300; font-size:120px; line-height:1; color:var(--secondary); }
+.divider-list { margin-top:28px; font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:rgba(251,251,249,.65); line-height:2.2; }
+.divider-list b { color:var(--secondary); font-weight:600; }
+.own { border:1px solid #A9D9CE; background:var(--accent); border-radius:10px; padding:16px 20px; }
+.own h4 { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--green-dark); font-weight:700; margin-bottom:6px; }
+.own p { font-size:13px; color:#2C4A41; line-height:1.55; }
+.blank { display:inline-block; min-width:120px; border-bottom:2px solid var(--green-dark); height:16px; vertical-align:baseline; }
+.deal { background:var(--card); border:1px solid var(--border); border-left:5px solid var(--primary); border-radius:8px; padding:16px 20px; }
+.deal h3 { font-family:var(--font-serif); font-weight:400; font-size:19px; color:var(--green-dark); margin-bottom:6px; }
+.deal .meta { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--harvest); font-weight:600; margin-bottom:8px; }
+.deal p { font-size:13px; line-height:1.6; color:var(--foreground); }
+.pill { display:inline-block; background:var(--accent); color:var(--accent-fg); font-size:11px; font-weight:600; padding:4px 10px; border-radius:999px; margin:0 6px 6px 0; }
+.badge-buy { display:inline-block; background:var(--secondary); color:var(--secondary-fg); font-size:13px; font-weight:700; letter-spacing:.12em; padding:8px 22px; border-radius:6px; }
