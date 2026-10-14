@@ -98,6 +98,13 @@ Verify it by intercepting rather than opening a dialog in a test:
 - **Footers must state the real total.** After inserting a slide, renumber every footer from document
   order, never by hand. A deck showing "01 / 24" with 22 slides is a fail.
 - Eyebrows: none on Overview slides, the section label on section slides, and never the slide title.
+- **The starter deck's `<style>` block and `deck-house.css` are one stylesheet kept in two places.**
+  They must stay identical. Run
+  `sed -n '/<style>/,/<\/style>/p' templates/deck-skeleton.html | sed '1d;$d' | diff - templates/deck-house.css`
+  and expect no output. A difference means a deck built from the starter file is missing a style fix.
+- **The templates load Montserrat and Source Serif 4 from Google Fonts over the network.** On a machine
+  with no connection the deck falls back to whatever system fonts are installed. The layout still holds.
+  Open one slide on the presenting machine first, so a silent font fallback is not a surprise in the room.
 
 ## Charts
 
