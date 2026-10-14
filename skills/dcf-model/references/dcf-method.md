@@ -19,16 +19,17 @@ earnings base; the analyst owns the discount rate, terminal growth, and the fina
 | EBITDA forecast | `stable/analyst-estimates` (field `ebitdaAvg`) | useful for the exit-multiple cross-check |
 | Free cash flow history | `stable/cash-flow-statement` | `operatingCashFlow` minus `capitalExpenditure` |
 | Net debt | `stable/balance-sheet-statement` | `totalDebt` minus `cashAndShortTermInvestments` |
-| Diluted shares | `stable/income-statement` (field `weightedAverageShsDil`) or the latest 10-Q | use the most recent diluted count |
+| Diluted shares | `stable/income-statement` (field `weightedAverageShsOutDil`) or the latest 10-Q | use the most recent diluted count |
 | Current price | `stable/quote` | fields `price`, `yearHigh`, `yearLow` |
 | Consensus price target | `stable/price-target-summary` | fields `lastYearAvgPriceTarget`, `lastYearCount`; cross-check only |
 | FMP's own DCF value | `stable/discounted-cash-flow` | field `dcf`; another cross-check, not your answer |
 | Beta | `stable/key-metrics` or `stable/financial-ratios` | for the WACC build |
 
-Endpoint paths and field names come from `references/fmp-api-docs.md`, which is the official
-`api-docs.md` shipped with this skill. Only the stable base (`https://financialmodelingprep.com/stable/`)
-exists; the legacy v3 and v4 paths are discontinued. If a call returns an error, check the path
-against the docs before assuming the data does not exist.
+Endpoint paths and field names come from `references/fmp-api-docs.md`, a cheatsheet of the
+calls this package makes, with a link to FMP's full current docs for anything not listed there.
+Only the stable base (`https://financialmodelingprep.com/stable/`) exists; the legacy v3 and v4
+paths are discontinued. If a call returns an error, check the path against the cheatsheet (and
+the linked docs) before assuming the data does not exist.
 
 ## Step 2. Forecast revenue
 

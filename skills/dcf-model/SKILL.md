@@ -46,8 +46,8 @@ Run the demo once on a new machine before trusting a live run.
 file, deck, template, or handout, and never pasted into a chat transcript. The script reads
 `$FMP_API_KEY` first, then `~/.hermes/secrets/fmp_api_key`, then `~/.config/fmp/api_key`, and prints
 only success or failure. A shared fund-wide key will hit the free-tier rate limit of roughly 250 calls
-a day, so plan for one key per student. The endpoint reference is `references/fmp-api-docs.md`, which
-is over 600KB: grep it for the endpoint you need, never load it whole.
+a day, so plan for one key per student. The endpoint cheatsheet is `references/fmp-api-docs.md`,
+with a link to FMP's full current docs for anything beyond the calls this package makes.
 
 **Bloomberg Terminal.** There is no public or free Bloomberg market-data API. The programming
 interface, the Python wrappers, and the Excel functions all require a logged-in terminal and
