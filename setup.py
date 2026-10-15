@@ -17,7 +17,12 @@ the source; existing keys are kept.
 No key at all is a valid answer: option 2 uses SEC EDGAR and the US Treasury, which
 need nothing, and the DCF can still be built.
 """
-import argparse, datetime, getpass, json, os, sys, urllib.request
+import argparse, datetime, getpass, json, os, re, sys, urllib.request
+
+try:
+    import select, termios, tty
+except ImportError:          # Windows has no termios, so the prompts fall back to plain input
+    termios = None
 
 CONFIG = os.path.expanduser("~/.config/bison/config.json")
 KEY_DIR = os.path.expanduser("~/.config/bison/keys")
@@ -37,6 +42,108 @@ CLOSING = {
     "other": ("Recorded. Start a pitch with:", None),
     "bloomberg": ("Recorded. Start a pitch with:", None),
 }
+
+
+def raw_supported():
+    """True when the prompts can read keystrokes directly."""
+    return termios is not None and sys.stdin.isatty() and sys.stdout.isatty()
+
+
+class Terminal:
+    """Prompt input on a real terminal.
+
+    Keystrokes arrive one at a time with echo off (cbreak mode), held for as long
+    as this is open. Nothing typed can appear on screen, because the mode is set
+    once up front rather than around each keystroke. Output translation stays on,
+    so ordinary print() still works. Without a usable terminal it falls back to
+    plain input and getpass, which keeps piped and Windows use working.
+    """
+
+    def __init__(self):
+        self.capable = raw_supported()
+        self.fd = sys.stdin.fileno() if self.capable else None
+        self.saved = None
+
+    def __enter__(self):
+        if self.capable:
+            self.saved = termios.tcgetattr(self.fd)
+            tty.setcbreak(self.fd)
+            self.write("\033[?2004l")        # bracketed paste off, so a paste arrives bare
+        return self
+
+    def __exit__(self, *_exc):
+        if self.capable:
+            self.write("\033[?2004h")
+            termios.tcsetattr(self.fd, termios.TCSADRAIN, self.saved)
+        return False
+
+    @staticmethod
+    def write(text):
+        sys.stdout.write(text)
+        sys.stdout.flush()
+
+    def _byte(self):
+        """One byte from the terminal, bypassing Python's buffered stdin."""
+        return os.read(self.fd, 1).decode("utf-8", "replace")
+
+    def key(self):
+        """One keypress: 'up', 'down', 'enter', 'backspace', or the character.
+
+        Reads the descriptor directly. sys.stdin is buffered, so it can swallow
+        the rest of an escape sequence out of the kernel buffer, leaving select()
+        with nothing to report and the arrow key silently ignored.
+        """
+        ch = self._byte()
+        if ch == "\x1b":
+            ready, _, _ = select.select([self.fd], [], [], 0.05)
+            seq = (self._byte() + self._byte()) if ready else ""
+            return {"[A": "up", "[B": "down"}.get(seq, "other")
+        if ch in ("\r", "\n"):
+            return "enter"
+        if ch in ("\x7f", "\x08"):
+            return "backspace"
+        return ch
+
+    def line(self, prompt, secret=False):
+        """Read a line, echoing one asterisk per character when it is a secret.
+
+        cbreak mode turns echo off, so this echoes the characters itself and
+        handles the backspace key.
+        """
+        if not self.capable:
+            try:
+                return (getpass.getpass(prompt) if secret else input(prompt)).strip()
+            except (EOFError, KeyboardInterrupt):
+                print()
+                sys.exit("No input. Nothing changed.")
+        self.write(prompt)
+        chars = []
+        while True:
+            key = self.key()
+            if key == "enter":
+                break
+            if key == "backspace":
+                if chars:
+                    chars.pop()
+                    self.write("\b \b")
+                continue
+            if len(key) == 1 and key.isprintable():
+                chars.append(key)
+                self.write("*" if secret else key)
+        print()
+        text = "".join(chars)
+        return sanitize_key(text) if secret else text.strip()
+
+
+def sanitize_key(text):
+    """Keep only the key itself.
+
+    A paste can arrive wrapped in bracketed-paste markers (ESC [ 200 ~ ... ESC [ 201 ~).
+    The prompt turns that mode off, but terminals differ, so strip the markers too.
+    Keys are alphanumeric, so dropping everything unprintable is safe.
+    """
+    text = re.sub(r"\x1b\[20[01]~", "", text)
+    return "".join(c for c in text if c.isprintable() and c != "\x1b").strip()
 
 
 def read_config():
@@ -124,46 +231,62 @@ def check():
     print("\nRun `python3 setup.py` to configure a source.\n")
 
 
-def ask(question, default=None):
-    suffix = " [%s]" % default if default else ""
-    try:
-        answer = input("%s%s: " % (question, suffix)).strip()
-    except (EOFError, KeyboardInterrupt):
-        print()
-        sys.exit("No input. Nothing changed.")
-    return answer or default or ""
+def choose(title, options, term, default=0):
+    """Pick one of the options, returning a 1-based choice.
+
+    Arrow keys when the terminal allows it, otherwise typing a number, so piped
+    and Windows use still works.
+    """
+    if not term.capable:
+        print(title)
+        for i, (label, blurb) in enumerate(options, 1):
+            print("  %d) %-44s %s" % (i, label, blurb))
+        try:
+            n = int(term.line("Number [%d]: " % (default + 1)) or str(default + 1))
+        except ValueError:
+            sys.exit("Not a number from the list. Nothing changed.")
+        if not 1 <= n <= len(options):
+            sys.exit("Pick a number from 1 to %d. Nothing changed." % len(options))
+        return n
+
+    idx = default
+    drawn = 0
+
+    def draw(final=False):
+        nonlocal drawn
+        if drawn:
+            sys.stdout.write("\033[%dA" % drawn)
+        for i, (label, blurb) in enumerate(options, 1):
+            mark = "" if i - 1 != idx else (">" if final else "\033[7m>\033[0m")
+            sys.stdout.write("\033[2K %s %d) %-44s %s\n" % (mark, i, label, blurb))
+        drawn = len(options)
+        sys.stdout.flush()
+
+    print(title)
+    draw()
+    while True:
+        key = term.key()
+        if key == "up":
+            idx = (idx - 1) % len(options)
+            draw()
+        elif key == "down":
+            idx = (idx + 1) % len(options)
+            draw()
+        elif key == "enter":
+            draw(final=True)
+            return idx + 1
+        elif key.isdigit() and 1 <= int(key) <= len(options):
+            idx = int(key) - 1
+            draw(final=True)
+            return idx + 1
 
 
-def ask_hidden(question):
-    """Read a secret. Never echoes, never logs, never returns to the transcript."""
-    try:
-        return getpass.getpass(question).strip()
-    except (EOFError, KeyboardInterrupt):
-        print()
-        sys.exit("No input. Nothing changed.")
-
-
-def main():
-    if not sys.stdin.isatty():
-        print("No terminal to prompt in. Run this interactively, or set one of:\n"
-              "  $FMP_API_KEY                 (Financial Modeling Prep)\n"
-              "  nothing at all                (SEC EDGAR and Treasury need no key)\n"
-              "Config is written to %s" % CONFIG)
-        return 0
-
+def interact(term):
     print("\nBison Fund data source setup\n" + "-" * 29)
     for line in detect() or ["nothing found yet"]:
         print("  " + line)
-    print("\nWhich source do you want to use?")
-    for i, (key, label, blurb) in enumerate(SOURCES, 1):
-        print("  %d) %-44s %s" % (i, label, blurb))
-    choice = ask("Number", "1")
-    try:
-        n = int(choice)
-    except ValueError:
-        sys.exit("Not a number from the list. Nothing changed.")
-    if not 1 <= n <= len(SOURCES):
-        sys.exit("Pick a number from 1 to %d. Nothing changed." % len(SOURCES))
+    n = choose("\nWhich source do you want to use?   (arrow keys, or type a number)",
+               [(label, blurb) for _key, label, blurb in SOURCES], term)
     key, label, _blurb = SOURCES[n - 1]
 
     cfg = read_config()
@@ -173,7 +296,7 @@ def main():
         existing = os.environ.get("FMP_API_KEY") or stored_key("fmp")
         if existing:
             print("An FMP key is already here. Blank keeps it, or paste a different one.")
-        value = ask_hidden("Paste your FMP API key (hidden): ") or existing
+        value = term.line("Paste your FMP API key (hidden): ", secret=True) or existing
         if not value:
             sys.exit("No key given. Use option 2 for the keyless path. Nothing changed.")
         cfg["keys"]["fmp"] = {"file": store_key("fmp", value), "verified": False}
@@ -193,10 +316,10 @@ def main():
             print("  could not reach a free source: %s" % str(e)[:120])
 
     elif key == "other":
-        name = ask("Provider name (for example finnhub, capitaliq, school-issued)").lower()
+        name = term.line("Provider name (for example finnhub, capitaliq, school-issued): ").lower()
         if not name:
             sys.exit("No provider name given. Nothing changed.")
-        value = ask_hidden("Paste the %s key (hidden): " % name)
+        value = term.line("Paste the %s key (hidden): " % name, secret=True)
         if not value:
             sys.exit("No key given. Nothing changed.")
         cfg["keys"][name] = {"file": store_key(name, value), "verified": False}
@@ -222,11 +345,25 @@ def main():
     return 0
 
 
+def main():
+    if not sys.stdin.isatty():
+        print("No terminal to prompt in. Run this interactively, or set one of:\n"
+              "  $FMP_API_KEY                 (Financial Modeling Prep)\n"
+              "  nothing at all                (SEC EDGAR and Treasury need no key)\n"
+              "Config is written to %s" % CONFIG)
+        return 0
+    try:
+        with Terminal() as term:
+            return interact(term)
+    except KeyboardInterrupt:
+        print("\nCancelled. Nothing changed.")
+        return 1
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(
         description="Set up a market-data source for the Bison Fund investment-analysis skill.")
     ap.add_argument("--check", action="store_true",
                     help="report what this machine already has, and change nothing")
     a = ap.parse_args()
-    check() if a.check else main()
-    sys.exit(0)
+    sys.exit(check() if a.check else main())
