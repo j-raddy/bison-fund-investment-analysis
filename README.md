@@ -59,6 +59,21 @@ skill you are working on when you reach it.
 Start a new session after installing, then ask for the skill by name:
 `bison-fund-investment-analysis`.
 
+### Set up a data source
+
+Run setup once in a terminal, from wherever the package landed (the clone path above, or
+`~/.hermes/plugins/bison-fund-investment-analysis/` for a Hermes plugin install):
+
+```bash
+python3 setup.py
+```
+
+It reports what the machine already has, asks which market-data source to use, takes your own key if
+the source needs one, checks it with one live call, and records the choice. No key is a valid answer:
+the SEC EDGAR and Treasury option needs nothing and still builds the model. The sources, and where
+students get each one, are in
+[skills/dcf-model/references/data-sources.md](skills/dcf-model/references/data-sources.md).
+
 ### Updating
 
 ```bash
@@ -91,8 +106,8 @@ pitch-deals                      section 03, the transactions that shape the the
 pitch-financials                 section 04, revenue, unit economics, returns, margins, cash
 pitch-valuation                  section 05, the DCF, scenarios, risk matrix, catalysts, the thesis
 grounding-lanes                  phase 1, the four lanes of research run before any thesis exists
-dcf-model                        the valuation method, the working script, market data access
-deck-build                       the deck standard, the writing rules, tokens, templates, render audit
+dcf-model                        the valuation method, the working scripts (FMP and keyless SEC),
+                                 market data access
 sourcing-standard                the evidence tag, source quality, the sign-off checklist
 pitch-review                     the red team, the verification pass, the independent review loop
 ```
@@ -108,6 +123,7 @@ Same shape as other published skill packages: the plugin lives at the repository
 directory holds the manifests and the skills.
 
 ```
+setup.py                         the one-time data-source setup, run once after install
 plugin.json                      portable plugin manifest (Agent Plugins v1), read by Hermes
 .claude-plugin/plugin.json       the one plugin manifest Claude Code and Codex both read
 .claude-plugin/marketplace.json  the marketplace Claude Code reads
@@ -132,18 +148,25 @@ path, because Codex will not install a plugin whose marketplace source is the ma
 the skill files have to be real files: Codex copies only the directory it resolves and skips symlinked
 skills, which is why every skill lives in its own directory under `skills/` with no links.
 
-## The DCF script
+## The DCF scripts
 
-`scripts/fmp_dcf.py` under the `dcf-model` skill builds the discounted cash flow from Financial
-Modeling Prep data. It needs Python 3 and the standard library only.
+Two scripts under the `dcf-model` skill build the same model from different sources. Both need
+Python 3 and the standard library only, and both render the model record through the same code, so
+the numbers are comparable.
+
+`scripts/fmp_dcf.py` reads Financial Modeling Prep. A live run needs your own key, which
+`setup.py` stores at `~/.config/bison/fmp_api_key`; the script reads `$FMP_API_KEY` first, then that
+file, then `~/.hermes/secrets/fmp_api_key` and `~/.config/fmp/api_key`. It never prints the key. Free
+tier keys are rate limited to roughly 250 calls a day, so one key per analyst.
+
+`scripts/sec_fundamentals.py` needs no key at all. It builds the inputs from SEC EDGAR XBRL facts and
+the US Treasury daily yield curve, which is what a machine with no key uses.
 
 ```bash
-python3 skills/dcf-model/scripts/fmp_dcf.py --demo
+python3 skills/dcf-model/scripts/fmp_dcf.py --demo        # offline math check, no key
+python3 skills/dcf-model/scripts/fmp_dcf.py UBER          # live, needs an FMP key
+python3 skills/dcf-model/scripts/sec_fundamentals.py UBER  # live, no key
 ```
-
-A live run needs your own FMP API key. The script reads `$FMP_API_KEY` first, then
-`~/.hermes/secrets/fmp_api_key`, then `~/.config/fmp/api_key`. It never prints the key. Free
-tier keys are rate limited to roughly 250 calls a day, so one key per analyst.
 
 ## Maintaining this repo
 
