@@ -44,7 +44,7 @@ Run the demo once on a new machine before trusting a live run.
 
 **Financial Modeling Prep.** Keys are per analyst and read at runtime, never hardcoded in a skill
 file, deck, template, or handout, and never pasted into a chat transcript. `setup.py` stores the key at
-`~/.config/bison/fmp_api_key`; the script reads `$FMP_API_KEY` first, then that file, then the older
+`~/.config/bison/keys/fmp.key`; the script reads `$FMP_API_KEY` first, then that file, then the older
 paths (`~/.hermes/secrets/fmp_api_key`, `~/.config/fmp/api_key`), and prints only success or failure. A shared fund-wide key will hit the free-tier rate limit of roughly 250 calls
 a day, so plan for one key per student. The endpoint cheatsheet is `references/fmp-api-docs.md`,
 with a link to FMP's full current docs for anything beyond the calls this package makes.

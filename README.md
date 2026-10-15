@@ -155,7 +155,7 @@ Python 3 and the standard library only, and both render the model record through
 the numbers are comparable.
 
 `scripts/fmp_dcf.py` reads Financial Modeling Prep. A live run needs your own key, which
-`setup.py` stores at `~/.config/bison/fmp_api_key`; the script reads `$FMP_API_KEY` first, then that
+`setup.py` stores at `~/.config/bison/keys/fmp.key`; the script reads `$FMP_API_KEY` first, then that
 file, then `~/.hermes/secrets/fmp_api_key` and `~/.config/fmp/api_key`. It never prints the key. Free
 tier keys are rate limited to roughly 250 calls a day, so one key per analyst.
 
@@ -176,6 +176,8 @@ python3 skills/dcf-model/scripts/sec_fundamentals.py UBER  # live, no key
 - One rule, one home. Before adding a rule to a skill, check [docs/design-v2.md](docs/design-v2.md)
   for which skill already owns it; if a second file needs the rule, it names the owning skill
   instead of restating it.
+- Run the setup suite after touching `setup.py` or the key paths: `python3 tests/test_setup.py`.
+  It runs offline, and it fails if the model script stops reading the key setup writes.
 - No client or household data belongs in this repo. It is public.
 - Bloomberg's BLPAPI guides are not redistributed here.
   `skills/dcf-model/references/bloomberg-terminal.md` links to Bloomberg's own download page instead.
