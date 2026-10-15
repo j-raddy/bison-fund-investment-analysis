@@ -26,11 +26,11 @@ and v4 paths are discontinued.
 
 ## Endpoints the manual method references (dcf-method.md)
 
-`stable/analyst-estimates?symbol=<SYMBOL>`   -- `revenueAvg`, `ebitdaAvg`
-`stable/price-target-summary?symbol=<SYMBOL>` -- `lastYearAvgPriceTarget`, `lastYearCount`
-`stable/key-metrics` or `stable/financial-ratios?symbol=<SYMBOL>` -- beta
+`stable/analyst-estimates?symbol=<SYMBOL>`: `revenueAvg`, `ebitdaAvg`
+`stable/price-target-summary?symbol=<SYMBOL>`: `lastYearAvgPriceTarget`, `lastYearCount`
+`stable/key-metrics` or `stable/financial-ratios?symbol=<SYMBOL>`: beta
 
 ## Notes
 
 - Rows come back newest first; index 0 is the latest period.
-- Free tier is rate-limited to about 250 calls a day -- one key per analyst.
+- Free tier is rate-limited to about 250 calls a day, so one key per analyst.

@@ -11,8 +11,9 @@ Options:
   --fcf-margin 0.30      FCF margin of revenue (default: trailing 3-year average)
   --years 5              forecast horizon
 
-The API key is read from $FMP_API_KEY, else a secrets file (~/.hermes/secrets/fmp_api_key or
-~/.config/fmp/api_key), and is never printed.
+The API key is read from $FMP_API_KEY, else the file setup.py writes (~/.config/bison/fmp_api_key),
+else a legacy path (~/.hermes/secrets/fmp_api_key or ~/.config/fmp/api_key). Never printed.
+No key? Run `python3 setup.py` once, or use the keyless path: sec_fundamentals.py.
 Endpoint paths and field names come from references/fmp-api-docs.md (a cheatsheet of the
 calls this script makes, linked to FMP's full current docs). Only the stable API exists now;
 legacy v3/v4 paths are discontinued.
@@ -31,7 +32,8 @@ def load_key():
     and both the documented path and a dotfile variant. Never prints the key."""
     key = os.environ.get("FMP_API_KEY", "")
     if not key:
-        for p in ("~/.hermes/secrets/fmp_api_key", "~/.hermes/secrets/.fmp_api_key",
+        for p in ("~/.config/bison/fmp_api_key",
+                  "~/.hermes/secrets/fmp_api_key", "~/.hermes/secrets/.fmp_api_key",
                   "~/.config/fmp/api_key"):
             fp = os.path.expanduser(p)
             if os.path.exists(fp):
@@ -102,14 +104,51 @@ def grid(stream, waccs, gs, net_debt, shares):
     return out
 
 
+def report(symbol, src, base_rev, margin, stream, wacc, tg, net_debt, shares, price,
+           cross=None, note=None):
+    """Print the model record, the grid, and the reverse DCF.
+
+    Shared by the FMP path (`run`) and the keyless SEC path (`sec_fundamentals.py`),
+    so the two sources cannot print different-looking models.
+    """
+    nd = -net_debt if net_debt else 0
+    r = dcf(stream, wacc, tg, nd, shares)
+    implied_g = reverse_g(stream, wacc, nd, shares, price) if price else None
+    print("\nDCF build for %s (source: %s)" % (symbol, src))
+    if note:
+        print("  %s" % note)
+    print("  revenue base      %s" % "{:,.0f}".format(base_rev))
+    print("  FCF margin used   %.1f%%" % (margin * 100))
+    print("  projected FCF     %s" % ["{:,.0f}".format(f) for f in stream])
+    print("  WACC / terminal g %.2f%% / %.2f%%" % (wacc * 100, tg * 100))
+    print("  PV of FCF         %s" % "{:,.0f}".format(r["pv_fcf"]))
+    print("  terminal value    %s (PV %s, %.0f%% of EV)" % (
+        "{:,.0f}".format(r["terminal_value"]), "{:,.0f}".format(r["pv_terminal"]), r["tv_share"] * 100))
+    print("  enterprise value  %s" % "{:,.0f}".format(r["enterprise_value"]))
+    print("  equity value      %s" % "{:,.0f}".format(r["equity_value"]))
+    print("  per share         %s" % "{:,.2f}".format(r["per_share"]))
+    if cross:
+        print("  FMP's own DCF     %s (cross-check only)" % "{:,.2f}".format(float(cross)))
+    if implied_g is not None:
+        print("  implied terminal growth at the current price  %.2f%%  (reverse DCF, cross-check only)"
+              % (implied_g * 100))
+    print("\nSensitivity, value per share (WACC rows, terminal growth cols):")
+    g = grid(stream, [wacc - 0.02, wacc, wacc + 0.02], [tg - 0.01, tg, tg + 0.01], nd, shares)
+    print("        " + "".join("%9s" % c for c in g.keys()))
+    for w, row in g.items():
+        print("  %5s" % w + "".join("%9s" % x for x in row))
+    print("\nThe price target is yours. This model is an input, not an answer.\n")
+    return r
+
+
 def run(symbol, wacc, tg, fcf_margin, years):
     if tg >= wacc:
         sys.exit("Terminal growth (%.0f%%) must stay below the discount rate (%.0f%%)."
                  % (tg * 100, wacc * 100))
     key = load_key()
     if not key:
-        sys.exit("No FMP key. Set $FMP_API_KEY, or store it (chmod 600) at "
-                 "~/.hermes/secrets/fmp_api_key or ~/.config/fmp/api_key.")
+        sys.exit("No FMP key. Run `python3 setup.py` to set one up, or use the keyless "
+                 "SEC path: python3 sec_fundamentals.py %s" % symbol)
     quote, src = get(key, "stable/quote?symbol=%s" % symbol)
     q = quote[0] if isinstance(quote, list) and quote else quote
     price = float((q or {}).get("price") or 0)
@@ -135,37 +174,14 @@ def run(symbol, wacc, tg, fcf_margin, years):
         sys.exit("No diluted share count in the income statement for %s. The model needs it." % symbol)
     base_rev = rev_hist[0]
     stream = [base_rev * (1 + 0.12) ** (i + 1) * margin for i in range(years)]
-    r = dcf(stream, wacc, tg, -net_debt if net_debt else 0, shares)
-    implied_g = reverse_g(stream, wacc, -net_debt if net_debt else 0, shares, price) if price else None
     try:
         fmp_dcf, _ = get(key, "stable/discounted-cash-flow?symbol=%s" % symbol)
         x = fmp_dcf[0] if isinstance(fmp_dcf, list) and fmp_dcf else fmp_dcf
         cross = x.get("dcf")
     except Exception:
         cross = None
-    print("\nDCF build for %s (source: %s)" % (symbol, src))
-    print("  revenue base      %s" % "{:,.0f}".format(base_rev))
-    print("  FCF margin used   %.1f%%" % (margin * 100))
-    print("  projected FCF     %s" % ["{:,.0f}".format(f) for f in stream])
-    print("  WACC / terminal g %.2f%% / %.2f%%" % (wacc * 100, tg * 100))
-    print("  PV of FCF         %s" % "{:,.0f}".format(r["pv_fcf"]))
-    print("  terminal value    %s (PV %s, %.0f%% of EV)" % (
-        "{:,.0f}".format(r["terminal_value"]), "{:,.0f}".format(r["pv_terminal"]), r["tv_share"] * 100))
-    print("  enterprise value  %s" % "{:,.0f}".format(r["enterprise_value"]))
-    print("  equity value      %s" % "{:,.0f}".format(r["equity_value"]))
-    print("  per share         %s" % "{:,.2f}".format(r["per_share"]))
-    if cross:
-        print("  FMP's own DCF     %s (cross-check only)" % "{:,.2f}".format(float(cross)))
-    if implied_g is not None:
-        print("  implied terminal growth at the current price  %.2f%%  (reverse DCF, cross-check only)"
-              % (implied_g * 100))
-    print("\nSensitivity, value per share (WACC rows, terminal growth cols):")
-    g = grid(stream, [wacc - 0.02, wacc, wacc + 0.02], [tg - 0.01, tg, tg + 0.01],
-             -net_debt if net_debt else 0, shares)
-    print("        " + "".join("%9s" % c for c in g.keys()))
-    for w, row in g.items():
-        print("  %5s" % w + "".join("%9s" % x for x in row))
-    print("\nThe price target is yours. This model is an input, not an answer.\n")
+    report(symbol, src, base_rev, margin, stream, wacc, tg, net_debt, shares, price, cross,
+           note="inputs: Financial Modeling Prep, stable API")
 
 
 def demo():
