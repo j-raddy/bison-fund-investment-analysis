@@ -11,8 +11,9 @@ Options:
   --fcf-margin 0.30      FCF margin of revenue (default: trailing 3-year average)
   --years 5              forecast horizon
 
-The API key is read from $FMP_API_KEY, else the file setup.py writes (~/.config/bison/fmp_api_key),
-else a legacy path (~/.hermes/secrets/fmp_api_key or ~/.config/fmp/api_key). Never printed.
+The API key is read from $FMP_API_KEY, else the file setup.py writes
+(~/.config/bison/keys/fmp.key), else a legacy path (~/.hermes/secrets/fmp_api_key or
+~/.config/fmp/api_key). Never printed.
 No key? Run `python3 setup.py` once, or use the keyless path: sec_fundamentals.py.
 Endpoint paths and field names come from references/fmp-api-docs.md (a cheatsheet of the
 calls this script makes, linked to FMP's full current docs). Only the stable API exists now;
@@ -32,7 +33,7 @@ def load_key():
     and both the documented path and a dotfile variant. Never prints the key."""
     key = os.environ.get("FMP_API_KEY", "")
     if not key:
-        for p in ("~/.config/bison/fmp_api_key",
+        for p in ("~/.config/bison/keys/fmp.key", "~/.config/bison/fmp_api_key",
                   "~/.hermes/secrets/fmp_api_key", "~/.hermes/secrets/.fmp_api_key",
                   "~/.config/fmp/api_key"):
             fp = os.path.expanduser(p)
@@ -149,7 +150,12 @@ def run(symbol, wacc, tg, fcf_margin, years):
     if not key:
         sys.exit("No FMP key. Run `python3 setup.py` to set one up, or use the keyless "
                  "SEC path: python3 sec_fundamentals.py %s" % symbol)
-    quote, src = get(key, "stable/quote?symbol=%s" % symbol)
+    try:
+        quote, src = get(key, "stable/quote?symbol=%s" % symbol)
+    except RuntimeError as e:
+        sys.exit("FMP rejected the call with the stored key: %s\n"
+                 "Fix the key with `python3 setup.py`, or use the keyless path: "
+                 "python3 sec_fundamentals.py %s" % (str(e)[:120], symbol))
     q = quote[0] if isinstance(quote, list) and quote else quote
     price = float((q or {}).get("price") or 0)
     cf, _ = get(key, "stable/cash-flow-statement?symbol=%s&period=annual&limit=3" % symbol)

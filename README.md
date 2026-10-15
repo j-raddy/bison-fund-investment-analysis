@@ -155,7 +155,7 @@ Python 3 and the standard library only, and both render the model record through
 the numbers are comparable.
 
 `scripts/fmp_dcf.py` reads Financial Modeling Prep. A live run needs your own key, which
-`setup.py` stores at `~/.config/bison/fmp_api_key`; the script reads `$FMP_API_KEY` first, then that
+`setup.py` stores at `~/.config/bison/keys/fmp.key`; the script reads `$FMP_API_KEY` first, then that
 file, then `~/.hermes/secrets/fmp_api_key` and `~/.config/fmp/api_key`. It never prints the key. Free
 tier keys are rate limited to roughly 250 calls a day, so one key per analyst.
 
