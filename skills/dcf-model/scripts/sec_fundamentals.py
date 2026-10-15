@@ -43,8 +43,6 @@ TAGS = {
     "short_inv":  ["MarketableSecuritiesCurrent", "ShortTermInvestments"],
     "debt_nc":    ["LongTermDebtNoncurrent", "LongTermDebt"],
     "debt_c":     ["LongTermDebtCurrent", "DebtCurrent"],
-    "d_and_a":    ["DepreciationDepletionAndAmortization", "DepreciationAndAmortization"],
-    "op_income":  ["OperatingIncomeLoss"],
 }
 
 
@@ -153,8 +151,10 @@ def run(symbol, wacc, tg, years, price):
     base_rev = rev_hist[0]
     margin = sum(f / r for f, r in zip(fcf_hist, rev_hist)) / len(fcf_hist)
 
-    cash = (got["cash"][0] or [("", 0)])[-1][1] if got["cash"][0] else 0
-    short_inv = (got["short_inv"][0] or [("", 0)])[-1][1] if got["short_inv"][0] else 0
+    cash_series = got["cash"][0]
+    inv_series = got["short_inv"][0]
+    cash = cash_series[-1][1] if cash_series else 0
+    short_inv = inv_series[-1][1] if inv_series else 0
     debt = 0
     for c in ("debt_nc", "debt_c"):
         series, _ = got[c]

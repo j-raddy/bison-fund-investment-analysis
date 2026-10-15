@@ -176,6 +176,8 @@ python3 skills/dcf-model/scripts/sec_fundamentals.py UBER  # live, no key
 - One rule, one home. Before adding a rule to a skill, check [docs/design-v2.md](docs/design-v2.md)
   for which skill already owns it; if a second file needs the rule, it names the owning skill
   instead of restating it.
+- Run the setup suite after touching `setup.py` or the key paths: `python3 tests/test_setup.py`.
+  It runs offline, and it fails if the model script stops reading the key setup writes.
 - No client or household data belongs in this repo. It is public.
 - Bloomberg's BLPAPI guides are not redistributed here.
   `skills/dcf-model/references/bloomberg-terminal.md` links to Bloomberg's own download page instead.
