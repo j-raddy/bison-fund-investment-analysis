@@ -11,8 +11,8 @@
 /* Bison Fund deck house style (design system)
  * ---------------------------------------------------------------------------
  * The shared design system every Bison Fund pitch deck uses, so decks are
- * consistent across analysts and tools. Extracted from the fund's reference
- * deck (the Uber equity pitch, 41 slides) as the standard.
+ * consistent across analysts and tools. The house bar is stated slide by slide
+ * in references/deck-standard.md.
  *
  * Use: paste this whole file into the <style> of the plain deck html, then
  * build slides from the classes below. The commentable harness wraps the deck
@@ -554,7 +554,7 @@ td.hi { color:var(--green-dark); font-weight:600; } td.neg { color:var(--destruc
  <div class="content">
 <div class="grid g3">
   <div class="card"><h4>Inputs</h4><table style="font-size:11.5px"><tbody><tr><td>Free cash flow</td><td class="hi">[$]</td></tr><tr><td>Free cash flow margin</td><td class="hi">[%]</td></tr><tr><td>Growth, years 1 to 5</td><td class="hi">[..]</td></tr><tr><td>Discount rate</td><td class="hi">[%]</td></tr><tr><td>Terminal growth</td><td class="hi">[%]</td></tr><tr><td>Diluted shares</td><td class="hi">[..]</td></tr></tbody></table></div>
-  <div class="card"><h4>Projection</h4><table style="font-size:11.5px"><thead><tr><th>Year</th><th>FCF</th><th>PV</th></tr></thead><tbody><tr><td>[yr]</td><td>[$]</td><td>[$]</td></tr><tr><td>Terminal value</td><td>[$]</td><td>[$]</td></tr></tbody></table></div>
+  <div class="card"><h4>Projection</h4><table style="font-size:11.5px"><thead><tr><th>Year</th><th>Free cash flow</th><th>Present value</th></tr></thead><tbody><tr><td>[yr]</td><td>[$]</td><td>[$]</td></tr><tr><td>Terminal value</td><td>[$]</td><td>[$]</td></tr></tbody></table></div>
   <div class="card"><h4>Sensitivity</h4><table style="font-size:11.5px"><thead><tr><th>Discount rate</th><th>1.5%</th><th>2.5%</th></tr></thead><tbody><tr><td>[%]</td><td>[v]</td><td>[v]</td></tr></tbody></table><p style="font-size:11px;color:var(--subtle);margin-top:8px">Columns are terminal growth.</p></div>
  </div>
  </div>

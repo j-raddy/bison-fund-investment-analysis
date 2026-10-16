@@ -6,8 +6,8 @@ analysts what a finished pitch looks like, not as a template to copy. (No reusab
 HOOD template ships with this skill, on purpose: the next name gets its own work.)
 
 **The HOOD deck file is not distributed with this skill; this is a written description.** For the
-built deck bar that does ship, use the `deck-build` skill and the reference decks named there
-(the Uber pitch, 41 slides, and the Alphabet pitch, 23 slides).
+built deck bar that does ship, use the `deck-build` skill: its standard states the bar slide by slide,
+so no example deck is needed to build or judge one.
 
 ## What the deck does well, point analysts at these
 

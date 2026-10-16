@@ -40,8 +40,7 @@ An independent review agent re-checks the deck on seven audits:
 4. **Rule audit.** The mechanical writing rules in `deck-build`.
 5. **Consistency audit.** No slide contradicts another.
 6. **Structural browser audit.** The render checks in `deck-build`.
-7. **AI-writing audit.** No AI-ism tells in slide copy, per `references/ai-writing-check.md` in
-   `deck-build`.
+7. **AI-writing audit.** No AI-ism tells in slide copy, per `references/ai-writing-check.md` in the `deck-build` skill.
 
 Findings come back by slide and region, severity-tagged. The author fixes blockers and waives minors
 in writing. The loop reruns until clean.

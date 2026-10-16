@@ -113,6 +113,10 @@ plugin.json                      portable plugin manifest (Agent Plugins v1), re
 .claude-plugin/marketplace.json  the marketplace Claude Code reads
 .agents/plugins/marketplace.json the marketplace Codex reads
 skills/<skill-name>/             one directory per skill, each with SKILL.md and references/
+scripts/validate.py              checks the package against itself, run in CI
+.github/workflows/validate.yml   runs the validator and the unit tests on every push and pull request
+evals/                           behavioural evals and the trigger set, run by hand
+tests/                           unit tests for the validator, the deck audit, and the DCF script
 docs/design-v2.md                the design record
 ```
 
@@ -141,9 +145,14 @@ Modeling Prep data. It needs Python 3 and the standard library only.
 python3 skills/dcf-model/scripts/fmp_dcf.py --demo
 ```
 
-A live run needs your own FMP API key. The script reads `$FMP_API_KEY` first, then
-`~/.hermes/secrets/fmp_api_key`, then `~/.config/fmp/api_key`. It never prints the key. Free
-tier keys are rate limited to roughly 250 calls a day, so one key per analyst.
+A live run needs your own FMP API key. The script reads `$FMP_API_KEY` first, then a secrets file:
+`~/.hermes/secrets/fmp_api_key`, its dotfile variant `~/.hermes/secrets/.fmp_api_key`, then
+`~/.config/fmp/api_key`. It handles a file that holds a `FMP_API_KEY=...` line rather than the bare
+value, and it never prints the key. Free tier keys are rate limited to roughly 250 calls a day, so one
+key per analyst.
+
+The model math is covered by `tests/test_fmp_dcf.py`, which pins the demo record, the formulas behind
+it, and the key lookup order above.
 
 ## Maintaining this repo
 
@@ -152,7 +161,17 @@ tier keys are rate limited to roughly 250 calls a day, so one key per analyst.
   option to reach for if this ever needs pinned releases.
 - One rule, one home. Before adding a rule to a skill, check [docs/design-v2.md](docs/design-v2.md)
   for which skill already owns it; if a second file needs the rule, it names the owning skill
-  instead of restating it.
+  instead of restating it. The hub summarises the rules and owns none of them: `sourcing-standard`
+  owns the evidence rules and `deck-build` owns the copy rules.
+- How to test a change, in order:
+  1. `python3 scripts/validate.py` and `python3 -m unittest discover -s tests`. These are the
+     mechanical checks, and CI runs both on every push and pull request.
+  2. If you changed a rule, re-run the evals in `evals/` that touch it, with the skill loaded and
+     without it, and compare against the last scores.
+  3. If you touched a description, re-check `evals/triggers.json`, because a skill that does not load
+     cannot enforce anything.
+  4. If you changed a deck template, run `python3 skills/deck-build/scripts/deck_audit.py` on it and
+     fix what it reports.
 - No client or household data belongs in this repo. It is public.
 - Bloomberg's BLPAPI guides are not redistributed here.
   `skills/dcf-model/references/bloomberg-terminal.md` links to Bloomberg's own download page instead.

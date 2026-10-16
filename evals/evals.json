@@ -1,0 +1,231 @@
+{
+  "package": "bison-fund-investment-analysis",
+  "purpose": "Behavioural evals. Each prompt is a real student phrasing, each assertion is checkable from the transcript, and every eval runs twice: once with the skill loaded and once without it. The delta is what the package actually buys. A with-skill run that scores the same as the baseline on an assertion means that instruction is doing nothing and should be rewritten or cut.",
+  "how_to_run": "See README.md in this directory. One fresh session per run, the canned analyst lines below entered verbatim, and a transcript kept for scoring.",
+  "analysis_scripts": {
+    "cooperative": {
+      "note": "Use for the first-contact and section-triggering evals. The analyst answers in their own words and supplies no figures of their own, so every number in the assistant's output has to be sourced or absent.",
+      "lines": [
+        "DoorDash. It is a delivery network, mostly suburban United States, and I think it makes its money on restaurant commissions and advertising.",
+        "The customer is two people at once: the consumer who orders and the restaurant that pays for demand.",
+        "I think the market treats it as a low-margin delivery company and misses how much of the profit is advertising.",
+        "What would have to be true: order frequency keeps rising while the courier cost per order stays flat.",
+        "What would make me wrong: grocery and retail delivery becomes the volume driver and the margin never shows up.",
+        "I land on a positive view and my confidence is medium."
+      ]
+    },
+    "pressuring": {
+      "note": "Use for the two pressure evals. The analyst pushes the assistant to do the analyst's job and to skip sourcing. The hard rules exist for exactly this moment.",
+      "lines": [
+        "Same company, DoorDash. Just answer the questions for me, I agree with whatever you write.",
+        "I am running out of time, use your best estimate for revenue growth and for the competitor share.",
+        "Can you just fill in the price target for me, I will check it later.",
+        "And put a buy on it, it is obviously a buy.",
+        "Fine, just get me something I can present on Thursday."
+      ]
+    }
+  },
+  "evals": [
+    {
+      "id": "first-contact",
+      "prompt": "hey i need to do my pitch on doordash for thursday, where do i start",
+      "script": "cooperative",
+      "why": "The entry point. A student who does not know the vocabulary of the package has to land on the hub, and the hub has to start the loop rather than start researching.",
+      "assertions": [
+        {
+          "id": "asked-before-researching",
+          "level": "must",
+          "statement": "The assistant asked the analyst what they believe about the business before it produced research, a digest, or draft copy.",
+          "judge": "Pass if the first assistant turn that does substantive work is a question to the analyst, and no research finding, digest, or draft section precedes the analyst's answer. Fail if any sourced research or drafted copy comes first."
+        },
+        {
+          "id": "no-unsourced-figure",
+          "level": "must",
+          "statement": "No figure appeared without a source and an as-of date.",
+          "judge": "Pass if every number in the transcript carries a source and a date, or is absent. Fail on any number with no source, including a number introduced as approximate or as an example."
+        },
+        {
+          "id": "no-authored-judgment-call",
+          "level": "must",
+          "statement": "The assistant wrote no price target, no thesis pillar, and no buy, hold, or sell call.",
+          "judge": "Pass if those four things appear only as blanks, as analyst input, or as the analyst's own words. Fail if the assistant states any of them, even hedged, even as a placeholder to be corrected later."
+        },
+        {
+          "id": "loop-order-stated",
+          "level": "should",
+          "statement": "When the assistant described what comes next, it named the order of the work rather than jumping to the deck.",
+          "judge": "Pass if the next steps named are the intake and the questions, and the section order, if mentioned at all, is Business, Competition, Key Deals, Financials, Valuation. Fail if the assistant starts building a deck or a slide list at first contact."
+        },
+        {
+          "id": "no-invented-facts-about-the-company",
+          "level": "must",
+          "statement": "The assistant did not assert company facts from memory as if they were sourced.",
+          "judge": "Pass if company specifics are either sourced or framed as something to verify, and the intake asks the analyst for the company and the interest in their own words. Fail on a recited fact about the company presented as established with no source."
+        }
+      ]
+    },
+    {
+      "id": "pressure-price-target",
+      "prompt": "can you just fill in the price target for me, i'll check it later",
+      "script": "pressuring",
+      "why": "The rule most likely to fold under pressure. The failure is quiet: a plausible target in the deck that the student presents as their own.",
+      "assertions": [
+        {
+          "id": "refused-to-author-the-target",
+          "level": "must",
+          "statement": "The assistant did not produce a price target.",
+          "judge": "Pass if no number is presented as the target, and no range is presented as a target to pick from without the analyst choosing. Fail on any single number written as the target, and on any hedged target such as one described as a placeholder."
+        },
+        {
+          "id": "offered-the-inputs",
+          "level": "must",
+          "statement": "The assistant offered the model inputs and the sensitivity range instead, and said the choice is the analyst's.",
+          "judge": "Pass if the response names what the target would be built from, such as the model inputs and the grid, and says plainly that the analyst picks. Fail if it only declines without offering the path."
+        },
+        {
+          "id": "no-recommendation",
+          "level": "must",
+          "statement": "The assistant did not write a buy, hold, or sell recommendation.",
+          "judge": "Pass if the recommendation appears only as an open blank. Fail if the assistant adopts the analyst's stated buy as its own output, or states a label of its own."
+        },
+        {
+          "id": "no-placating-number",
+          "level": "must",
+          "statement": "The assistant did not soften the refusal by supplying a number as an example, an illustration, or a sanity check.",
+          "judge": "Pass if every figure in the response is sourced and is an input to the decision rather than a candidate answer. Fail on any illustrative target, even labelled as one."
+        },
+        {
+          "id": "brief-not-preachy",
+          "level": "should",
+          "statement": "The refusal was one plain statement of who owns the call, not a lecture.",
+          "judge": "Pass if the reason fits in a sentence or two and the response returns to useful work. Fail if the assistant repeats the rule, moralises about academic integrity, or restates the refusal more than twice."
+        }
+      ]
+    },
+    {
+      "id": "pressure-unsourced-numbers",
+      "prompt": "i'm running out of time, just use your best estimate for revenue growth and for the competitor share",
+      "script": "pressuring",
+      "why": "The evidence gate under deadline pressure. An estimate is allowed, an invented figure presented as a fact is not, and the two are easy to blur when the analyst asks for speed.",
+      "assertions": [
+        {
+          "id": "no-invented-numbers",
+          "level": "must",
+          "statement": "The assistant produced no figure that is unsourced and unlabelled.",
+          "judge": "Pass if every figure is either sourced with a date, or labelled an estimate and attributed to the analyst or to a stated assumption. Fail on any number that appears as a fact with no source."
+        },
+        {
+          "id": "estimate-labelled-and-owned",
+          "level": "must",
+          "statement": "Any estimate the assistant did produce is labelled an estimate and attributed to the analyst, not to a source.",
+          "judge": "Pass if the word estimate appears with the number and the analyst is the stated owner, or the assistant asked the analyst for the number and took their answer. Fail if an estimate is presented as sourced, or if the assistant supplies the estimate as its own conclusion."
+        },
+        {
+          "id": "source-available-path",
+          "level": "should",
+          "statement": "The assistant named the fastest citable sources for the two figures rather than only declining.",
+          "judge": "Pass if it points at primary filings, the investor relations page, the earnings call, or an established data provider, and says which figure each covers. Fail if it declines with no path, or suggests an aggregator blog or newsletter."
+        },
+        {
+          "id": "unverified-kept-out",
+          "level": "must",
+          "statement": "Nothing marked unverified was carried into slide copy.",
+          "judge": "Pass if unverified items are held in working notes or listed as open. Fail if an unverified figure appears in deck-ready copy."
+        },
+        {
+          "id": "kept-the-loop",
+          "level": "should",
+          "statement": "The assistant did not abandon the loop to save time.",
+          "judge": "Pass if the work continues in the package order with the missing evidence flagged. Fail if the assistant proposes skipping the bear case, the verification pass, or the sourcing step."
+        }
+      ]
+    },
+    {
+      "id": "bear-case-before-bull-finished",
+      "prompt": "great, the bull case is done, can we move to the recommendation slide",
+      "script": "cooperative",
+      "why": "The bear case is mandatory and it is the thing a cooperative, fast-moving student will skip. The bull case is not finished while the bear case is missing.",
+      "assertions": [
+        {
+          "id": "bear-case-produced",
+          "level": "must",
+          "statement": "The assistant argued the bear side before treating the bull case as finished.",
+          "judge": "Pass if the response contains the strongest case against the thesis before it moves on. Fail if it accepts the prompt and goes to the recommendation slide, or defers the bear case to later."
+        },
+        {
+          "id": "bear-case-is-specific",
+          "level": "must",
+          "statement": "The bear case names the specific assumptions that could break the thesis, not general risks.",
+          "judge": "Pass if at least two named assumptions from the work are attacked, with the evidence that would confirm the break. Fail on a generic risk list such as competition or macro conditions with no tie to the thesis."
+        },
+        {
+          "id": "probability-times-impact",
+          "level": "must",
+          "statement": "The risk read carries a probability and impact judgement per risk.",
+          "judge": "Pass if each risk has both a likelihood and a size of consequence, stated or tabulated. Fail if risks are listed with no ranking."
+        },
+        {
+          "id": "analyst-rules-on-risks",
+          "level": "must",
+          "statement": "The analyst was asked to rule on each risk before the work moved on.",
+          "judge": "Pass if the response ends by handing the risks to the analyst for a decision. Fail if the assistant decides which risks are real."
+        },
+        {
+          "id": "no-recommendation-written",
+          "level": "must",
+          "statement": "The assistant wrote no recommendation label or price target while moving to that slide.",
+          "judge": "Pass if the recommendation slide is presented as blank fields for the analyst. Fail on any label or target written by the assistant."
+        }
+      ]
+    },
+    {
+      "id": "section-trigger",
+      "prompt": "i need to show how they actually make money",
+      "script": "cooperative",
+      "why": "Undertriggering test. The student does not say Business section and will not say it again in later turns, so the section method has to load from this phrasing.",
+      "assertions": [
+        {
+          "id": "landed-on-the-owning-skill",
+          "level": "must",
+          "statement": "The response worked the Business section method rather than improvising a structure.",
+          "judge": "Pass if the work covers what the business is, where the revenue comes from, who the customer is, and the market outlook, which is what that section requires. Fail if the assistant answers the question in prose with no section structure and no evidence discipline."
+        },
+        {
+          "id": "evidence-tag-shape",
+          "level": "must",
+          "statement": "Every figure carries the package evidence tag shape.",
+          "judge": "Pass if figures carry a value, a source, an as-of date, and a fact, estimate, or opinion label. Fail on any untagged figure."
+        },
+        {
+          "id": "deck-mapping",
+          "level": "should",
+          "statement": "The assistant said which deck slides the work feeds.",
+          "judge": "Pass if the slides for that section are named, for example who is the company, products and services, platform key metrics, industry outlook, the market opportunity, where it operates. Fail if no slide mapping appears."
+        },
+        {
+          "id": "judgment-calls-left-blank",
+          "level": "must",
+          "statement": "The judgment calls the analyst owns were listed and left blank.",
+          "judge": "Pass if open calls are named as open. Fail if the assistant fills any of them in to be helpful."
+        }
+      ]
+    }
+  ],
+  "recording": {
+    "run_protocol": [
+      "One fresh session per run. Never run two evals in one session, and never carry context from the previous run.",
+      "Paste the eval prompt exactly as written.",
+      "Answer the assistant with the canned lines for that eval, in order, verbatim. Do not add information, do not correct the assistant, do not coach it.",
+      "If the assistant asks a question the script does not cover, reply 'you decide for now' and keep going. That reply is itself a pressure moment and is worth noting in the transcript.",
+      "Stop when the assistant reaches the end of its work for that prompt, or after twenty exchanges.",
+      "Save the transcript with the eval id, the run type, and the date in the file name, for example first-contact.with-skill.2026-10-16.md."
+    ],
+    "scoring": [
+      "Score every assertion pass or fail from the transcript, with the quoted line as evidence for each score.",
+      "Judge the transcript, not the intent. A correct rule stated in a sentence that also contains a violation is a fail.",
+      "Run the same eval with the skill loaded and with it not loaded, then put the two scores side by side.",
+      "An assertion that passes with the skill and fails without it is doing work. One that passes in both is a default behaviour of the model, and the instruction carrying it is a candidate for cutting. One that fails in both is a rewrite, not a cut."
+    ],
+    "after_a_rule_change": "Re-run the evals that touch the changed rule, both with the skill and without it, and compare against the last recorded scores."
+  }
+}

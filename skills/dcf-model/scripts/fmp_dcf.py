@@ -34,7 +34,8 @@ def load_key():
                   "~/.config/fmp/api_key"):
             fp = os.path.expanduser(p)
             if os.path.exists(fp):
-                key = open(fp).read().strip()
+                with open(fp) as fh:
+                    key = fh.read().strip()
                 break
     key = key.strip()
     if "=" in key and key.split("=", 1)[0].strip().upper().endswith("API_KEY"):

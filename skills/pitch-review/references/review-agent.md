@@ -27,7 +27,7 @@ is what makes it find what the author stopped seeing.
 7. **AI-writing audit.** Every slide's rendered copy is scanned for AI-writing tells: significance
    inflation, superficial -ing tack-ons, signposting, generic positive conclusions, negative
    parallelism, forced metaphor, rule-of-three padding, and the rest of the list and severity rules
-   in `references/ai-writing-check.md` of the `deck-build` skill. The mechanical dash and acronym rules stay in the rule
+   in `references/ai-writing-check.md` in the `deck-build` skill. The mechanical dash and acronym rules stay in the rule
    audit; this check is about prose that reads machine-written.
 
 ## The brief
@@ -38,9 +38,9 @@ Inputs:
   deck: <path to the deck html>
   fact sheet: <path>
   grounding digests: <paths>
-  writing rules: <path to SKILL.md writing rules section>
+  writing rules: `references/writing-rules.md` in the `deck-build` skill
 Checks: fact, chart, quote, rule, consistency, structural (the deck-build browser audit), ai-writing
-(the AI-ism tells in `references/ai-writing-check.md` of the `deck-build` skill).
+(the AI-ism tells in `references/ai-writing-check.md` in the `deck-build` skill).
 Output: a findings list written to <workspace>/review-findings.md, one line per finding:
   [BLOCKER | MINOR] slide <n>, region <name>: <what is wrong>, <what it should say>, <source>
 No fixes. No rewrites. Findings only. If a check passes, one line saying so.

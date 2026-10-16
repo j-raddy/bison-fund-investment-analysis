@@ -1,6 +1,6 @@
 ---
 name: pitch-competition
-description: "Use when drafting the Competition section of a Bison Fund pitch: peer comparison, moat, regulation, M&A, and management."
+description: "Use when working out who a company is up against for an equity pitch: the Competition section, peers, moat, regulation, acquisitions, and management."
 author: Jacob Radke
 license: MIT
 ---

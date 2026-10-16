@@ -1,6 +1,6 @@
 ---
 name: pitch-financials
-description: "Use when drafting the Financials section of a Bison Fund pitch: revenue, unit economics, returns, margins, balance sheet, and cash flow."
+description: "Use when working out the money in an equity pitch: the Financials section, revenue, unit economics, margin, profitability, cash flow, and the balance sheet."
 author: Jacob Radke
 license: MIT
 ---

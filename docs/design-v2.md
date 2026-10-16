@@ -98,6 +98,32 @@ in every manifest to reach anyone who already installed, a chore that silently s
 file is missed. Unversioned plugins track the newest commit, which is what a public teaching package
 wants. The only cost is a semver advisory from `claude plugin validate`.
 
+## Proof and maintenance
+
+The package carries no version fields, so every commit reaches everyone who installed it. That
+decision is only safe with checks that run on every commit, which is what these are:
+
+| Path | What it proves |
+|---|---|
+| `scripts/validate.py` | The package is internally consistent: frontmatter parses and matches the directory name, every `references/` `templates/` `scripts/` path resolves inside the skill that cites it, every skill named in the hub's route tables exists, no skill is orphaned from the hub, and the deck templates carry none of the banned characters |
+| `.github/workflows/validate.yml` | Both of the mechanical checks run on every push and pull request |
+| `tests/` | The validator catches each failure class it claims to catch, the deck audit passes on the shipped templates, and the DCF math and key lookup order are pinned |
+| `skills/deck-build/scripts/deck_audit.py` | A deck file meets the mechanical part of the standard, so the review loop's zero blockers claim rests on output rather than an assertion |
+| `evals/` | The instructions change agent behaviour, measured against a run without the skill |
+
+Two limits are stated rather than papered over. The evals are human in the loop, because the analyst
+answers the Socratic questions, so they are run by hand after a rule change and never in CI. And the
+deck audit reads the file, so overflow and note collisions stay with the browser pass in
+`references/deck-build-checklist.md`.
+
+## Rule ownership and precedence
+
+One rule, one home, and one tiebreak. The hub summarises the hard rules and owns none of them:
+`sourcing-standard` owns the evidence rules, `deck-build` owns the copy rules. When a summary and its
+owning skill disagree, the owning skill wins and the summary is the thing to fix. Restating a rule at
+the point of use is allowed, and it is why several rules appear in more than one file; a restatement is
+never allowed to become the authority.
+
 ## Naming
 
 - The hub keeps the name students already invoke, so installed copies and the README install

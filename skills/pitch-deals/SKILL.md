@@ -1,6 +1,6 @@
 ---
 name: pitch-deals
-description: "Use when drafting the Key Deals section of a Bison Fund pitch: the transactions and partnerships that shape the thesis."
+description: "Use when working out the deals that shape an equity pitch: the Key Deals section, what a company bought or partnered with, when, for how much, and why it matters."
 author: Jacob Radke
 license: MIT
 ---
