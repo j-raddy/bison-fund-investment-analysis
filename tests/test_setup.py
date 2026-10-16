@@ -13,7 +13,7 @@ Why this file exists: a key-path mismatch shipped once because nothing joined
 setup's write to the script's read. test_handoff_is_readable_by_the_model_script
 is that join, and it fails on the version that shipped.
 """
-import builtins, fcntl, importlib.util, io, json, os, pty, shutil, sys, tempfile, time, unittest
+import builtins, fcntl, importlib.util, io, json, os, pty, re, shutil, sys, tempfile, time, unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SETUP_PATH = os.path.join(ROOT, "setup.py")
@@ -313,6 +313,50 @@ class InteractivePrompt(unittest.TestCase):
     def test_an_empty_line_reads_as_empty(self):
         screen, result = self.hidden(b"\r")
         self.assertEqual(result, "''", child_reported(screen))
+
+
+ANSI = re.compile(r"\033\[[0-9;]*m")
+
+
+def visible(line):
+    """What the terminal actually renders: the escape codes occupy no columns."""
+    return ANSI.sub("", line)
+
+
+class MenuRendering(unittest.TestCase):
+    """A row that wraps breaks the redraw, and the menu walks down the screen."""
+
+    ROWS = [("Financial Modeling Prep", "needs an API key; free tier about 250 calls a day"),
+            ("SEC EDGAR plus US Treasury",
+             "no key, nothing to install; filings, XBRL facts, risk-free rate"),
+            ("Another provider you already have a key for",
+             "school-issued, Finnhub, Alpha Vantage, Polygon, Tiingo, EODHD, Twelve Data"),
+            ("Bloomberg Terminal", "only if you have a logged-in terminal with entitlements")]
+
+    def test_no_row_reaches_the_terminal_width(self):
+        for width in (20, 30, 40, 55, 60, 80, 100, 200):
+            for i, (label, blurb) in enumerate(self.ROWS, 1):
+                for final in (False, True):
+                    line = setup.menu_line(i, label, blurb, width, active=True, final=final)
+                    self.assertLessEqual(
+                        len(visible(line)), max(1, width - 1),
+                        "width %d would wrap: %r" % (width, visible(line)))
+
+    def test_the_longest_row_fits_a_wide_terminal_whole(self):
+        line = setup.menu_line(3, "Another provider you already have a key for",
+                               "school-issued, Finnhub, Alpha Vantage, Polygon, Tiingo, "
+                               "EODHD, Twelve Data", 200, active=True, final=True)
+        self.assertIn("Twelve Data", visible(line))
+
+    def test_the_highlight_escape_only_shows_while_moving(self):
+        moving = setup.menu_line(1, "a", "b", 80, active=True, final=False)
+        settled = setup.menu_line(1, "a", "b", 80, active=True, final=True)
+        self.assertIn("\033[7m", moving)
+        self.assertNotIn("\033[7m", settled)
+        self.assertTrue(visible(settled).startswith(">"))
+
+    def test_an_inactive_row_has_no_highlight(self):
+        self.assertNotIn("\033[7m", setup.menu_line(2, "a", "b", 80, active=False))
 
 
 class LiveCheck(unittest.TestCase):

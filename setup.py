@@ -17,7 +17,7 @@ the source; existing keys are kept.
 No key at all is a valid answer: option 2 uses SEC EDGAR and the US Treasury, which
 need nothing, and the DCF can still be built.
 """
-import argparse, datetime, getpass, json, os, re, sys, urllib.request
+import argparse, datetime, getpass, json, os, re, shutil, sys, urllib.request
 
 try:
     import select, termios, tty
@@ -231,6 +231,22 @@ def check():
     print("\nRun `python3 setup.py` to configure a source.\n")
 
 
+def menu_line(i, label, blurb, width, active=False, final=False):
+    """One rendered line of the menu.
+
+    Capped to the terminal width, because the redraw works by moving the cursor up
+    as many lines as it drew. A row that wraps to a second line breaks that count,
+    and the menu then walks down the screen instead of redrawing in place.
+    """
+    mark = ("\033[7m>\033[0m" if not final else ">") if active else " "
+    body = "%d) %-44s %s" % (i, label, blurb)
+    # Cap the visible text, not the whole string: the highlight escape occupies no
+    # columns, and truncating it mid-sequence would leak its tail onto the screen.
+    # One marker, two spaces, one spare column: the row cannot reach the width.
+    room = max(1, width - 4)
+    return mark + "  " + body[:room]
+
+
 def choose(title, options, term, default=0):
     """Pick one of the options, returning a 1-based choice.
 
@@ -252,13 +268,15 @@ def choose(title, options, term, default=0):
     idx = default
     drawn = 0
 
+    width = shutil.get_terminal_size((100, 24)).columns
+
     def draw(final=False):
         nonlocal drawn
         if drawn:
             sys.stdout.write("\033[%dA" % drawn)
         for i, (label, blurb) in enumerate(options, 1):
-            mark = "" if i - 1 != idx else (">" if final else "\033[7m>\033[0m")
-            sys.stdout.write("\033[2K %s %d) %-44s %s\n" % (mark, i, label, blurb))
+            line = menu_line(i, label, blurb, width, active=(i - 1 == idx), final=final)
+            sys.stdout.write("\033[2K%s\n" % line)
         drawn = len(options)
         sys.stdout.flush()
 
@@ -286,7 +304,7 @@ def interact(term):
     for line in detect() or ["nothing found yet"]:
         print("  " + line)
     n = choose("\nWhich source do you want to use?   (arrow keys, or type a number)",
-               [(label, blurb) for _key, label, blurb in SOURCES], term)
+           [(label, blurb) for _key, label, blurb in SOURCES], term)
     key, label, _blurb = SOURCES[n - 1]
 
     cfg = read_config()
