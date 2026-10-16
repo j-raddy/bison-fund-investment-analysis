@@ -33,6 +33,7 @@ def load(name, path):
 
 
 setup = load("bison_setup", os.path.join(ROOT, "setup.py"))
+REAL_VERIFY_FREE = setup.verify_free      # before any test stubs it
 fmp_dcf = load("bison_fmp_dcf", os.path.join(ROOT, "skills/dcf-model/scripts/fmp_dcf.py"))
 
 
@@ -44,6 +45,9 @@ class SetupCase(unittest.TestCase):
         # use. The arrow-key and masked prompts are covered by InteractivePrompt,
         # which runs them in a child that has a real terminal.
         setup.raw_supported = lambda: False
+        # Never reach the network by accident. Tests that care set their own stub.
+        setup.verify_fmp = lambda key: "ok"
+        setup.verify_free = lambda: "ok"
         if os.path.isdir(setup.KEY_DIR):
             shutil.rmtree(setup.KEY_DIR)
         if os.path.exists(setup.CONFIG):
@@ -175,6 +179,45 @@ class SetupCase(unittest.TestCase):
         with open(os.path.join(setup.KEY_DIR, "fmp.key")) as f:
             self.assertEqual(f.read().strip(), "sk_first")
 
+    # --- readiness: what is here, and what would work now ---
+
+    def test_readiness_says_nothing_is_known_when_no_key_is_present(self):
+        state = setup.readiness()
+        self.assertIsNone(state["fmp"])
+        self.assertIn("needs nothing", state["free"])
+
+    def test_readiness_reports_a_stored_key_that_works(self):
+        setup.verify_fmp = lambda key: "AAPL quoted at 250"
+        self.drive(["1"], secret="sk_works")
+        self.assertIn("ready", setup.readiness()["fmp"])
+        self.assertIn("works", setup.readiness()["fmp"])
+
+    def test_readiness_reports_a_stored_key_that_is_refused(self):
+        setup.verify_fmp = lambda key: (_ for _ in ()).throw(RuntimeError("HTTP Error 401"))
+        self.drive(["1"], secret="sk_bad")
+        self.assertIn("refused", setup.readiness()["fmp"])
+
+    def test_readiness_counts_keys_stored_for_other_providers(self):
+        self.drive(["3", "finnhub"], secret="abc123")
+        self.assertIn("finnhub", setup.readiness()["other"])
+
+    def test_the_menu_row_carries_the_detected_state(self):
+        rows = setup.menu_rows({"fmp": "ready, the stored FMP key works"})
+        self.assertEqual(rows[0], ("Financial Modeling Prep", "ready, the stored FMP key works"))
+
+    def test_the_menu_falls_back_to_the_description_when_nothing_is_known(self):
+        rows = setup.menu_rows({})
+        self.assertEqual(rows[1], ("SEC EDGAR plus US Treasury",
+                                   "no key, nothing to install; filings, XBRL facts, risk-free rate"))
+
+    def test_re_picking_fmp_says_what_the_check_found(self):
+        setup.verify_fmp = lambda key: "AAPL quoted at 250"
+        self.drive(["1"], secret="sk_keep")
+        code = self.drive(["1"], secret="")          # blank keeps the stored key
+        self.assertEqual(code, 0)
+        self.assertIn("ready, the stored FMP key works", self.output)
+        self.assertIn("Press Enter to keep it", self.output)
+
     # --- the handoff that shipped broken ---
 
     def test_handoff_is_readable_by_the_model_script(self):
@@ -190,7 +233,7 @@ class SetupCase(unittest.TestCase):
         setup.verify_fmp = lambda key: "ok"
         self.drive(["1"], secret="sk_seen")
         found = setup.detect()
-        self.assertTrue(any("fmp key is stored" in line for line in found), found)
+        self.assertTrue(any("key is stored for fmp" in line for line in found), found)
 
 
 class KeySanitizing(unittest.TestCase):
@@ -364,7 +407,7 @@ class LiveCheck(unittest.TestCase):
 
     def test_free_sources_answer(self):
         try:
-            setup.verify_free()
+            REAL_VERIFY_FREE()
         except Exception as e:
             self.skipTest("no network, or the free source is down: %s" % str(e)[:80])
 
