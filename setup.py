@@ -214,14 +214,43 @@ def detect():
         found.append("$FMP_API_KEY is set")
     cfg = read_config()
     for name in sorted(cfg.get("keys", {})):
-        state = "verified" if cfg["keys"][name].get("verified") else "not verified"
-        found.append("a %s key is stored (%s)" % (name, state))
+        found.append("a key is stored for %s" % name)
     for legacy in ("~/.hermes/secrets/fmp_api_key", "~/.config/fmp/api_key"):
         if os.path.exists(os.path.expanduser(legacy)):
             found.append("a key file exists at %s" % legacy)
     if cfg.get("provider"):
         found.append("a data-source config already exists (using %s)" % cfg["provider"])
     return found
+
+
+def readiness():
+    """Per source: what is already here, and whether it would work right now.
+
+    A key that is present is checked with one live call, so this says whether the
+    source works rather than that a key merely exists. None means nothing is known,
+    and the menu falls back to its own description of the source.
+    """
+    state = {"free": "ready, needs nothing"}
+    env_key = os.environ.get("FMP_API_KEY")
+    fmp_key = env_key or stored_key("fmp")
+    if fmp_key:
+        where = "$FMP_API_KEY" if env_key else "the stored FMP key"
+        try:
+            verify_fmp(fmp_key)
+            state["fmp"] = "ready, %s works" % where
+        except Exception as e:
+            state["fmp"] = "%s was refused just now (%s)" % (where, str(e)[:60])
+    else:
+        state["fmp"] = None
+    others = sorted(n for n in read_config().get("keys", {}) if n != "fmp")
+    state["other"] = ("keys stored: %s" % ", ".join(others)) if others else None
+    state["bloomberg"] = None
+    return state
+
+
+def menu_rows(state):
+    """The menu rows: what was detected, or the description when nothing is known."""
+    return [(label, state.get(key) or blurb) for key, label, blurb in SOURCES]
 
 
 def check():
@@ -303,8 +332,9 @@ def interact(term):
     print("\nBison Fund data source setup\n" + "-" * 29)
     for line in detect() or ["nothing found yet"]:
         print("  " + line)
+    state = readiness()
     n = choose("\nWhich source do you want to use?   (arrow keys, or type a number)",
-           [(label, blurb) for _key, label, blurb in SOURCES], term)
+               menu_rows(state), term)
     key, label, _blurb = SOURCES[n - 1]
 
     cfg = read_config()
@@ -313,7 +343,8 @@ def interact(term):
     if key == "fmp":
         existing = os.environ.get("FMP_API_KEY") or stored_key("fmp")
         if existing:
-            print("An FMP key is already here. Blank keeps it, or paste a different one.")
+            print("  %s. Press Enter to keep it, or paste a new one."
+                  % (state.get("fmp") or "An FMP key is already here"))
         value = term.line("Paste your FMP API key (hidden): ", secret=True) or existing
         if not value:
             sys.exit("No key given. Use option 2 for the keyless path. Nothing changed.")
