@@ -13,9 +13,10 @@ Why this file exists: a key-path mismatch shipped once because nothing joined
 setup's write to the script's read. test_handoff_is_readable_by_the_model_script
 is that join, and it fails on the version that shipped.
 """
-import builtins, importlib.util, io, json, os, shutil, sys, tempfile, unittest
+import builtins, fcntl, importlib.util, io, json, os, pty, shutil, sys, tempfile, time, unittest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SETUP_PATH = os.path.join(ROOT, "setup.py")
 
 # setup.py resolves its paths at import time, so point HOME at a sandbox first.
 SANDBOX = tempfile.mkdtemp(prefix="bison-test-home-")
@@ -39,6 +40,10 @@ class SetupCase(unittest.TestCase):
     """Drives setup.main() with the terminal prompts stubbed out."""
 
     def setUp(self):
+        # The suite drives the numbered fallback, which is what piped and Windows
+        # use. The arrow-key and masked prompts are covered by InteractivePrompt,
+        # which runs them in a child that has a real terminal.
+        setup.raw_supported = lambda: False
         if os.path.isdir(setup.KEY_DIR):
             shutil.rmtree(setup.KEY_DIR)
         if os.path.exists(setup.CONFIG):
@@ -99,6 +104,12 @@ class SetupCase(unittest.TestCase):
         self.assertFalse(cfg["keys"]["fmp"]["verified"])
         with open(os.path.join(setup.KEY_DIR, "fmp.key")) as f:
             self.assertEqual(f.read().strip(), "sk_dummy_key_12345")
+
+    def test_an_empty_key_is_refused_and_writes_nothing(self):
+        code = self.drive(["1"], secret="")
+        self.assertIsInstance(code, str)
+        self.assertIn("No key given", code)
+        self.assertFalse(os.path.exists(setup.CONFIG))
 
     def test_fmp_key_that_verifies_is_marked_verified(self):
         setup.verify_fmp = lambda key: "AAPL quoted at 250.0"
@@ -180,6 +191,128 @@ class SetupCase(unittest.TestCase):
         self.drive(["1"], secret="sk_seen")
         found = setup.detect()
         self.assertTrue(any("fmp key is stored" in line for line in found), found)
+
+
+class KeySanitizing(unittest.TestCase):
+    def test_bracketed_paste_markers_are_stripped(self):
+        self.assertEqual(setup.sanitize_key("\x1b[200~sk_abc123\x1b[201~"), "sk_abc123")
+
+    def test_an_ordinary_key_survives_unchanged(self):
+        self.assertEqual(setup.sanitize_key("sk-abc_123.456"), "sk-abc_123.456")
+
+    def test_whitespace_is_dropped(self):
+        self.assertEqual(setup.sanitize_key("  sk_abc \n"), "sk_abc")
+
+
+def run_on_a_terminal(code, feed, wait_for, timeout=10):
+    """Run `code` in a child that has a real terminal, then answer its prompt.
+
+    Waits until `wait_for` appears on the child's screen before sending the keys.
+    Sending them earlier lands while the terminal is still in canonical mode,
+    where the line discipline echoes them and swallows them, and the child then
+    waits forever for input it already received.
+
+    Returns (what the screen showed, the repr of the child's result).
+    """
+    out_path = os.path.join(SANDBOX, "pty-result.txt")
+    if os.path.exists(out_path):
+        os.remove(out_path)
+    src = ("import importlib.util as u\n"
+           "s = u.spec_from_file_location('bison_setup', %r)\n"
+           "m = u.module_from_spec(s)\n"
+           "s.loader.exec_module(m)\n"
+           "result = None\n"
+           "%s\n"
+           "open(%r, 'w').write(repr(result))\n" % (SETUP_PATH, code, out_path))
+    pid, fd = pty.fork()
+    if pid == 0:
+        os.execvp(sys.executable, [sys.executable, "-c", src])
+    # Non-blocking, so a child waiting for input cannot hang the suite past the deadline.
+    fcntl.fcntl(fd, fcntl.F_SETFL, fcntl.fcntl(fd, fcntl.F_GETFL) | os.O_NONBLOCK)
+    screen, done, deadline = b"", False, time.time() + timeout
+    while wait_for.encode() not in screen and time.time() < deadline:
+        try:
+            screen += os.read(fd, 65536)
+        except BlockingIOError:
+            pass
+        except OSError:
+            break
+        time.sleep(0.02)
+    try:
+        os.write(fd, feed)
+    except OSError as e:
+        # The child is already gone. Say so, and keep its screen for the report.
+        screen += ("\n[the child was gone before the keys were sent: %s]" % e).encode()
+    while time.time() < deadline and not done:
+        try:
+            chunk = os.read(fd, 65536)
+            screen += chunk
+        except BlockingIOError:
+            pass
+        except OSError:
+            break
+        try:
+            done = bool(os.waitpid(pid, os.WNOHANG)[0])
+        except ChildProcessError:
+            done = True
+        time.sleep(0.05)
+    if not done:
+        try:
+            os.kill(pid, 9)
+            os.waitpid(pid, 0)
+        except (ProcessLookupError, ChildProcessError):
+            pass
+    os.close(fd)
+    result = open(out_path).read() if os.path.exists(out_path) else None
+    return screen.decode(errors="replace"), result
+
+
+def child_reported(screen):
+    """The assertion message, so a failure shows what the child actually said."""
+    return "the child's screen showed:\n%s" % screen
+
+
+class InteractivePrompt(unittest.TestCase):
+    """The arrow-key menu and the masked key prompt, on a real terminal."""
+
+    OPTIONS = "[('a', ''), ('b', ''), ('c', '')]"
+
+    # The child opens a terminal, asks, and stores its answer in `result`.
+    def menu(self, feed):
+        code = ("with m.Terminal() as t:\n"
+                "    result = m.choose('pick one', %s, t)" % self.OPTIONS)
+        return run_on_a_terminal(code, feed, "pick one")
+
+    def hidden(self, feed):
+        code = ("with m.Terminal() as t:\n"
+                "    result = t.line('Paste key: ', secret=True)")
+        return run_on_a_terminal(code, feed, "Paste key:")
+
+    def test_down_arrow_then_enter_selects_the_second_option(self):
+        screen, result = self.menu(b"\x1b[B\r")
+        self.assertEqual(result, "2", child_reported(screen))
+
+    def test_up_arrow_wraps_to_the_last_option(self):
+        screen, result = self.menu(b"\x1b[A\r")
+        self.assertEqual(result, "3", child_reported(screen))
+
+    def test_typing_a_number_still_selects(self):
+        screen, result = self.menu(b"3")
+        self.assertEqual(result, "3", child_reported(screen))
+
+    def test_masked_input_shows_a_star_per_character_and_hides_the_key(self):
+        screen, result = self.hidden(b"sk_abc123\r")
+        self.assertEqual(result, "'sk_abc123'", child_reported(screen))
+        self.assertIn("*********", screen, child_reported(screen))
+        self.assertNotIn("sk_abc123", screen, child_reported(screen))
+
+    def test_backspace_deletes_a_character(self):
+        screen, result = self.hidden(b"sk_abX\x7fc\r")
+        self.assertEqual(result, "'sk_abc'", child_reported(screen))
+
+    def test_an_empty_line_reads_as_empty(self):
+        screen, result = self.hidden(b"\r")
+        self.assertEqual(result, "''", child_reported(screen))
 
 
 class LiveCheck(unittest.TestCase):
