@@ -1,0 +1,132 @@
+{
+  "package": "bison-fund-investment-analysis",
+  "purpose": "A triggering set for the package descriptions. A skill that does not load cannot enforce anything, so this file is checked before and after any description change.",
+  "how_to_score": "Run each query in a fresh session with the package installed and no other instruction, then record which skill loaded, if any. A query marked should_trigger passes when the named skill loads, or when the hub loads and routes there on the first turn. A query marked should_not_trigger passes when no package skill loads. Score the first skill that loads, not the eventual one: a specialist that loads only after the student repeats themselves in package vocabulary has already failed the undertriggering test.",
+  "notes": [
+    "The hub is the whole install. If it does not fire, nothing else does, so its queries matter most.",
+    "Every description's first 57 characters are the part that shows in a truncated catalog listing, so they have to stand alone.",
+    "The skill-creator toolkit ships run_loop.py, which scores a description against a query set like this one and iterates. Use it when a harness has that toolkit available, and score by hand otherwise."
+  ],
+  "queries": [
+    {
+      "query": "help me build a case on NKE for my portfolio",
+      "should_trigger": true,
+      "skill": "bison-fund-investment-analysis",
+      "why": "Plain-chat phrasing with no package vocabulary. The hub has to fire on this."
+    },
+    {
+      "query": "i have to pitch a company to the fund on tuesday, where do i start",
+      "should_trigger": true,
+      "skill": "bison-fund-investment-analysis",
+      "why": "Task first, no company named yet. Still the hub."
+    },
+    {
+      "query": "can you research Doordash for my equity pitch",
+      "should_trigger": true,
+      "skill": "bison-fund-investment-analysis",
+      "why": "The straightforward entry phrasing."
+    },
+    {
+      "query": "i need to show how they actually make money",
+      "should_trigger": true,
+      "skill": "pitch-business",
+      "why": "A student describing the Business section without naming it."
+    },
+    {
+      "query": "is their market even growing",
+      "should_trigger": true,
+      "skill": "pitch-business",
+      "why": "The industry outlook part of the Business section in the student's words."
+    },
+    {
+      "query": "who are they up against and do they have a moat",
+      "should_trigger": true,
+      "skill": "pitch-competition",
+      "why": "Competition section, phrased as a question."
+    },
+    {
+      "query": "what did they buy last year and why",
+      "should_trigger": true,
+      "skill": "pitch-deals",
+      "why": "Key Deals without the package's term for it."
+    },
+    {
+      "query": "show me the unit economics and whether the margins are real",
+      "should_trigger": true,
+      "skill": "pitch-financials",
+      "why": "Financials section, two of its required elements."
+    },
+    {
+      "query": "what should this company be worth",
+      "should_trigger": true,
+      "skill": "pitch-valuation",
+      "why": "Valuation, asked the way an analyst thinks about it."
+    },
+    {
+      "query": "build the discounted cash flow for UBER",
+      "should_trigger": true,
+      "skill": "dcf-model",
+      "why": "Direct route to the model."
+    },
+    {
+      "query": "what has the street been saying about them lately",
+      "should_trigger": true,
+      "skill": "grounding-lanes",
+      "why": "Direct route to the market view and news lanes."
+    },
+    {
+      "query": "make the deck look like the fund's decks",
+      "should_trigger": true,
+      "skill": "deck-build",
+      "why": "Direct route to the deck standard."
+    },
+    {
+      "query": "does every number on this slide have a source",
+      "should_trigger": true,
+      "skill": "sourcing-standard",
+      "why": "Direct route to the evidence rules."
+    },
+    {
+      "query": "poke holes in this thesis for me",
+      "should_trigger": true,
+      "skill": "pitch-review",
+      "why": "Direct route to the red team."
+    },
+    {
+      "query": "what is a discounted cash flow",
+      "should_trigger": false,
+      "skill": null,
+      "why": "A definition of a mechanism. The hub answers it directly and runs no loop."
+    },
+    {
+      "query": "what is Apple trading at right now",
+      "should_trigger": false,
+      "skill": null,
+      "why": "A price quote, which the package refuses on purpose."
+    },
+    {
+      "query": "buy 100 shares of AAPL in my brokerage account",
+      "should_trigger": false,
+      "skill": null,
+      "why": "Order execution, out of scope."
+    },
+    {
+      "query": "should i put my bonus into my 401k or a Roth",
+      "should_trigger": false,
+      "skill": null,
+      "why": "Personal financial advice, out of scope."
+    },
+    {
+      "query": "summarize the risk factors in this 10-K for a class assignment",
+      "should_trigger": false,
+      "skill": null,
+      "why": "A document summary with no pitch behind it. The evidence discipline is not wanted here."
+    },
+    {
+      "query": "screen the S and P 500 for the cheapest price to earnings ratios",
+      "should_trigger": false,
+      "skill": null,
+      "why": "Screening and stock picking, which the package explicitly is not."
+    }
+  ]
+}

@@ -16,6 +16,16 @@ target.
 - The hub routes Phase 4 Valuation here, or a request names the model directly ("run the DCF").
 - An analyst needs the implied value, the sensitivity range, or a reverse DCF on a traded price.
 
+## Prerequisites
+
+- Python 3 with the standard library only. Nothing to install.
+- Network access for a live run. `--demo` needs none.
+- A data source, chosen once with `python3 setup.py`. `scripts/sec_fundamentals.py` needs no key at
+  all, so a machine with nothing configured still builds the model; `scripts/fmp_dcf.py` needs an FMP
+  key of your own, which setup stores at `~/.config/bison/keys/fmp.key`. Both scripts read the key at
+  runtime and never print it.
+- The analyst's discount rate and terminal growth, because those are the analyst's calls.
+
 ## Inputs
 
 - Ticker and the latest filings.
@@ -45,9 +55,11 @@ Run the demo once on a new machine before trusting a live run.
 **Financial Modeling Prep.** Keys are per analyst and read at runtime, never hardcoded in a skill
 file, deck, template, or handout, and never pasted into a chat transcript. `setup.py` stores the key at
 `~/.config/bison/keys/fmp.key`; the script reads `$FMP_API_KEY` first, then that file, then the older
-paths (`~/.hermes/secrets/fmp_api_key`, `~/.config/fmp/api_key`), and prints only success or failure. A shared fund-wide key will hit the free-tier rate limit of roughly 250 calls
-a day, so plan for one key per student. The endpoint cheatsheet is `references/fmp-api-docs.md`,
-with a link to FMP's full current docs for anything beyond the calls this package makes.
+paths (`~/.hermes/secrets/fmp_api_key`, its dotfile variant `~/.hermes/secrets/.fmp_api_key`, and
+`~/.config/fmp/api_key`), and it strips a leading `VAR=` wrapper line if the file holds one. It prints
+only success or failure. A shared fund-wide key will hit the free-tier rate limit of roughly 250 calls
+a day, so plan for one key per student. The endpoint cheatsheet is `references/fmp-api-docs.md`, with a
+link to FMP's full current docs for anything beyond the calls this package makes.
 
 **Bloomberg Terminal.** There is no public or free Bloomberg market-data API. The programming
 interface, the Python wrappers, and the Excel functions all require a logged-in terminal and

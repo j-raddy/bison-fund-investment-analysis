@@ -1,6 +1,6 @@
 ---
 name: bison-fund-investment-analysis
-description: "Use when starting a Bison Fund equity pitch or any equity-research task: read first to classify the request, then load the skill it routes to."
+description: "Use when someone wants to research a company for an equity pitch, a class case, or a fund presentation: 'build a case on X', a stock write-up, a deck, or a full pitch. Read first to classify the request, then load the skill it routes to."
 author: Jacob Radke
 license: MIT
 ---
@@ -124,6 +124,12 @@ the template, and flag any slide still missing its evidence.
 5. **The bear case is mandatory** before the bull thesis is considered finished.
 6. **The analyst signs off**, not the assistant. The assistant's draft is a draft.
 
+## Rule ownership
+
+This file summarises the rules. It does not own them. `sourcing-standard` owns the evidence rules and
+`deck-build` owns the copy rules. If a summary here disagrees with the owning skill, the owning skill
+wins, and the summary here is the thing to fix.
+
 ## Prerequisites and data sources
 
 - A company name and ticker.
@@ -166,8 +172,7 @@ sequentially.
 
 - `references/socratic-question-bank.md`, the Phase 2 question set.
 - `references/worked-example-hood.md`, the Robinhood pitch as a described example. No deck file ships
-  with the skill; the reference decks are the Uber pitch (41 slides) and the Alphabet pitch (23). The
-  bar they set is in `deck-build`.
+  with the skill; the house bar for a deck is stated slide by slide in `deck-build`.
 
 ## Using this in your tool
 

@@ -2,12 +2,12 @@
   Bison Fund commentable-deck harness (branded copy of the design-mockup harness).
 
   Copy this file, then:
-    1. Put your slides inside <section class="mock-screen" data-screen="..."> —
+    1. Put your slides inside <section class="mock-screen" data-screen="...">,
        one screen per pitch section, plus an Overview screen.
     2. Give every commentable element a data-region="kebab.name"
        (slide-level region on the <section class="slide">, finer regions on cards/tables).
     3. Keep the harness bar, comment-layer CSS/JS as-is. Comments persist in
-       localStorage under the STORE key in the script — change it per deck.
+       localStorage under the STORE key in the script, change it per deck.
     4. Open from disk. No build, no server.
 
   Built from the design-mockup skill (Jacob Radke), rebranded on the NDSU Bison Fund
@@ -18,7 +18,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bison Fund · commentable deck</title>
+<title>Bison Fund commentable deck</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
@@ -39,13 +39,13 @@ body { font-family:var(--font-sans); color:var(--foreground); font-size:14px; li
        display:flex; flex-direction:column; overflow:hidden; -webkit-font-smoothing:antialiased; }
 button { font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
 
-/* ==== 2. YOUR SLIDE STYLES GO HERE — copy from your deck's <style> ==== */
+/* ==== 2. YOUR SLIDE STYLES GO HERE, copy from your deck's <style> ==== */
 .slide { width:1280px; height:720px; margin:0 auto; background:var(--background);
          position:relative; padding:52px 64px 64px; overflow:hidden; display:flex; flex-direction:column; }
 
-/* ==== 3. Harness chrome + comment layer — keep as-is ==== */
+/* ==== 3. Harness chrome + comment layer, keep as-is ==== */
 /* ============================================================
-   1. Harness chrome — deliberately unlike the product. Keep as-is.
+   1. Harness chrome, deliberately unlike the product. Keep as-is.
    ============================================================ */
 #cx-bar {
   flex: none;
@@ -110,7 +110,7 @@ button { font:inherit; color:inherit; background:none; border:0; cursor:pointer;
 #cx-toast.cx-show { opacity: 1; }
 
 /* ============================================================
-   2. Comment layer — keep as-is.
+   2. Comment layer, keep as-is.
    ============================================================ */
 body.cx-on [data-region] { cursor: crosshair; }
 body.cx-on [data-region]:hover {
@@ -287,7 +287,7 @@ body.cx-on [data-region]:hover [data-region]:not(:hover) { outline: none; }
   .cx-pin { display:none !important; }
   body.cx-on [data-region]:hover { outline:none !important; }
 }
-/* Print / PDF export — each PDF page IS one slide (16:9), chrome hidden */
+/* Print / PDF export, each PDF page IS one slide (16:9), chrome hidden */
 @media print{
   @page { size: 1280px 720px; margin: 0; }
   html, body { height:auto !important; overflow:visible !important; display:block !important; background:#fff !important; margin:0 !important; padding:0 !important; }
@@ -303,7 +303,7 @@ body.cx-on [data-region]:hover [data-region]:not(:hover) { outline: none; }
 <body>
 
 <div id="cx-bar">
-  <span class="cx-brand">Bison Fund · Uber pitch — review</span>
+  <span class="cx-brand">Bison Fund deck review</span>
   <div class="cx-screens" id="cx-screens">
     <button type="button" data-goto="overview" aria-current="true">Overview</button><button type="button" data-goto="s01">01 Business</button><button type="button" data-goto="s02">02 Competition</button><button type="button" data-goto="s03">03 Key Deals</button><button type="button" data-goto="s04">04 Financials</button><button type="button" data-goto="s05">05 Valuation</button>
   </div>
@@ -361,7 +361,7 @@ body.cx-on [data-region]:hover [data-region]:not(:hover) { outline: none; }
 (function () {
   'use strict';
 
-  // Per-mockup storage key — change for each new mockup.
+  // Per-mockup storage key, change for each new mockup.
   var STORE = 'bison-<deck-name>-comments-v1';
   var comments = [];
   var mode = false;
@@ -520,7 +520,7 @@ body.cx-on [data-region]:hover [data-region]:not(:hover) { outline: none; }
     mode = on;
     document.body.classList.toggle('cx-on', mode);
     $('cx-toggle').setAttribute('aria-pressed', mode ? 'true' : 'false');
-    if (mode) toast('Comment mode on — click any part of the mockup.');
+    if (mode) toast('Comment mode on. Click any part of the mockup.');
   }
   $('cx-toggle').addEventListener('click', function () { setMode(!mode); });
 
@@ -543,7 +543,7 @@ body.cx-on [data-region]:hover [data-region]:not(:hover) { outline: none; }
       return;
     }
 
-    // Screen navigation — only when comment mode is off, so a comment
+    // Screen navigation, only when comment mode is off, so a comment
     // click on a nav element comments instead of navigating.
     var nav = t.closest('[data-nav]');
     if (nav && !mode) {
@@ -629,7 +629,7 @@ body.cx-on [data-region]:hover [data-region]:not(:hover) { outline: none; }
   /* ---------- export ---------- */
   function toMarkdown() {
     if (!comments.length) return '';
-    var out = ['## Mockup feedback — ' + new Date().toISOString().slice(0, 10)];
+    var out = ['## Mockup feedback for ' + new Date().toISOString().slice(0, 10)];
     out.push('');
     SCREENS.forEach(function (scr) {
       var mine = comments.filter(function (c) { return (c.screen || SCREENS[0]) === scr; });
@@ -660,11 +660,11 @@ body.cx-on [data-region]:hover [data-region]:not(:hover) { outline: none; }
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(
-        function () { toast('Copied — paste it into your session.'); },
-        function () { toast(fallback() ? 'Copied — paste it into your session.' : 'Copy failed — select from the List panel.'); }
+        function () { toast('Copied. Paste it into your session.'); },
+        function () { toast(fallback() ? 'Copied. Paste it into your session.' : 'Copy failed, select from the List panel.'); }
       );
     } else {
-      toast(fallback() ? 'Copied — paste it into your session.' : 'Copy failed — select from the List panel.');
+      toast(fallback() ? 'Copied. Paste it into your session.' : 'Copy failed, select from the List panel.');
     }
   }
 
@@ -674,7 +674,7 @@ body.cx-on [data-region]:hover [data-region]:not(:hover) { outline: none; }
     copyText(md);
   });
 
-  $('cx-pdf').addEventListener('click', function(){ toast('Opening the print dialog — choose “Save as PDF”.'); setTimeout(function(){ window.print(); }, 350); });
+  $('cx-pdf').addEventListener('click', function(){ toast('Opening the print dialog. Choose “Save as PDF”.'); setTimeout(function(){ window.print(); }, 350); });
 
   $('cx-clear').addEventListener('click', function () {
     if (!comments.length) { toast('Nothing to clear.'); return; }

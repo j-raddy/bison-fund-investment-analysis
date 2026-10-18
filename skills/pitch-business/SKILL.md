@@ -1,6 +1,6 @@
 ---
 name: pitch-business
-description: "Use when drafting the Business section of a Bison Fund pitch, or when the analyst asks what the company does, how it makes money, or how big the market is."
+description: "Use when working out what a company does and how it makes money for an equity pitch: the Business section, the customer, the industry, the market size, and where the growth comes from."
 author: Jacob Radke
 license: MIT
 ---

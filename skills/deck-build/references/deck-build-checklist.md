@@ -1,5 +1,10 @@
 # Deck Build Checklist (commentable harness format)
 
+Two passes, in this order. First `python3 scripts/deck_audit.py DECK.html`, which reads the file and
+covers the slide structure, the footers, the title count, the charts, the harness wiring, and the
+mechanical copy rules. It must exit 0. Then the browser pass below, which covers what a static read
+cannot: overflow and note collisions.
+
 The format is: one HTML file, slides in the Bison Fund design system, wrapped in the review harness
 (`templates/commentable-deck-harness.html`). Every deck must render correctly in that format the
 first time. This checklist is the difference between a deck that works and the bugs we hit:
