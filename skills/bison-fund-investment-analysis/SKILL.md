@@ -133,6 +133,10 @@ wins, and the summary here is the thing to fix.
 ## Prerequisites and data sources
 
 - A company name and ticker.
+- **A data source.** `python3 setup.py` in the package root records which one this machine uses at
+  `~/.config/bison/config.json`. Read that file first: if it names a source, use it. If it is missing,
+  tell the analyst to run setup once, and do not block the work on it. With no key at all the keyless
+  path is `sec_fundamentals.py`, and the full source list is in `dcf-model`.
 - Web access, or the analyst's own filings, transcripts, and data.
 - Citable sources: SEC filings (10-K, 10-Q, 8-K, proxy), earnings calls and investor presentations,
   company investor relations pages, and established market-data providers.

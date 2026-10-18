@@ -23,8 +23,8 @@
  * body text #282C2F, background #F2F3F3, border #D7DADB.
  */
 :root{
-  --font-sans:"Montserrat","Gotham",ui-sans-serif,system-ui,sans-serif;
-  --font-serif:"Source Serif 4","New Spirit",ui-serif,Georgia,serif;
+  --font-sans:"Gotham","Montserrat",ui-sans-serif,system-ui,sans-serif;
+  --font-serif:"New Spirit","Source Serif 4",ui-serif,Georgia,serif;
   --background:#F2F3F3; --foreground:#282C2F; --card:#FFFFFF; --offwhite:#FBFBF9;
   --primary:#00583D; --primary-fg:#FFFFFF; --secondary:#FFC425; --secondary-fg:#003524;
   --muted:#F2F3F3; --muted-fg:#686E6D; --accent:#D4ECE6; --accent-fg:#003524;

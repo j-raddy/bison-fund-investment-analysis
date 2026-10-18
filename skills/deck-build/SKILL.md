@@ -20,8 +20,8 @@ presented, so the final artifact looks like the fund, not a generic template.
 Fixed, not a menu. Every Bison Fund deck follows `references/deck-standard.md`: the five-section arc
 with dark section dividers, roughly 30 to 41 slides, chart-led analytical slides, a Recommendation
 slide, bull and bear cases, a risk matrix, an investment-thesis slide with three evidence-backed
-pillars, a verification slide with sign-off blanks, and a sources slide. A deck under 25 slides is
-under-built.
+pillars, a verification slide with sign-off blanks, and a sources slide. A full-arc deck under 25
+slides is under-built; the cited 23-slide Alphabet deck is the accepted short-form variant.
 
 Start from `templates/deck-skeleton.html` styled with `templates/deck-house.css`. The standard is
 stated slide by slide, with what each slide has to carry, in `references/deck-standard.md`.

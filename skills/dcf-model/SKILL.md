@@ -20,8 +20,10 @@ target.
 
 - Python 3 with the standard library only. Nothing to install.
 - Network access for a live run. `--demo` needs none.
-- An FMP key of your own for live data, stored as a secrets file or an environment variable. The
-  README covers where it goes, and the script reads it at runtime and never prints it.
+- A data source, chosen once with `python3 setup.py`. `scripts/sec_fundamentals.py` needs no key at
+  all, so a machine with nothing configured still builds the model; `scripts/fmp_dcf.py` needs an FMP
+  key of your own, which setup stores at `~/.config/bison/keys/fmp.key`. Both scripts read the key at
+  runtime and never print it.
 - The analyst's discount rate and terminal growth, because those are the analyst's calls.
 
 ## Inputs
@@ -51,13 +53,13 @@ Run the demo once on a new machine before trusting a live run.
 ## Market data
 
 **Financial Modeling Prep.** Keys are per analyst and read at runtime, never hardcoded in a skill
-file, deck, template, or handout, and never pasted into a chat transcript. The script reads
-`$FMP_API_KEY` first, then the secrets file: `~/.hermes/secrets/fmp_api_key`, a dotfile variant
-`~/.hermes/secrets/.fmp_api_key`, and `~/.config/fmp/api_key`, and it strips a leading `VAR=` wrapper
-line if the file holds one. It prints only success or failure. A shared fund-wide key will hit the
-free-tier rate limit of roughly 250 calls a day, so plan for one key per student. The endpoint
-reference is `references/fmp-api-docs.md`, which is over 600KB: grep it for the endpoint you need,
-never load it whole.
+file, deck, template, or handout, and never pasted into a chat transcript. `setup.py` stores the key at
+`~/.config/bison/keys/fmp.key`; the script reads `$FMP_API_KEY` first, then that file, then the older
+paths (`~/.hermes/secrets/fmp_api_key`, its dotfile variant `~/.hermes/secrets/.fmp_api_key`, and
+`~/.config/fmp/api_key`), and it strips a leading `VAR=` wrapper line if the file holds one. It prints
+only success or failure. A shared fund-wide key will hit the free-tier rate limit of roughly 250 calls
+a day, so plan for one key per student. The endpoint cheatsheet is `references/fmp-api-docs.md`, with a
+link to FMP's full current docs for anything beyond the calls this package makes.
 
 **Bloomberg Terminal.** There is no public or free Bloomberg market-data API. The programming
 interface, the Python wrappers, and the Excel functions all require a logged-in terminal and
@@ -65,6 +67,26 @@ entitlements on the calling machine. `references/bloomberg-terminal.md` covers t
 the mnemonics to pull for each model input, and the redistribution rule: terminal data is licensed to
 the subscriber for internal use, so cite the filing or a public source in anything the fund
 distributes. Never store a Bloomberg login or session token anywhere.
+
+## Set up a source, and the keyless path
+
+`python3 setup.py` in the package root runs once in a terminal. It reports what the machine already
+has, asks which source to use, takes the key when one is needed, checks it with one live call, and
+records the choice in `~/.config/bison/config.json`. The four choices, and where students get each
+source on campus or for free, are in `references/data-sources.md`. No key is a valid answer.
+
+With no key, `scripts/sec_fundamentals.py` builds the model from SEC EDGAR and the US Treasury yield
+curve, which need nothing:
+
+```bash
+python3 scripts/sec_fundamentals.py UBER                 # keyless model inputs
+python3 scripts/sec_fundamentals.py UBER --price 62.40   # adds the reverse DCF
+```
+
+It maps the ticker to a CIK, pulls the XBRL facts, prints the dated risk-free rate, and renders the
+model through the same code as the FMP path, so the two sources cannot drift apart. The XBRL tag names
+differ from FMP's field names (`NetCashProvidedByUsedInOperatingActivities` for operating cash flow),
+which is why the mapping lives in the script and not in a prompt.
 
 ## Rules
 

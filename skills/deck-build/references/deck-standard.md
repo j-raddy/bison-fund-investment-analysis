@@ -14,7 +14,8 @@ run thinner than this.
   matrix, and an investment-thesis slide with three pillars, each pillar carrying its evidence.
 - An "analyst owns this" box on any slide where a judgment call is still open.
 - A Verification pass slide with sign-off blanks, and a Sources slide.
-- Roughly 30 to 41 slides. A deck under 25 slides is under-built.
+- Roughly 30 to 41 slides for a full five-section arc. The short-form Alphabet deck (23 slides)
+  is the accepted leaner variant; a full-arc deck under 25 slides is under-built.
 
 ## The standard slide inventory, with what good looks like
 

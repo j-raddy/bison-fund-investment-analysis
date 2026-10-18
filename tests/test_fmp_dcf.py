@@ -47,7 +47,9 @@ class TestMath(unittest.TestCase):
         self.assertAlmostEqual(r["tv_share"], pv_tv / (pv + pv_tv), places=6)
 
     def test_sensitivity_grid_shape_and_direction(self):
-        grid = fmp_dcf.grid(100.0, [0.08, 0.09, 0.10], [0.02, 0.025, 0.03], 500.0, 100.0)
+        stream = [100.0, 115.0, 130.0, 145.0, 160.0]
+        waccs, gs, net_debt, shares = [0.08, 0.09, 0.10], [0.02, 0.025, 0.03], 500.0, 100.0
+        grid = fmp_dcf.grid(stream, waccs, gs, net_debt, shares)
         self.assertEqual(sorted(grid.keys()), ["0.08", "0.09", "0.10"])
         for row in grid.values():
             self.assertEqual(len(row), 3)
@@ -56,6 +58,10 @@ class TestMath(unittest.TestCase):
             self.assertLess(row[1], row[2])
         # A higher discount rate on the same growth column is worth less.
         self.assertGreater(grid["0.09"][1], grid["0.10"][1])
+        # The grid varies only the discount rate and the terminal value over the fixed
+        # projected stream, so the cell at the headline inputs equals per share.
+        headline = fmp_dcf.dcf(stream, 0.09, 0.025, net_debt, shares)["per_share"]
+        self.assertEqual(grid["0.09"][1], round(headline, 2))
 
     def test_demo_record_is_stable(self):
         buf = io.StringIO()
