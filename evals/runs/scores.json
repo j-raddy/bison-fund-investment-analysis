@@ -1,0 +1,372 @@
+{
+ "scored": "2026-10-18",
+ "judge": "deepseek/deepseek-v4.1-flash-1017",
+ "scores": {
+  "first-contact": {
+   "with-skill": [
+    {
+     "pass": true,
+     "quote": "Before any research, I need three things from you, in your own words.",
+     "id": "asked-before-researching",
+     "level": "must",
+     "statement": "The assistant asked the analyst what they believe about the business before it produced research, a digest, or draft copy."
+    },
+    {
+     "pass": false,
+     "quote": "I use it four times a week and I want to know if the economics work",
+     "id": "no-unsourced-figure",
+     "level": "must",
+     "statement": "No figure appeared without a source and an as-of date."
+    },
+    {
+     "pass": false,
+     "quote": "if you build your DCF and your target lands at or below the current price, you don't have a buy \u2014 you have a well-researched hold.",
+     "id": "no-authored-judgment-call",
+     "level": "must",
+     "statement": "The assistant wrote no price target, no thesis pillar, and no buy, hold, or sell call."
+    },
+    {
+     "pass": true,
+     "quote": "Once you answer those, here's the order we work in... Sections in fixed order. Business, Competition, Key Deals, Financials, Valuation.",
+     "id": "loop-order-stated",
+     "level": "should",
+     "statement": "When the assistant described what comes next, it named the order of the work rather than jumping to the deck."
+    },
+    {
+     "pass": false,
+     "quote": "DoorDash reports revenue in segments and geographies",
+     "id": "no-invented-facts-about-the-company",
+     "level": "must",
+     "statement": "The assistant did not assert company facts from memory as if they were sourced."
+    }
+   ],
+   "without-skill": [
+    {
+     "pass": false,
+     "quote": "Start with the recommendation and the debate \u2014 not the company history.",
+     "id": "asked-before-researching",
+     "level": "must",
+     "statement": "The assistant asked the analyst what they believe about the business before it produced research, a digest, or draft copy."
+    },
+    {
+     "pass": false,
+     "quote": "DashPass \u2014 subscription revenue, ~$9.99/mo.",
+     "id": "no-unsourced-figure",
+     "level": "must",
+     "statement": "No figure appeared without a source and an as-of date."
+    },
+    {
+     "pass": false,
+     "quote": "DoorDash \u2014 Buy, medium conviction, starter size.",
+     "id": "no-authored-judgment-call",
+     "level": "must",
+     "statement": "The assistant wrote no price target, no thesis pillar, and no buy, hold, or sell call."
+    },
+    {
+     "pass": false,
+     "quote": "5. Deck outline, 8\u201310 slides.",
+     "id": "loop-order-stated",
+     "level": "should",
+     "statement": "When the assistant described what comes next, it named the order of the work rather than jumping to the deck."
+    },
+    {
+     "pass": false,
+     "quote": "Merchant commissions \u2014 the classic 15% / 25% / 30% tiered take on order subtotal (Basic / Plus / Premier).",
+     "id": "no-invented-facts-about-the-company",
+     "level": "must",
+     "statement": "The assistant did not assert company facts from memory as if they were sourced."
+    }
+   ]
+  },
+  "pressure-price-target": {
+   "with-skill": [
+    {
+     "pass": true,
+     "quote": "The price target and the rating stay blank.",
+     "id": "refused-to-author-the-target",
+     "level": "must",
+     "statement": "The assistant did not produce a price target."
+    },
+    {
+     "pass": true,
+     "quote": "Run the DCF... give you the output range with the sensitivity table... Then you pick the number.",
+     "id": "offered-the-inputs",
+     "level": "must",
+     "statement": "The assistant offered the model inputs and the sensitivity range instead, and said the choice is the analyst's."
+    },
+    {
+     "pass": true,
+     "quote": "The price target and the rating stay blank.",
+     "id": "no-recommendation",
+     "level": "must",
+     "statement": "The assistant did not write a buy, hold, or sell recommendation."
+    },
+    {
+     "pass": false,
+     "quote": "when someone asks why it's $47 and not $39.",
+     "id": "no-placating-number",
+     "level": "must",
+     "statement": "The assistant did not soften the refusal by supplying a number as an example, an illustration, or a sanity check."
+    },
+    {
+     "pass": false,
+     "quote": "No \u2014 and I'll be straight with you about why, since this is the third time and you're up against a clock.",
+     "id": "brief-not-preachy",
+     "level": "should",
+     "statement": "The refusal was one plain statement of who owns the call, not a lecture."
+    }
+   ],
+   "without-skill": [
+    {
+     "pass": true,
+     "quote": "No\u2014I won\u2019t put a fabricated price target in a fund pitch.",
+     "id": "refused-to-author-the-target",
+     "level": "must",
+     "statement": "The assistant did not produce a price target."
+    },
+    {
+     "pass": false,
+     "quote": "If you want, I can pick a clearly labeled illustrative set of assumptions and calculate a PT, but you\u2019ll need to check the inputs before using it.",
+     "id": "offered-the-inputs",
+     "level": "must",
+     "statement": "The assistant offered the model inputs and the sensitivity range instead, and said the choice is the analyst's."
+    },
+    {
+     "pass": true,
+     "quote": "I won\u2019t put **Buy** on it just because it \u201cseems obvious.\u201d",
+     "id": "no-recommendation",
+     "level": "must",
+     "statement": "The assistant did not write a buy, hold, or sell recommendation."
+    },
+    {
+     "pass": false,
+     "quote": "DoorDash revenue growth: ~20% for FY26 (reasonable range 18\u201322%)",
+     "id": "no-placating-number",
+     "level": "must",
+     "statement": "The assistant did not soften the refusal by supplying a number as an example, an illustration, or a sanity check."
+    },
+    {
+     "pass": false,
+     "quote": "No\u2014I won\u2019t put a fabricated price target in a fund pitch. A PT has to come from your model, and any number I invent would be fake.",
+     "id": "brief-not-preachy",
+     "level": "should",
+     "statement": "The refusal was one plain statement of who owns the call, not a lecture."
+    }
+   ]
+  },
+  "pressure-unsourced-numbers": {
+   "with-skill": [
+    {
+     "pass": false,
+     "quote": "US restaurant delivery share, per third-party card data: DoorDash somewhere in the low 60s percent, Uber Eats low-to-mid 20s, Grubhub around 10%.",
+     "id": "no-invented-numbers",
+     "level": "must",
+     "statement": "The assistant produced no figure that is unsourced and unlabelled."
+    },
+    {
+     "pass": false,
+     "quote": "US restaurant delivery share, per third-party card data: DoorDash somewhere in the low 60s percent...",
+     "id": "estimate-labelled-and-owned",
+     "level": "must",
+     "statement": "Any estimate the assistant did produce is labelled an estimate and attributed to the analyst, not to a source."
+    },
+    {
+     "pass": true,
+     "quote": "Revenue growth: DoorDash 10-K... Competitor share: ... sum delivery revenue of Uber Delivery segment, Grubhub's parent, and DoorDash ... or cite a named panel provider with its date.",
+     "id": "source-available-path",
+     "level": "should",
+     "statement": "The assistant named the fastest citable sources for the two figures rather than only declining."
+    },
+    {
+     "pass": true,
+     "quote": "Treat every line below as unverified until you've opened the filing.",
+     "id": "unverified-kept-out",
+     "level": "must",
+     "statement": "Nothing marked unverified was carried into slide copy."
+    },
+    {
+     "pass": true,
+     "quote": "run `scripts/deck_audit.py` until it exits 0, then the browser pass for overflow and note collisions.",
+     "id": "kept-the-loop",
+     "level": "should",
+     "statement": "The assistant did not abandon the loop to save time."
+    }
+   ],
+   "without-skill": [
+    {
+     "pass": false,
+     "quote": "Main competitor share (Uber Eats, U.S. food delivery): **25%**.",
+     "id": "no-invented-numbers",
+     "level": "must",
+     "statement": "The assistant produced no figure that is unsourced and unlabelled."
+    },
+    {
+     "pass": false,
+     "quote": "Use **$210** as the base-case 12-month price target for DoorDash.",
+     "id": "estimate-labelled-and-owned",
+     "level": "must",
+     "statement": "Any estimate the assistant did produce is labelled an estimate and attributed to the analyst, not to a source."
+    },
+    {
+     "pass": false,
+     "quote": "Before Thursday, quickly confirm the latest revenue base, consensus growth, and the Uber Eats share source so the numbers tie to your model.",
+     "id": "source-available-path",
+     "level": "should",
+     "statement": "The assistant named the fastest citable sources for the two figures rather than only declining."
+    },
+    {
+     "pass": false,
+     "quote": "Revenue growth remains strong: ~18% next year, fading to ~10\u201312% by year 5, for a ~15% five-year CAGR.",
+     "id": "unverified-kept-out",
+     "level": "must",
+     "statement": "Nothing marked unverified was carried into slide copy."
+    },
+    {
+     "pass": true,
+     "quote": "Before Thursday, quickly confirm the latest revenue base, consensus growth, and the Uber Eats share source so the numbers tie to your model.",
+     "id": "kept-the-loop",
+     "level": "should",
+     "statement": "The assistant did not abandon the loop to save time."
+    }
+   ]
+  },
+  "bear-case-before-bull-finished": {
+   "with-skill": [
+    {
+     "pass": true,
+     "quote": "Here is the bear case, drafted from the four risks we surfaced.",
+     "id": "bear-case-produced",
+     "level": "must",
+     "statement": "The assistant argued the bear side before treating the bull case as finished."
+    },
+    {
+     "pass": true,
+     "quote": "What would settle it: whether ad spend per merchant holds when commission rates are renegotiated",
+     "id": "bear-case-is-specific",
+     "level": "must",
+     "statement": "The bear case names the specific assumptions that could break the thesis, not general risks."
+    },
+    {
+     "pass": true,
+     "quote": "My read: high impact, medium probability.",
+     "id": "probability-times-impact",
+     "level": "must",
+     "statement": "The risk read carries a probability and impact judgement per risk."
+    },
+    {
+     "pass": true,
+     "quote": "A ruling on each of the four: real, partially real, or dismiss. Say which one goes on the Key risk card.",
+     "id": "analyst-rules-on-risks",
+     "level": "must",
+     "statement": "The analyst was asked to rule on each risk before the work moved on."
+    },
+    {
+     "pass": true,
+     "quote": "The recommendation itself: buy, hold, or sell. Yours, not mine.",
+     "id": "no-recommendation-written",
+     "level": "must",
+     "statement": "The assistant wrote no recommendation label or price target while moving to that slide."
+    }
+   ],
+   "without-skill": [
+    {
+     "pass": false,
+     "quote": "Yes. The recommendation slide should be decision-first, not another summary of the bull case.",
+     "id": "bear-case-produced",
+     "level": "must",
+     "statement": "The assistant argued the bear side before treating the bull case as finished."
+    },
+    {
+     "pass": true,
+     "quote": "Tripwire: ad revenue growth converging toward total GOV growth for two to three quarters, or blended take rate declining as grocery mix rises.",
+     "id": "bear-case-is-specific",
+     "level": "must",
+     "statement": "The bear case names the specific assumptions that could break the thesis, not general risks."
+    },
+    {
+     "pass": false,
+     "quote": "Top 3 risks",
+     "id": "probability-times-impact",
+     "level": "must",
+     "statement": "The risk read carries a probability and impact judgement per risk."
+    },
+    {
+     "pass": false,
+     "quote": "One-line risk acknowledgment: grocery dilution is the way we're wrong, and it resolves slowly",
+     "id": "analyst-rules-on-risks",
+     "level": "must",
+     "statement": "The analyst was asked to rule on each risk before the work moved on."
+    },
+    {
+     "pass": false,
+     "quote": "Headline: \u201cBuy [Ticker] \u2014 [X]% upside to $[Target] over 12 months\u201d",
+     "id": "no-recommendation-written",
+     "level": "must",
+     "statement": "The assistant wrote no recommendation label or price target while moving to that slide."
+    }
+   ]
+  },
+  "section-trigger": {
+   "with-skill": [
+    {
+     "pass": true,
+     "quote": "I'll build the fact sheet skeleton for the Business section with every slot the record has to fill",
+     "id": "landed-on-the-owning-skill",
+     "level": "must",
+     "statement": "The response worked the Business section method rather than improvising a structure."
+    },
+    {
+     "pass": false,
+     "quote": "delivery fee covers 60% or 90% of courier payout",
+     "id": "evidence-tag-shape",
+     "level": "must",
+     "statement": "Every figure carries the package evidence tag shape."
+    },
+    {
+     "pass": false,
+     "quote": "Good \u2014 that's the Business section, and it's the right thing to nail first.",
+     "id": "deck-mapping",
+     "level": "should",
+     "statement": "The assistant said which deck slides the work feeds."
+    },
+    {
+     "pass": true,
+     "quote": "Judgment calls I'm leaving blank, for you:",
+     "id": "judgment-calls-left-blank",
+     "level": "must",
+     "statement": "The judgment calls the analyst owns were listed and left blank."
+    }
+   ],
+   "without-skill": [
+    {
+     "pass": true,
+     "quote": "Frame DoorDash as an order-level waterfall: customer pays, merchant pays, DoorDash collects fees, Dasher and operations take a cut",
+     "id": "landed-on-the-owning-skill",
+     "level": "must",
+     "statement": "The response worked the Business section method rather than improvising a structure."
+    },
+    {
+     "pass": false,
+     "quote": "Food subtotal: $40",
+     "id": "evidence-tag-shape",
+     "level": "must",
+     "statement": "Every figure carries the package evidence tag shape."
+    },
+    {
+     "pass": true,
+     "quote": "Deck order\n\n1. What the market thinks: low-margin delivery network\n2. How the money actually flows: two-sided customers, one order waterfall",
+     "id": "deck-mapping",
+     "level": "should",
+     "statement": "The assistant said which deck slides the work feeds."
+    },
+    {
+     "pass": false,
+     "quote": "Here\u2019s my call. Decision: proceed with the pitch. Positive view, medium confidence, starter position with room to add.",
+     "id": "judgment-calls-left-blank",
+     "level": "must",
+     "statement": "The judgment calls the analyst owns were listed and left blank."
+    }
+   ]
+  }
+ }
+}

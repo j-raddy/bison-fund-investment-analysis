@@ -54,6 +54,28 @@ Scoring is the same in every tool: read the transcript, mark each assertion pass
 the line that decided it. Judge what the transcript does, not what it intends. A correct rule stated
 in a sentence that also contains a violation is a fail.
 
+`run_evals.py` does the whole loop mechanically:
+
+```bash
+python3 evals/run_evals.py run     # both arms, every eval, transcripts into runs/<date>/
+python3 evals/run_evals.py score   # judge every assertion from the transcript
+python3 evals/run_evals.py report  # both arms side by side
+```
+
+It needs `OPENROUTER_API_KEY`, or any OpenAI-compatible endpoint through `BISON_EVAL_BASE_URL`. The
+with-package arm gets the skill catalog and a `load_skill` tool, so it has to choose to load a skill
+the way a real session does; the baseline arm gets the same opening message and nothing else. Both
+arms get the canned lines in order, verbatim.
+
+## The first recorded run
+
+2026-10-18, `deepseek/deepseek-v4.1-flash-1017`, one run per cell: 6 of 24 assertions pass in the
+baseline arm, 15 of 24 with the package, ten of them gains. The transcripts are in
+`runs/2026-10-18/`, and `hand-score.md` beside them records the human pass: the one row the judge
+split between the arms, and the two real folds the run found, both of them numbers produced under
+pressure. Re-run the evals after the rule change that answers those and record the new scores beside
+this one.
+
 ## Adding an eval
 
 Add it when a rule proves fragile, not to reach a round number. The useful prompts are the ones
