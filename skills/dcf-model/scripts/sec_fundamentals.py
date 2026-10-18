@@ -22,7 +22,7 @@ is why this file exists rather than asking the assistant to improvise tags.
 
 Every model output is an estimate. The price target is the analyst's, not this script's.
 """
-import argparse, csv, datetime, io, json, os, sys, urllib.request
+import argparse, csv, datetime, io, json, os, sys, urllib.error, urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fmp_dcf import report  # noqa: E402  (same math and output as the FMP path)
@@ -47,9 +47,14 @@ TAGS = {
 
 
 def fetch(url):
+    """One GET, with a plain message instead of a traceback when it fails."""
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
-    with urllib.request.urlopen(req, timeout=45) as r:
-        return json.loads(r.read().decode())
+    try:
+        with urllib.request.urlopen(req, timeout=45) as r:
+            return json.loads(r.read().decode())
+    except (urllib.error.URLError, OSError, ValueError) as exc:
+        sys.exit("Could not fetch %s (%s). Check the network, set BISON_CONTACT to your email, "
+                 "or use the FMP path with an API key." % (url, exc))
 
 
 def ticker_to_cik(ticker):
@@ -58,11 +63,13 @@ def ticker_to_cik(ticker):
     if os.path.exists(CACHE):
         age = datetime.date.today() - datetime.date.fromtimestamp(os.path.getmtime(CACHE))
         if age.days < 1:
-            data = json.load(open(CACHE))
+            with open(CACHE) as fh:
+                data = json.load(fh)
     if data is None:
         data = fetch("https://www.sec.gov/files/company_tickers.json")
         os.makedirs(os.path.dirname(CACHE), exist_ok=True)
-        json.dump(data, open(CACHE, "w"))
+        with open(CACHE, "w") as fh:
+            json.dump(data, fh)
     for row in data.values():
         if row["ticker"].upper() == ticker.upper():
             return str(row["cik_str"]).zfill(10), row["title"]
@@ -97,6 +104,20 @@ def annual(gaap, concept):
     return [], None
 
 
+def parse_treasury_csv(text):
+    """The latest 10-year yield in Treasury's CSV, as (rate, date). None when no row has one.
+
+    Split out from the request so the column names and the date format can be tested
+    without the network: both are Treasury's, not ours, and both can change.
+    """
+    rows = [x for x in csv.DictReader(io.StringIO(text)) if x.get("10 Yr")]
+    if not rows:
+        return None, None
+    latest = max(rows, key=lambda x: datetime.datetime.strptime(x["Date"], "%m/%d/%Y"))
+    d = datetime.datetime.strptime(latest["Date"], "%m/%d/%Y").date()
+    return float(latest["10 Yr"]) / 100.0, d.isoformat()
+
+
 def treasury_10y():
     """The dated 10-year Treasury yield: the method's risk-free rate. Keyless CSV."""
     year = datetime.date.today().year
@@ -104,14 +125,17 @@ def treasury_10y():
            "daily-treasury-rates.csv/%d/all?type=daily_treasury_yield_curve"
            "&field_tdr_date_value=%d&page&_format=csv" % (year, year))
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=45) as r:
-        rows = list(csv.DictReader(io.StringIO(r.read().decode())))
-    rows = [x for x in rows if x.get("10 Yr")]
-    if not rows:
-        return None, None
-    latest = max(rows, key=lambda x: datetime.datetime.strptime(x["Date"], "%m/%d/%Y"))
-    d = datetime.datetime.strptime(latest["Date"], "%m/%d/%Y").date()
-    return float(latest["10 Yr"]) / 100.0, d.isoformat()
+    try:
+        with urllib.request.urlopen(req, timeout=45) as r:
+            text = r.read().decode()
+    except (urllib.error.URLError, OSError) as exc:
+        sys.exit("Could not reach the Treasury yield curve (%s). Check the network, or pass the "
+                 "risk-free rate the model should use." % exc)
+    try:
+        return parse_treasury_csv(text)
+    except (KeyError, ValueError) as exc:
+        sys.exit("Could not read the Treasury yield curve CSV (%s). Its columns or date format "
+                 "may have changed; the model still builds without the risk-free note." % exc)
 
 
 def run(symbol, wacc, tg, years, price):

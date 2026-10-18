@@ -64,25 +64,30 @@ def renumber_footer(slide_html, number, total):
     )
 
 
+SLIDES_IN_FIXTURE = 25
+
+
 def assemble_harness_deck():
-    """Build a harness-stage deck: the shipped harness plus two real slides."""
+    """Build a harness-stage deck: the shipped harness plus a real 25-slide deck.
+
+    The slides are the skeleton's light slides, because the dark dividers carry a
+    print background only once a real deck has one. 25 is the standard's floor, so
+    the fixture is a deck the audit should pass rather than a two-slide stub.
+    """
     harness = read(HARNESS)
-    slides = skeleton_slides()
-    # indexes 1 and 2 are light Overview slides with a single title and no chart.
-    first = slides[1].replace(
-        '<section class="slide">',
-        '<section class="slide" data-region="s01.executive-summary">',
-        1,
-    )
-    second = slides[2].replace(
-        '<section class="slide">',
-        '<section class="slide" data-region="s02.what-the-market-says">',
-        1,
-    )
-    first = renumber_footer(first, 1, 2)
-    second = renumber_footer(second, 2, 2)
+    light = [s for s in skeleton_slides() if 'class="slide dark"' not in s]
+    assert len(light) >= SLIDES_IN_FIXTURE, "the skeleton has too few light slides for the fixture"
+    blocks = []
+    for index, slide in enumerate(light[:SLIDES_IN_FIXTURE], start=1):
+        slide = re.sub(
+            r'<section class="slide"',
+            '<section class="slide" data-region="s%02d.fixture"' % index,
+            slide,
+            count=1,
+        )
+        blocks.append(renumber_footer(slide, index, SLIDES_IN_FIXTURE))
     assert HARNESS_SLIDE_MARKER in harness, "harness placeholder marker not found"
-    return harness.replace(HARNESS_SLIDE_MARKER, first + "\n" + second)
+    return harness.replace(HARNESS_SLIDE_MARKER, "\n".join(blocks))
 
 
 def run_cli(path, *args):
@@ -161,7 +166,7 @@ class HarnessDeckTests(unittest.TestCase):
     def test_assembled_deck_audits_clean(self):
         result = deck_audit.audit_file(self.path)
         self.assertEqual(result["stage"], "harness")
-        self.assertEqual(result["slides"], 2)
+        self.assertEqual(result["slides"], SLIDES_IN_FIXTURE)
         self.assertEqual(result["findings"], [], "unexpected findings: %r" % result["findings"])
 
     def test_cli_exit_is_0_when_clean(self):
@@ -184,6 +189,75 @@ class HarnessDeckTests(unittest.TestCase):
         for finding in result["findings"]:
             self.assertNotIn("em dash", finding["message"], finding)
             self.assertNotIn("middle dot", finding["message"], finding)
+
+
+class GateTests(unittest.TestCase):
+    """The audit is the delivery gate rule 26 points at, so it has to fail an empty file."""
+
+    def test_a_file_with_no_slides_is_a_blocker(self):
+        # The shipped harness alone is a shell with a placeholder, not a deck.
+        result = deck_audit.audit_file(HARNESS)
+        blockers = [f["message"] for f in result["findings"] if f["severity"] == "blocker"]
+        self.assertTrue(any("no <section" in m for m in blockers), result["findings"])
+        proc = run_cli(HARNESS)
+        self.assertEqual(proc.returncode, 1, proc.stdout)
+
+    def test_a_deck_under_the_standard_is_a_warning(self):
+        blocks = skeleton_slides()[1:3]
+        stub = "".join(renumber_footer(b, i, 2) for i, b in enumerate(blocks, start=1))
+        result = deck_audit.audit_text(stub, "two.html", stage="plain")
+        messages = [f["message"] for f in result["findings"]]
+        self.assertTrue(any("under-built" in m for m in messages), messages)
+
+    def test_the_shipped_skeleton_is_over_the_standard(self):
+        result = deck_audit.audit_file(SKELETON, stage="plain")
+        self.assertFalse(any("under-built" in f["message"] for f in result["findings"]))
+
+
+class ScopingTests(unittest.TestCase):
+    """A script inside a slide is not slide copy."""
+
+    def test_a_script_inside_a_slide_is_not_audited_as_copy(self):
+        marker = '<h2 class="title">Sources</h2>'
+        injected = marker + '<script>/* %s dash */ var WACC = 0.09;</script>' % EM_DASH
+        html = read(SKELETON).replace(marker, injected, 1)
+        self.assertNotEqual(html, read(SKELETON))
+        result = deck_audit.audit_text(html, "scripted.html", stage="plain")
+        messages = [f["message"] for f in result["findings"]]
+        self.assertFalse(any("em dash" in m for m in messages), messages)
+        self.assertFalse(any("acronym in slide copy" in m for m in messages), messages)
+
+    def test_the_same_text_as_visible_copy_is_still_caught(self):
+        marker = '<h2 class="title">Sources</h2>'
+        injected = marker + '<p>%s WACC</p>' % EM_DASH
+        html = read(SKELETON).replace(marker, injected, 1)
+        result = deck_audit.audit_text(html, "copy.html", stage="plain")
+        messages = [f["message"] for f in result["findings"]]
+        self.assertTrue(any("em dash" in m for m in messages), messages)
+        self.assertTrue(any("acronym in slide copy" in m for m in messages), messages)
+
+
+class BarScaleTests(unittest.TestCase):
+    """Heights that run the right way but do not match their labels."""
+
+    TWO_BARS = (
+        '<div class="bar"><div class="lab">[v]</div><div class="col" style="height:40%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>\n'
+        '  <div class="bar"><div class="lab">[v]</div><div class="col" style="height:60%;background:var(--chart-1)"></div><div class="cat">[yr]</div></div>'
+    )
+
+    def audit(self, first, second):
+        pairs = self.TWO_BARS.replace("[v]", first, 1).replace("[v]", second, 1)
+        html = read(SKELETON).replace(self.TWO_BARS, pairs, 1)
+        self.assertNotEqual(html, read(SKELETON))
+        return deck_audit.audit_text(html, "scale.html", stage="plain")
+
+    def test_proportional_bars_are_clean(self):
+        messages = [f["message"] for f in self.audit("4", "6")["findings"]]
+        self.assertFalse(any("does not match its labeled value" in m for m in messages), messages)
+
+    def test_a_bar_drawn_at_the_wrong_height_is_flagged(self):
+        messages = [f["message"] for f in self.audit("1", "4")["findings"]]
+        self.assertTrue(any("does not match its labeled value" in m for m in messages), messages)
 
 
 class DetectorTests(unittest.TestCase):

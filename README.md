@@ -198,8 +198,9 @@ it, and the key lookup order above, and the SEC parser by `tests/test_sec_fundam
      without it, and compare against the last scores.
   3. If you touched a description, re-check `evals/triggers.json`, because a skill that does not load
      cannot enforce anything.
-  4. If you changed a deck template, run `python3 skills/deck-build/scripts/deck_audit.py` on it and
-     fix what it reports.
+  4. If you changed a deck template, build a deck from it and run
+     `python3 skills/deck-build/scripts/deck_audit.py` on that, then fix what it reports. The harness
+     template alone is not a deck and the audit says so.
 - No client or household data belongs in this repo. It is public.
 - Bloomberg's BLPAPI guides are not redistributed here.
   `skills/dcf-model/references/bloomberg-terminal.md` links to Bloomberg's own download page instead.

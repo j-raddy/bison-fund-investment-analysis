@@ -8,6 +8,8 @@ network.
 import importlib.util
 import os
 import unittest
+import urllib.error
+from unittest import mock
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPT = os.path.join(REPO, "skills", "dcf-model", "scripts", "sec_fundamentals.py")
@@ -86,6 +88,56 @@ class TestAnnual(unittest.TestCase):
             {"start": "2023-01-01", "end": "2023-12-31", "form": "10-K", "val": 1_000_000}]}}}
         series, _ = sec.annual(facts, "shares")
         self.assertEqual([v for _, v in series], [1_000_000.0])
+
+
+class TestTreasuryCsv(unittest.TestCase):
+    """Treasury's column names and date format are theirs, so the parse is pinned."""
+
+    CSV = """Date,1 Mo,3 Mo,10 Yr,30 Yr
+10/15/2026,4.10,4.05,4.18,4.55
+10/16/2026,4.12,4.08,4.21,4.58
+"""
+
+    def test_latest_row_is_the_one_used(self):
+        rate, date = sec.parse_treasury_csv(self.CSV)
+        self.assertAlmostEqual(rate, 0.0421)
+        self.assertEqual(date, "2026-10-16")
+
+    def test_a_csv_with_no_ten_year_column_returns_nothing(self):
+        self.assertEqual(sec.parse_treasury_csv("Date,1 Mo,3 Mo\n10/16/2026,4.12,4.08\n"), (None, None))
+
+    def test_a_changed_date_format_exits_with_a_plain_message(self):
+        fake = mock.MagicMock()
+        fake.read.return_value = b"Date,10 Yr\n2026-10-16,4.21\n"
+        fake.__enter__.return_value = fake
+        with mock.patch("urllib.request.urlopen", return_value=fake):
+            with self.assertRaises(SystemExit) as caught:
+                sec.treasury_10y()
+        self.assertIn("Could not read the Treasury yield curve CSV", str(caught.exception.code))
+
+
+class TestNetworkFailures(unittest.TestCase):
+    """A machine with no key is the one that uses this path, so no raw traceback."""
+
+    def test_fetch_exits_with_a_plain_message(self):
+        with mock.patch("urllib.request.urlopen", side_effect=urllib.error.URLError("no route")):
+            with self.assertRaises(SystemExit) as caught:
+                sec.fetch("https://data.sec.gov/api/xbrl/companyfacts/CIK0001.json")
+        self.assertIn("Could not fetch", str(caught.exception.code))
+        self.assertIn("no route", str(caught.exception.code))
+
+    def test_treasury_failure_exits_with_a_plain_message(self):
+        with mock.patch("urllib.request.urlopen", side_effect=urllib.error.URLError("no route")):
+            with self.assertRaises(SystemExit) as caught:
+                sec.treasury_10y()
+        self.assertIn("Could not reach the Treasury yield curve", str(caught.exception.code))
+
+    def test_a_changed_column_name_exits_through_treasury_10y(self):
+        fake = mock.MagicMock()
+        fake.read.return_value = b"Date,1 Mo,3 Mo\n2026-10-16,4.12,4.08\n"
+        fake.__enter__.return_value = fake
+        with mock.patch("urllib.request.urlopen", return_value=fake):
+            self.assertEqual(sec.treasury_10y(), (None, None))
 
 
 class TestSharedPath(unittest.TestCase):

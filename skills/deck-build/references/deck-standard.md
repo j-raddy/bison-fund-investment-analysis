@@ -19,6 +19,10 @@ run thinner than this.
 
 ## The standard slide inventory, with what good looks like
 
+Three of these slides carry a different name in `templates/deck-skeleton.html`, so a deck built from
+it can still be checked row by row: its light title slide is `Plain Title`, "A differentiating asset"
+is `Flagship asset`, and "The strategy behind the deals" is `The deal strategy`.
+
 Overview. No eyebrow, except the Recommendation slide, which carries "Overview".
 
 | Slide | Must carry | What good looks like |

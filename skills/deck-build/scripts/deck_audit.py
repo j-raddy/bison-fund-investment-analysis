@@ -7,9 +7,10 @@ Usage:
 Stage defaults to auto-detect: "harness" when the file contains "cx-bar" or
 "mock-screen", otherwise "plain".
 
-The audit is a static read of the file. In the plain stage it checks slide
-structure, footers, the title slide, eyebrows, the shipped chart markup,
-leftover template syntax, and the mechanical copy rules. In the harness stage
+The audit is a static read of the file. In the plain stage it checks that there
+is a deck at all and how many slides it has, the slide structure, footers, the
+title slide, eyebrows, the shipped chart markup, leftover template syntax, and
+the mechanical copy rules. In the harness stage
 it adds the four canvas rules, the three parts of Download PDF, region
 annotation, and the dark-slide print layer.
 
@@ -21,9 +22,10 @@ declared chart height, not by its rendered size.
 
 Findings print as "<file>:<line>: <severity> <message>", blockers versus
 warnings, followed by a summary line. --json emits
-{file, stage, findings:[{line, severity, message}], counts}.
+{file, stage, findings:[{line, severity, message}], counts, slides}.
 
-Exit 0 when clean, 1 when there is any finding. Python 3 standard library only.
+Exit 0 when clean, 1 when there is any finding, 2 when the file cannot be read.
+Python 3 standard library only.
 """
 
 import argparse
@@ -58,7 +60,12 @@ TEMPLATE_MARKERS = ("{card(", "{bar(", "%s", "{{")
 EM_DASH = "\u2014"
 MIDDLE_DOT = "\u00b7"
 MIN_BAR_PX = 20.0
+# How far a bar's height share may drift from its label's share of the chart
+# maximum before the audit calls it a wrong height rather than rounding.
+BAR_SCALE_TOLERANCE = 0.15
 DEFAULT_CHART_HEIGHT_PX = 230.0
+# The deck standard: a full-arc deck under 25 slides is under-built.
+MIN_SLIDES = 25
 
 HARNESS_MARKERS = ("cx-bar", "mock-screen")
 
@@ -124,27 +131,25 @@ def find_all(node, predicate):
     return [n for n in iter_descendants(node) if predicate(n)]
 
 
-def gather_text(node, out):
-    for text, _line in node.texts:
-        out.append(text)
-    for child in node.children:
-        gather_text(child, out)
+def segments(node, include_code=True):
+    """Return (text, line) pairs for every text run in the subtree.
 
-
-def text_of(node):
+    include_code=False leaves out the contents of <script> and <style>, which is
+    what the copy rules want: a script inside a slide is not something a reader
+    sees on the slide.
+    """
     out = []
-    gather_text(node, out)
-    return " ".join("".join(out).split())
-
-
-def segments(node):
-    """Return (text, line) pairs for every text run in the subtree."""
-    out = []
+    if not include_code and node.tag in ("script", "style"):
+        return out
     for text, line in node.texts:
         out.append((text, line))
     for child in node.children:
-        out.extend(segments(child))
+        out.extend(segments(child, include_code))
     return out
+
+
+def text_of(node):
+    return " ".join("".join(text for text, _line in segments(node)).split())
 
 
 def first_desc(node, cls):
@@ -373,6 +378,7 @@ class Audit(object):
             lab_value = number_in(text_of(lab)) if lab is not None else None
             series.append((height_px, lab_value))
         self.check_chart_order(chart, series)
+        self.check_chart_scale(chart, series)
 
     def check_chart_order(self, chart, series):
         prev = None
@@ -388,9 +394,37 @@ class Audit(object):
                     return
             prev = (height_px, value)
 
+    def check_chart_scale(self, chart, series):
+        """A bar's height share should track its label's share of the chart maximum.
+
+        The order check catches a chart that runs backwards. This catches the more
+        common mistake: the bars were eyeballed, so a value that is twice another is
+        not drawn at twice the height.
+        """
+        pairs = [(height_px, value) for height_px, value in series if value is not None]
+        if len(pairs) < 2:
+            return
+        height_max = max(height_px for height_px, _value in pairs)
+        value_max = max(value for _height_px, value in pairs)
+        if height_max <= 0 or value_max <= 0:
+            return
+        for height_px, value in pairs:
+            if value < 0:
+                continue
+            drift = abs(height_px / height_max - value / value_max)
+            if drift > BAR_SCALE_TOLERANCE:
+                self.warning(
+                    chart.line,
+                    "bar height does not match its labeled value: %.0f%% of the tallest bar "
+                    "for %s of the largest value (%.0f%% of the chart maximum expected)"
+                    % (100.0 * height_px / height_max, "{:,.4g}".format(value),
+                       100.0 * value / value_max),
+                )
+                return
+
     def check_template_syntax(self):
         for slide in self.slides:
-            for text, line in segments(slide):
+            for text, line in segments(slide, include_code=False):
                 for marker in TEMPLATE_MARKERS:
                     if marker in text:
                         self.blocker(
@@ -400,7 +434,7 @@ class Audit(object):
 
     def check_copy(self):
         for slide in self.slides:
-            for text, line in segments(slide):
+            for text, line in segments(slide, include_code=False):
                 if EM_DASH in text:
                     self.blocker(line, "em dash in slide copy")
                 if MIDDLE_DOT in text:
@@ -481,7 +515,19 @@ class Audit(object):
             )
 
     # -- driver ------------------------------------------------------------
+    def check_slide_count(self):
+        count = len(self.slides)
+        if count == 0:
+            self.blocker(1, "the file has no <section class=\"slide\">, so there is no deck to audit")
+        elif count < MIN_SLIDES:
+            self.warning(
+                1,
+                "the deck has %d slide%s; the standard calls a full-arc deck under %d slides "
+                "under-built" % (count, "" if count == 1 else "s", MIN_SLIDES),
+            )
+
     def run(self):
+        self.check_slide_count()
         self.check_structure()
         self.check_footers()
         self.check_title_slide()

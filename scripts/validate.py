@@ -266,9 +266,10 @@ def check_charset(root):
     return findings
 
 
-def collect_findings(root):
+def collect_findings(root, skills=None):
     """Run every check over root and return the findings in check order."""
-    skills = skill_dirs(root)
+    if skills is None:
+        skills = skill_dirs(root)
     findings = []
     if not skills:
         findings.append(_finding("skills/", "frontmatter", "no skill directories under skills/"))
@@ -288,7 +289,7 @@ def main(argv=None):
 
     root = repo_root()
     skills = skill_dirs(root)
-    findings = collect_findings(root)
+    findings = collect_findings(root, skills)
 
     verdict = "FAIL" if findings else "OK"
     summary = "validate: %d skills, %d checks, %d finding(s). %s" % (len(skills), len(CHECKS), len(findings), verdict)
