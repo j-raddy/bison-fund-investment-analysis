@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bison Fund, Alphabet equity pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+
+/* Bison Fund design tokens */
+:root{
+  --font-sans:"Montserrat","Gotham",ui-sans-serif,system-ui,sans-serif;
+  --font-serif:"Source Serif 4","New Spirit",ui-serif,Georgia,serif;
+  --background:#F2F3F3; --foreground:#282C2F; --card:#FFFFFF; --offwhite:#FBFBF9;
+  --primary:#00583D; --primary-fg:#FFFFFF; --secondary:#FFC425; --secondary-fg:#003524;
+  --muted:#F2F3F3; --muted-fg:#686E6D; --accent:#D4ECE6; --accent-fg:#003524;
+  --destructive:#C62828; --border:#D7DADB; --ring:#00583D;
+  --green-dark:#003524; --green-deep:#00221B; --teal:#51AB9F; --harvest:#BE5D27;
+  --night:#0E364B; --subtle:#686E6D; --link:#785D03;
+  --chart-1:#00583D; --chart-2:#FFC425; --chart-3:#51AB9F; --chart-4:#BE5D27; --chart-5:#0E364B;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body { height:100%; }
+body { font-family:var(--font-sans); color:var(--foreground); font-size:14px; line-height:1.5;
+       display:flex; flex-direction:column; overflow:hidden; -webkit-font-smoothing:antialiased; }
+a { color:var(--primary); text-decoration:none; }
+.slide { width:1280px; height:720px; margin:0 auto; flex:none; background:var(--background);
+  position:relative; padding:52px 64px 64px; overflow:hidden; display:flex; flex-direction:column; }
+.slide.dark { background:var(--green-dark); color:var(--offwhite); }
+.serif { font-family:var(--font-serif); font-weight:300; }
+.eyebrow { font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--primary); font-weight:700; margin-bottom:8px; }
+.dark .eyebrow { color:var(--secondary); }
+h2.title { font-family:var(--font-serif); font-weight:300; font-size:34px; line-height:1.12; color:var(--green-dark); margin-bottom:6px; }
+.dark h2.title { color:var(--offwhite); }
+p.sub { font-size:14px; color:var(--subtle); margin-bottom:22px; max-width:75ch; }
+.dark p.sub { color:rgba(251,251,249,.75); }
+.slide:has(.note) .content { padding-bottom:42px; }
+.content { flex:1; display:flex; flex-direction:column; gap:16px; min-height:0; justify-content:space-evenly; }
+.foot { position:absolute; left:64px; right:64px; bottom:26px; display:flex; justify-content:space-between;
+  font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--subtle); }
+.dark .foot { color:rgba(251,251,249,.55); }
+.foot .pageno { font-variant-numeric:tabular-nums; }
+.grid { display:grid; gap:14px; }
+.g2 { grid-template-columns:1fr 1fr; } .g3 { grid-template-columns:repeat(3,1fr); } .g4 { grid-template-columns:repeat(4,1fr); }
+.card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px 20px; }
+.card h4 { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--subtle); margin-bottom:8px; font-weight:600; }
+.card .v { font-family:var(--font-serif); font-weight:300; font-size:32px; color:var(--green-dark);
+  font-variant-numeric:tabular-nums; line-height:1.1; }
+.card .d { font-size:12px; color:var(--subtle); margin-top:6px; line-height:1.5; }
+.card .v.pos { color:var(--primary); } .card .v.neg { color:var(--destructive); }
+.card.y { background:#FFF4D6; border-color:#FFE68A; }
+.card.y h4, .card.y .v { color:var(--secondary-fg); }
+.card.y .d { color:#5A4A16; }
+.card.g { background:var(--accent); border-color:#A9D9CE; }
+.card.g h4, .card.g .v { color:var(--green-dark); }
+.card.g .d { color:#3D5B52; }
+.bullets { list-style:none; }
+.bullets li { font-size:14px; line-height:1.55; padding:9px 0 9px 22px; position:relative; border-bottom:1px solid var(--border); }
+.bullets li:last-child { border-bottom:0; }
+.bullets li:before { content:""; position:absolute; left:4px; top:16px; width:8px; height:8px; border-radius:50%; background:var(--secondary); }
+.bullets b { font-weight:600; color:var(--green-dark); }
+.note { font-size:10.5px; color:var(--subtle); line-height:1.5; position:absolute; left:64px; right:64px; bottom:48px; }
+.src { color:var(--muted-fg); font-style:italic; }
+table { width:100%; border-collapse:collapse; font-size:13px; background:var(--card);
+  border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+th, td { padding:9px 12px; text-align:right; border-bottom:1px solid var(--border); font-variant-numeric:tabular-nums; }
+th:first-child, td:first-child { text-align:left; font-variant-numeric:normal; font-weight:500; }
+thead th { background:var(--primary); color:#fff; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; font-weight:600; text-align:right; }
+thead th:first-child { text-align:left; }
+tbody tr:last-child td { border-bottom:0; }
+tbody tr:hover { background:var(--muted); }
+td.hi { color:var(--green-dark); font-weight:600; } td.neg { color:var(--destructive); }
+.chart { display:flex; align-items:flex-end; gap:18px; height:230px; margin-top:14px; }
+.bar { flex:1; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:6px; }
+.bar .col { width:100%; border-radius:6px 6px 0 0; position:relative; }
+.bar .lab { font-size:11.5px; color:var(--subtle); font-variant-numeric:tabular-nums; }
+.bar .cat { font-size:10.5px; color:var(--subtle); margin-top:2px; }
+.divider-num { font-family:var(--font-serif); font-weight:300; font-size:120px; line-height:1; color:var(--secondary); }
+.divider-list { margin-top:28px; font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:rgba(251,251,249,.65); line-height:2.2; }
+.divider-list b { color:var(--secondary); font-weight:600; }
+.own { border:1px solid #A9D9CE; background:var(--accent); border-radius:10px; padding:16px 20px; }
+.own h4 { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--green-dark); font-weight:700; margin-bottom:6px; }
+.own p { font-size:13px; color:#2C4A41; line-height:1.55; }
+.blank { display:inline-block; min-width:120px; border-bottom:2px solid var(--green-dark); height:16px; vertical-align:baseline; }
+.deal { background:var(--card); border:1px solid var(--border); border-left:5px solid var(--primary); border-radius:8px; padding:16px 20px; }
+.deal h3 { font-family:var(--font-serif); font-weight:400; font-size:19px; color:var(--green-dark); margin-bottom:6px; }
+.deal .meta { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--harvest); font-weight:600; margin-bottom:8px; }
+.deal p { font-size:13px; line-height:1.6; color:var(--foreground); }
+.pill { display:inline-block; background:var(--accent); color:var(--accent-fg); font-size:11px; font-weight:600; padding:4px 10px; border-radius:999px; margin:0 6px 6px 0; }
+.badge-buy { display:inline-block; background:var(--secondary); color:var(--secondary-fg); font-size:13px; font-weight:700; letter-spacing:.12em; padding:8px 22px; border-radius:6px; }
+
+
+/* ============================================================
+   1. Harness chrome - deliberately unlike the product. Keep as-is.
+   ============================================================ */
+#cx-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+  height: 44px;
+  background: var(--cx-bar);
+  color: var(--cx-bar-fg);
+  font-size: 12px;
+  z-index: 60;
+}
+#cx-bar .cx-brand {
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 11px;
+  opacity: 0.65;
+}
+#cx-bar .cx-spacer { flex: 1; }
+#cx-bar .cx-btn {
+  padding: 4px 10px;
+  border: 1px solid rgba(255,255,255,0.25);
+  white-space: nowrap;
+}
+#cx-bar .cx-btn:hover { border-color: rgba(255,255,255,0.6); }
+#cx-bar .cx-btn[aria-pressed="true"] {
+  background: var(--cx-accent);
+  border-color: var(--cx-accent);
+  color: #fff;
+  font-weight: 600;
+}
+#cx-bar .cx-screens { display: flex; gap: 2px; }
+#cx-bar .cx-screens button {
+  padding: 4px 10px;
+  opacity: 0.6;
+  border-bottom: 2px solid transparent;
+}
+#cx-bar .cx-screens button[aria-current="true"] {
+  opacity: 1;
+  border-bottom-color: var(--cx-accent);
+}
+#cx-bar .cx-count {
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+#cx-toast {
+  position: fixed;
+  left: 50%;
+  top: 54px;
+  transform: translateX(-50%);
+  background: var(--cx-bar);
+  color: var(--cx-bar-fg);
+  padding: 6px 14px;
+  font-size: 12px;
+  z-index: 80;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s;
+}
+#cx-toast.cx-show { opacity: 1; }
+
+/* ============================================================
+   2. Comment layer - keep as-is.
+   ============================================================ */
+body.cx-on [data-region] { cursor: crosshair; }
+body.cx-on [data-region]:hover {
+  outline: 2px dashed var(--cx-accent);
+  outline-offset: -2px;
+}
+body.cx-on [data-region]:hover [data-region]:not(:hover) { outline: none; }
+
+[data-region] { position: relative; }
+
+.cx-pin {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  background: var(--cx-accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 40;
+  font-variant-numeric: tabular-nums;
+}
+.cx-pin:hover, .cx-pin.cx-flash { outline: 3px solid rgba(109,40,217,0.35); }
+
+#cx-pop {
+  position: fixed;
+  width: 280px;
+  background: var(--card);
+  border: 1px solid var(--cx-bar);
+  padding: 10px;
+  z-index: 70;
+  display: none;
+}
+#cx-pop.cx-show { display: block; }
+#cx-pop .cx-pop-region {
+  font-size: 11px;
+  color: var(--muted-foreground);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  margin-bottom: 6px;
+  word-break: break-all;
+}
+#cx-pop textarea {
+  width: 100%;
+  min-height: 76px;
+  font: inherit;
+  font-size: 13px;
+  padding: 6px;
+  border: 1px solid var(--input);
+  background: #fff;
+  resize: vertical;
+}
+#cx-pop .cx-pop-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  align-items: center;
+}
+#cx-pop .cx-save {
+  background: var(--cx-bar);
+  color: var(--cx-bar-fg);
+  padding: 4px 12px;
+  font-size: 12px;
+}
+#cx-pop .cx-del {
+  color: var(--destructive);
+  font-size: 12px;
+  margin-left: auto;
+}
+
+#cx-panel {
+  position: fixed;
+  right: 0;
+  top: 44px;
+  bottom: 0;
+  width: 300px;
+  background: var(--cx-bar);
+  color: var(--cx-bar-fg);
+  z-index: 65;
+  display: none;
+  flex-direction: column;
+}
+#cx-panel.cx-show { display: flex; }
+#cx-panel header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+#cx-panel header button { margin-left: auto; opacity: 0.7; font-size: 16px; line-height: 1; }
+#cx-list { flex: 1; overflow-y: auto; padding: 8px; }
+#cx-list .cx-item {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+  font-size: 12.5px;
+}
+#cx-list .cx-item:hover { background: rgba(255,255,255,0.06); }
+#cx-list .cx-n {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  background: var(--cx-accent);
+  color: #fff;
+  text-align: center;
+  line-height: 18px;
+  font-size: 11px;
+  font-weight: 600;
+}
+#cx-list .cx-body { min-width: 0; }
+#cx-list .cx-region {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  opacity: 0.55;
+  word-break: break-all;
+}
+#cx-list .cx-text { display: block; white-space: pre-wrap; }
+#cx-list .cx-empty { padding: 14px 8px; opacity: 0.5; font-size: 12px; }
+#cx-panel footer {
+  flex: none;
+  padding: 10px 12px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  font-size: 11px;
+  opacity: 0.55;
+}
+
+
+
+#cx-stage { flex:1; min-height:0; display:flex; }
+.mock-screen { flex:1; min-width:0; display:none; flex-direction:column; align-items:center;
+  gap:26px; padding:26px; background:#DDE1E1; overflow-y:auto; }
+.mock-screen.cx-active { display:flex; }
+:root { --cx-bar:#00583D; --cx-bar-fg:#FBFBF9; --cx-accent:#FFC425; --cx-accent-ink:#003524; }
+#cx-bar .cx-brand { opacity:.85; }
+#cx-bar .cx-btn[aria-pressed="true"] { color:var(--cx-accent-ink); }
+#cx-bar .cx-screens button[aria-current="true"] { border-bottom-color:var(--cx-accent); }
+.cx-pin { color:var(--cx-accent-ink); }
+#cx-list .cx-n { color:var(--cx-accent-ink); }
+@media print {
+  .print-bg { display:block !important; position:absolute; left:0; top:0; width:100%; height:100%; z-index:0; }
+  .slide > *:not(.print-bg) { position:relative; z-index:1; }
+  @page { size: 1280px 720px; margin: 0; }
+  html, body { height:auto !important; overflow:visible !important; display:block !important;
+               background:#fff !important; margin:0 !important; padding:0 !important; }
+  #cx-bar, #cx-panel, #cx-pop, #cx-toast { display:none !important; }
+  #cx-stage { display:block !important; overflow:visible !important; }
+  .mock-screen { display:block !important; overflow:visible !important; background:#fff !important; padding:0 !important; gap:0 !important; }
+  .slide { page-break-after:always; break-after:page; box-shadow:none; margin:0; }
+  .cx-pin { display:none !important; }
+}
+
+</style>
+</head>
+<body>
+<div id="cx-bar">
+  <span class="cx-brand">Bison Fund, Alphabet pitch</span>
+  <div class="cx-screens" id="cx-screens">
+    <button type="button" data-goto="overview" aria-current="true">Overview</button><button type="button" data-goto="s01">01 Business</button><button type="button" data-goto="s02">02 Competition</button><button type="button" data-goto="s03">03 Key Deals</button><button type="button" data-goto="s04">04 Financials</button><button type="button" data-goto="s05">05 Valuation</button>
+  </div>
+  <span class="cx-spacer"></span>
+  <span class="cx-count" id="cx-count">0 comments</span>
+  <button type="button" class="cx-btn" id="cx-toggle" aria-pressed="false">Comment mode</button>
+  <button type="button" class="cx-btn" id="cx-open-panel">List</button>
+  <button type="button" class="cx-btn" id="cx-copy">Copy feedback</button>
+  <button type="button" class="cx-btn" id="cx-pdf">Download PDF</button>
+  <button type="button" class="cx-btn" id="cx-clear">Clear all</button>
+</div>
+<div id="cx-toast"></div>
+<div id="cx-stage">
+<section class="mock-screen cx-active" data-screen="overview">
+<section class="slide dark" data-region="s01.alphabet-inc">
+ <div class="content">
+
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+   <div class="eyebrow">Bison Fund Equity Pitch</div>
+   <h1 class="serif" style="font-size:60px;line-height:1.05;color:#fff">Alphabet Inc.</h1>
+   <div style="margin-top:14px;font-size:16px;letter-spacing:.18em;color:var(--secondary);font-weight:600">NASDAQ: GOOGL</div>
+   <p style="margin-top:24px;font-size:15px;max-width:60ch;line-height:1.7;color:rgba(251,251,249,.8)">
+    One vertical stack, three ways to win the artificial intelligence buildout: the compute rivals rent, the frontier models, and the consumer applications that distribute both.</p>
+   <div style="margin-top:30px;font-size:12px;color:rgba(251,251,249,.6);line-height:1.9">
+    Bison Fund pitch, October 2026<br/>Data as of Q2 2026 (call July 22, 2026) and FMP market data (October 9, 2026)</div>
+  </div>
+ </div>
+ 
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">01 / 23</span></div>
+</section>
+<section class="slide" data-region="s02.executive-summary">
+ 
+ <h2 class="title">Executive Summary</h2>
+ <div class="content">
+
+  <div class="grid g4">
+   <div class="card" data-region="s02.r1"><h4>Revenue, Q2 2026</h4><div class="v">$119.8B</div><div class="d">+24% year over year, 12th straight quarter of double-digit growth</div></div>
+   <div class="card" data-region="s02.r2"><h4>Cloud backlog</h4><div class="v">$514B</div><div class="d">Up more than $50B in the quarter, recognized over 24 months</div></div>
+   <div class="card" data-region="s02.r3"><h4>Cloud revenue growth</h4><div class="v">+82%</div><div class="d">Operating margin 35.6%, tripled operating income</div></div>
+   <div class="card y" data-region="s02.r4"><h4>Value per share</h4><div class="v">$314</div><div class="d">Discounted cash flow base case, about 11% below the current price</div></div>
+  </div>
+  <div class="grid g2">
+   <div class="card" data-region="s02.r5">
+    <h4>Current market sentiment</h4>
+    <p style="font-size:13.5px;line-height:1.65">Consensus targets have moved up to $380 on average and $450 in the last month, against a price of $354. The analyst reads the stock as fairly priced to slightly rich, and the discounted cash flow model agrees: the market is paying close to full value for the 2030 free cash flow year.</p>
+   </div>
+   <div class="own" data-region="s02.r6">
+    <h4>Thesis</h4>
+    <p>One vertical stack, three ways to win the artificial intelligence buildout. Alphabet rents the compute rivals need, including the open-source wave, fields its own frontier models, and distributes both to consumers and enterprises. The kill condition is Microsoft winning the agent landscape or a neocloud taking the compute share.</p>
+   </div>
+  </div>
+ </div>
+ 
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">02 / 23</span></div>
+</section>
+<section class="slide" data-region="s03.what-the-market-says">
+ <h2 class="title">What the market says</h2>
+ <div class="content">
+  <div class="grid g3">
+   <div class="card" data-region="s03.r1"><h4>Consensus price target</h4><div class="v">$429</div><div class="d">62 analysts, S&amp;P Global poll. Median $430, low $340, high $515.</div></div>
+   <div class="card" data-region="s03.r2"><h4>Ratings</h4><div class="v">56 / 5 / 0</div><div class="d">Buy, hold, sell. Effectively no sellers on the street.</div></div>
+   <div class="card y" data-region="s03.r3"><h4>Our model</h4><div class="v">$314</div><div class="d">Discounted cash flow base case, 27% below the consensus target</div></div>
+  </div>
+  <div class="grid g2">
+   <div class="card" data-region="s03.r4">
+    <h4>What the street is buying</h4>
+    <p style="font-size:13px;line-height:1.65">Cloud revenue up 82% with a $514B backlog, TPU systems becoming a hardware line, and the read that Alphabet monetizes artificial intelligence three times on the same dollar. Morgan Stanley frames a $200B-plus TPU monetization opportunity through 2028.</p>
+   </div>
+   <div class="card" data-region="s03.r5">
+    <h4>What the street is worried about</h4>
+    <p style="font-size:13px;line-height:1.65">Capital intensity: capex guided to $195B to $205B for 2026 with a significant increase in 2027, negative quarterly free cash flow, and $98.2B of long-term debt. The bear case is the cash cycle, not the demand.</p>
+   </div>
+  </div>
+  <div class="card" data-region="s03.r6">
+   <h4>Key takeaway</h4>
+   <p style="font-size:13px;line-height:1.65">The street is 27% above our model on the target and holds no sells, which means the disagreement is not about demand, it is about what the cash cycle is worth. The market pays for the backlog at full value; our model pays for the free cash flow after the capex.</p>
+  </div>
+ </div>
+ <div class="note">Sources: S&amp;P Global consensus via stockanalysis.com, TipRanks, and Morgan Stanley commentary as reported, October 2026. Consensus figures rest on aggregator reproduction of sell-side notes; confirm before presenting.</div>
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">03 / 23</span></div>
+</section>
+<section class="slide" data-region="s04.recommendation">
+ 
+ <h2 class="title">Recommendation</h2>
+ <div class="content">
+
+  <div class="grid g4">
+   <div class="card g" data-region="s04.r1"><h4>Recommendation</h4><div class="v">BUY</div><div class="d">The analyst's call</div></div>
+   <div class="card" data-region="s04.r2"><h4>Current price</h4><div class="v" style="font-size:26px;padding-top:8px">$354.25</div><div class="d">NASDAQ: GOOGL</div></div>
+   <div class="card g" data-region="s04.r3"><h4>Price target</h4><div class="v" style="font-size:26px;padding-top:8px">$314</div><div class="d">Discounted cash flow base case</div></div>
+   <div class="card g" data-region="s04.r4"><h4>Implied downside</h4><div class="v" style="font-size:26px;padding-top:8px">-11%</div><div class="d">versus the current price</div></div>
+  </div>
+  <div class="card" data-region="s04.r5">
+   <h4>Key takeaway</h4>
+   <p style="font-size:13.5px;line-height:1.65">A buy on a model that says the price is about right. The recommendation rests on the optionality the model cannot price: the $514B backlog converting at today's prices, TPU systems becoming a hardware business, and Waymo inside Other Bets. If any of the three lands, the model's 2030 free cash flow is too low.</p>
+  </div>
+ </div>
+ 
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">04 / 23</span></div>
+</section>
+<section class="slide" data-region="s05.the-big-idea">
+ 
+ <h2 class="title">The big idea</h2>
+ <div class="content">
+
+  <div class="card" data-region="s05.r1" style="padding:26px 30px">
+   <p class="serif" style="font-size:25px;line-height:1.5;color:var(--green-dark)">The company that monetizes artificial intelligence three times on the same dollar: as the landlord of the compute, the seller of the model, and the owner of the audience.</p>
+   <p style="font-size:13.5px;line-height:1.7;margin-top:14px">Rivals train on rented compute and distribute through someone else's surface. Alphabet is the landlord, the model vendor, and the surface. The open-source shift does not break that: open models still need somewhere to run, and the default consumer entry point for artificial intelligence is already a Google search box that a billion people use every month.</p>
+  </div>
+  <div class="grid g3">
+   <div class="card" data-region="s05.r2"><h4>The landlord</h4><div class="v" style="font-size:24px">$514B</div><div class="d">Cloud backlog, up $50B in one quarter, majority converting within 24 months</div></div>
+   <div class="card" data-region="s05.r3"><h4>The model vendor</h4><div class="v" style="font-size:24px">900M+</div><div class="d">Downloads of the open Gemini model family; frontier Gemini in 90% of the Fortune 100</div></div>
+   <div class="card" data-region="s05.r4"><h4>The audience</h4><div class="v" style="font-size:24px">1B+</div><div class="d">Monthly users of AI Mode in Search, on top of the default search box</div></div>
+  </div>
+ </div>
+ <div class="note">Sources: Alphabet Q2 2026 earnings call, July 22, 2026; Q2 2026 press release.</div>
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">05 / 23</span></div>
+</section>
+</section>
+<section class="mock-screen" data-screen="s01">
+<section class="slide dark" data-region="s06.business-products-and-industry">
+ 
+ 
+
+ <div class="content">
+
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+   <div class="divider-num">01</div>
+   <h2 class="title" style="font-size:40px;margin-top:10px">Business, Products and Industry</h2>
+   <div class="divider-list"><b>01</b> Business &nbsp; <b>02</b> Competition &nbsp; <b>03</b> Key Deals &nbsp; <b>04</b> Financials &nbsp; <b>05</b> Valuation</div>
+  </div>
+ </div>
+ 
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">06 / 23</span></div>
+</section>
+<section class="slide" data-region="s07.who-is-alphabet">
+ <div class="eyebrow">01 Business</div>
+ <h2 class="title">Who is Alphabet?</h2>
+ <div class="content">
+
+  <div class="card" data-region="s07.r1">
+   <p style="font-size:14px;line-height:1.7">Alphabet sells advertising on the largest audience in the world, rents computing through Google Cloud, sells subscriptions and devices, and places long-term bets on autonomous driving and drug discovery. In 2025 the advertising businesses produced $294.7B of revenue, Cloud $58.7B, and the consumer subscription line $48.0B.</p>
+  </div>
+  <div class="card" data-region="s07.r2">
+   <h4>Revenue by segment, 2025, $ billions</h4>
+   <svg viewBox="0 0 620 250" style="width:100%;max-width:560px;height:auto;display:block;margin:0 auto"><line x1="10" y1="190" x2="610" y2="190" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="110" x2="610" y2="110" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="30" x2="610" y2="30" stroke="#D7DADB" stroke-width="1"/><rect x="24" y="30" width="87" height="160" rx="5" fill="#00583D"/><text x="68" y="20" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$224.5B</text><text x="68" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Search and other</text><rect x="145" y="148" width="87" height="42" rx="5" fill="#51AB9F"/><text x="189" y="138" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$58.7B</text><text x="189" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Cloud</text><rect x="266" y="156" width="87" height="34" rx="5" fill="#51AB9F"/><text x="310" y="146" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$48B</text><text x="310" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Subs and devices</text><rect x="388" y="161" width="87" height="29" rx="5" fill="#51AB9F"/><text x="431" y="151" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$40.4B</text><text x="431" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">YouTube ads</text><rect x="509" y="169" width="87" height="21" rx="5" fill="#BE5D27"/><text x="552" y="159" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$29.8B</text><text x="552" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Network</text></svg>
+  </div>
+ </div>
+ <div class="note">Source: FMP stable/revenue-product-segmentation, fiscal 2025.</div>
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">07 / 23</span></div>
+</section>
+<section class="slide" data-region="s08.the-quarter-in-one-chart">
+ <div class="eyebrow">01 Business</div>
+ <h2 class="title">The quarter in one chart</h2>
+ <div class="content">
+
+  <div class="card" data-region="s08.r1">
+   <h4>Revenue by segment, Q2 2026, $ billions</h4>
+   <svg viewBox="0 0 560 250" style="width:100%;max-width:560px;height:auto;display:block;margin:0 auto"><line x1="10" y1="190" x2="550" y2="190" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="110" x2="550" y2="110" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="30" x2="550" y2="30" stroke="#D7DADB" stroke-width="1"/><rect x="24" y="30" width="75" height="160" rx="5" fill="#00583D"/><text x="62" y="20" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$63.3B</text><text x="62" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Search</text><rect x="133" y="127" width="75" height="63" rx="5" fill="#51AB9F"/><text x="171" y="117" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$24.8B</text><text x="171" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Cloud</text><rect x="242" y="157" width="75" height="33" rx="5" fill="#51AB9F"/><text x="280" y="147" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$12.9B</text><text x="280" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Subs+devices</text><rect x="352" y="162" width="75" height="28" rx="5" fill="#51AB9F"/><text x="389" y="152" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$11.1B</text><text x="389" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">YouTube ads</text><rect x="461" y="172" width="75" height="18" rx="5" fill="#BE5D27"/><text x="498" y="162" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$7.3B</text><text x="498" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Network</text></svg>
+  </div>
+  <div class="card" data-region="s08.r2">
+   <h4>Key takeaway</h4>
+   <p style="font-size:13.5px;line-height:1.65">Search grew 17% with monetization of AI Overviews and AI Mode inside it. Cloud grew 82% with GCP growing faster than Cloud overall. Management flags modest near-term margin pressure from leased third-party capacity and notes that most TPU system revenue is realized in 2027, not 2026.</p>
+  </div>
+ </div>
+ <div class="note">Source: Alphabet Q2 2026 press release; FMP stable/revenue-product-segmentation.</div>
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">08 / 23</span></div>
+</section>
+<section class="slide" data-region="s09.distribution-of-the-models">
+ <div class="eyebrow">01 Business</div>
+ <h2 class="title">Distribution of the models</h2>
+ <div class="content">
+
+  <div class="grid g3">
+   <div class="card" data-region="s09.r1"><h4>AI Mode in Search</h4><div class="v">1B+</div><div class="d">Monthly active users since global expansion last October</div></div>
+   <div class="card" data-region="s09.r2"><h4>Gemini Enterprise</h4><div class="v">90%</div><div class="d">Of the Fortune 100, on the enterprise agent platform</div></div>
+   <div class="card" data-region="s09.r3"><h4>Open Gemini models</h4><div class="v">900M+</div><div class="d">Downloads; the latest generation passed 300 million since April</div></div>
+  </div>
+  <div class="card" data-region="s09.r4">
+   <h4>Key takeaway</h4>
+   <p style="font-size:13.5px;line-height:1.65">The open-source shift the analyst flagged in Phase 1 is visible in Alphabet's own numbers: the company ships open weights at a 900-million-download scale and still wins, because the weights run on its compute and point back to its surfaces. Distribution is the hedge against commoditization.</p>
+  </div>
+ </div>
+ <div class="note">Source: Q2 2026 earnings call, July 22, 2026.</div>
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">09 / 23</span></div>
+</section>
+</section>
+<section class="mock-screen" data-screen="s02">
+<section class="slide dark" data-region="s10.competition">
+ 
+ 
+
+ <div class="content">
+
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+   <div class="divider-num">02</div>
+   <h2 class="title" style="font-size:40px;margin-top:10px">Competition</h2>
+   <div class="divider-list"><b>01</b> Business &nbsp; <b>02</b> Competition &nbsp; <b>03</b> Key Deals &nbsp; <b>04</b> Financials &nbsp; <b>05</b> Valuation</div>
+  </div>
+ </div>
+ 
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">10 / 23</span></div>
+</section>
+<section class="slide" data-region="s11.the-competitive-field">
+ <div class="eyebrow">02 Competition</div>
+ <h2 class="title">The competitive field</h2>
+ <div class="content">
+
+  <div class="grid g2">
+   <div class="card" data-region="s11.r1"><h4>Who competes for what</h4>
+    <p style="font-size:13px;line-height:1.7">Cloud: Amazon Web Services and Microsoft Azure, plus the neoclouds. Models: OpenAI and Anthropic at the frontier, open weights everywhere. Agents: Microsoft's Copilot stack inside enterprise distribution. Search: Answer engines and assistant surfaces carving queries away from the results page.</p></div>
+   <div class="card" data-region="s11.r2"><h4>Where Alphabet stands</h4>
+    <p style="font-size:13px;line-height:1.7">The only competitor holding positions in all three layers at once, and the only one whose model competitors are also its customers. Microsoft holds two layers and rents the third from OpenAI. Amazon holds one and buys the rest.</p></div>
+  </div>
+  <div class="card" data-region="s11.r3">
+   <h4>Key takeaway</h4>
+   <p style="font-size:13.5px;line-height:1.65">The kill condition is specific: Microsoft winning the enterprise agent frame, or a neocloud or Amazon Web Services taking the compute share. Cloud revenue growth of 82% and a $514B backlog say that has not happened yet.</p>
+  </div>
+ </div>
+ <div class="note">Cloud revenue and backlog figures per the Q2 2026 earnings call. Competitor revenue splits to be sourced before presenting.</div>
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">11 / 23</span></div>
+</section>
+<section class="slide" data-region="s12.the-stack-as-the-moat">
+ <div class="eyebrow">02 Competition</div>
+ <h2 class="title">The stack as the moat</h2>
+ <div class="content">
+
+  <div class="grid g3">
+   <div class="card" data-region="s12.r1"><h4>Compute</h4><div class="v" style="font-size:22px">TPU</div><div class="d">Own silicon plus Nvidia; TPU systems now sold into customer data centers for the first time</div></div>
+   <div class="card" data-region="s12.r2"><h4>Models</h4><div class="v" style="font-size:22px">Frontier + open</div><div class="d">Frontier Gemini for the enterprise, open weights for the long tail, both trained on Alphabet infrastructure</div></div>
+   <div class="card" data-region="s12.r3"><h4>Surfaces</h4><div class="v" style="font-size:22px">Search + YouTube</div><div class="d">The consumer entry points, with AI Mode past a billion monthly users</div></div>
+  </div>
+  <div class="card" data-region="s12.r4">
+   <h4>Key takeaway</h4>
+   <p style="font-size:13.5px;line-height:1.65">The moat is not any one layer; it is the margin structure of owning all three. A rival must beat Alphabet on compute economics, model quality, and distribution simultaneously. Google Cloud's operating margin going from 20.7% to 35.6% in a year is what owning the silicon does to the cost line.</p>
+  </div>
+ </div>
+ <div class="note">Source: Q2 2026 earnings call, July 22, 2026.</div>
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">12 / 23</span></div>
+</section>
+</section>
+<section class="mock-screen" data-screen="s03">
+<section class="slide dark" data-region="s13.key-deals-and-bets">
+ 
+ 
+
+ <div class="content">
+
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+   <div class="divider-num">03</div>
+   <h2 class="title" style="font-size:40px;margin-top:10px">Key Deals and Bets</h2>
+  </div>
+ </div>
+ 
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">13 / 23</span></div>
+</section>
+<section class="slide" data-region="s14.the-portfolio-of-bets">
+ <div class="eyebrow">03 Key Deals</div>
+ <h2 class="title">The portfolio of bets</h2>
+ <div class="content">
+
+  <div class="grid g3">
+   <div class="card" data-region="s14.r1"><h4>Waymo</h4><div class="v" style="font-size:22px">Scaling</div><div class="d">Sixth-generation driver vehicle in public service; the autonomous fleet thesis Alphabet already owns</div></div>
+   <div class="card" data-region="s14.r2"><h4>Isomorphic Labs</h4><div class="v" style="font-size:22px">$2B+</div><div class="d">Raised for artificial intelligence drug discovery, on the AlphaFold research base</div></div>
+   <div class="card" data-region="s14.r3"><h4>TPU systems</h4><div class="v" style="font-size:22px">New</div><div class="d">First quarter selling TPU systems into customer data centers; hardware as a new revenue line</div></div>
+  </div>
+  <div class="card" data-region="s14.r4">
+   <h4>Key takeaway</h4>
+   <p style="font-size:13.5px;line-height:1.65">Other Bets lost $1.8B on $382M of revenue in the quarter, which is the price of the option portfolio. The one that matters for the thesis is TPU systems: if Alphabet sells the machine that trains and serves the industry's models, the compute layer becomes a product business, not just a rental one.</p>
+  </div>
+ </div>
+ <div class="note">Source: Q2 2026 earnings call, July 22, 2026.</div>
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">14 / 23</span></div>
+</section>
+</section>
+<section class="mock-screen" data-screen="s04">
+<section class="slide dark" data-region="s15.financials">
+ 
+ 
+
+ <div class="content">
+
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+   <div class="divider-num">04</div>
+   <h2 class="title" style="font-size:40px;margin-top:10px">Financials</h2>
+  </div>
+ </div>
+ 
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">15 / 23</span></div>
+</section>
+<section class="slide" data-region="s16.revenue">
+ <div class="eyebrow">04 Financials</div>
+ <h2 class="title">Revenue</h2>
+ <div class="content">
+
+  <div class="card" data-region="s16.r1">
+   <h4>Revenue by year, $ billions</h4>
+   <svg viewBox="0 0 520 250" style="width:100%;max-width:560px;height:auto;display:block;margin:0 auto"><line x1="10" y1="190" x2="510" y2="190" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="110" x2="510" y2="110" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="30" x2="510" y2="30" stroke="#D7DADB" stroke-width="1"/><rect x="24" y="88" width="67" height="102" rx="5" fill="#51AB9F"/><text x="58" y="78" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$257.6B</text><text x="58" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">2021</text><rect x="125" y="78" width="67" height="112" rx="5" fill="#51AB9F"/><text x="159" y="68" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$282.8B</text><text x="159" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">2022</text><rect x="226" y="68" width="67" height="122" rx="5" fill="#51AB9F"/><text x="260" y="58" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$307.4B</text><text x="260" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">2023</text><rect x="328" y="51" width="67" height="139" rx="5" fill="#51AB9F"/><text x="361" y="41" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$350B</text><text x="361" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">2024</text><rect x="429" y="30" width="67" height="160" rx="5" fill="#00583D"/><text x="462" y="20" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$402.8B</text><text x="462" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">2025</text></svg>
+  </div>
+  <div class="card" data-region="s16.r2">
+   <h4>Key takeaway</h4>
+   <p style="font-size:13.5px;line-height:1.65">Revenue grew 15% in 2025 and 24% year over year in the second quarter of 2026, accelerating into the heaviest infrastructure spend in the company's history. Consensus has 2026 revenue at $498B, which the first half's $229.7B plus the current pace supports.</p>
+  </div>
+ </div>
+ <div class="note">Sources: FMP stable/income-statement; Q2 2026 press release.</div>
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">16 / 23</span></div>
+</section>
+<section class="slide" data-region="s17.profitability">
+ <div class="eyebrow">04 Financials</div>
+ <h2 class="title">Profitability</h2>
+ <div class="content">
+
+  <div class="grid g2">
+   <div class="card" data-region="s17.r1">
+    <h4>Operating income by quarter, $ billions</h4>
+    <svg viewBox="0 0 460 250" style="width:100%;max-width:560px;height:auto;display:block;margin:0 auto"><line x1="10" y1="190" x2="450" y2="190" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="110" x2="450" y2="110" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="30" x2="450" y2="30" stroke="#D7DADB" stroke-width="1"/><rect x="24" y="68" width="189" height="122" rx="5" fill="#51AB9F"/><text x="118" y="58" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$31.2B</text><text x="118" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Q2 2025</text><rect x="247" y="30" width="189" height="160" rx="5" fill="#00583D"/><text x="342" y="20" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$40.8B</text><text x="342" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Q2 2026</text></svg>
+   </div>
+   <div class="card" data-region="s17.r2">
+    <h4>Cloud profitability</h4>
+    <svg viewBox="0 0 460 250" style="width:100%;max-width:560px;height:auto;display:block;margin:0 auto"><line x1="10" y1="190" x2="450" y2="190" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="110" x2="450" y2="110" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="30" x2="450" y2="30" stroke="#D7DADB" stroke-width="1"/><rect x="24" y="30" width="189" height="160" rx="5" fill="#00583D"/><text x="118" y="20" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$24.8B</text><text x="118" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Cloud revenue</text><rect x="247" y="133" width="189" height="57" rx="5" fill="#FFC425"/><text x="342" y="123" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$8.8B</text><text x="342" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Cloud op income</text></svg>
+    <p style="font-size:11px;color:var(--subtle);margin-top:6px">Cloud operating margin 35.6% versus 20.7% a year ago.</p>
+   </div>
+  </div>
+  <div class="card" data-region="s17.r3">
+   <h4>Key takeaway</h4>
+   <p style="font-size:13.5px;line-height:1.65">Operating margin was 34% in the quarter, up with revenue. The caution: net income this year is flattered by $98B of other income and expenses, mostly unrealized gains on the $87.1B equity portfolio. The operating line, not the net line, is the read.</p>
+  </div>
+ </div>
+ <div class="note">Source: Q2 2026 press release and earnings call.</div>
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">17 / 23</span></div>
+</section>
+<section class="slide" data-region="s18.capex-and-cash-flow">
+ <div class="eyebrow">04 Financials</div>
+ <h2 class="title">Capex and cash flow</h2>
+ <div class="content">
+
+  <div class="card" data-region="s18.r1">
+   <h4>Capital expenditure by year, $ billions</h4>
+   <svg viewBox="0 0 520 250" style="width:100%;max-width:560px;height:auto;display:block;margin:0 auto"><line x1="10" y1="190" x2="510" y2="190" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="110" x2="510" y2="110" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="30" x2="510" y2="30" stroke="#D7DADB" stroke-width="1"/><rect x="24" y="164" width="92" height="26" rx="5" fill="#51AB9F"/><text x="70" y="154" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$32.3B</text><text x="70" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">2023</text><rect x="150" y="148" width="92" height="42" rx="5" fill="#51AB9F"/><text x="197" y="138" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$52.5B</text><text x="197" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">2024</text><rect x="277" y="117" width="92" height="73" rx="5" fill="#51AB9F"/><text x="323" y="107" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$91.4B</text><text x="323" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">2025</text><rect x="404" y="30" width="92" height="160" rx="5" fill="#FFC425"/><text x="450" y="20" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$200B</text><text x="450" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">2026 guide</text></svg>
+  </div>
+  
+  <div class="card" data-region="s18.r3">
+   <h4>Key takeaway</h4>
+   <p style="font-size:13.5px;line-height:1.65">Capex guidance is $195B to $205B, raised from $180B to $190B, with a significant increase in 2027, funded partly by an $84.75B equity raise in June 2026 that included a $10B Berkshire Hathaway private placement. Free cash flow was negative $5.9B in the quarter. The depreciation from this build lands after the revenue does.</p>
+  </div>
+ </div>
+ <div class="note">Source: Q2 2026 earnings call, July 22, 2026.</div>
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">18 / 23</span></div>
+</section>
+</section>
+<section class="mock-screen" data-screen="s05">
+<section class="slide dark" data-region="s19.valuation">
+ 
+ 
+
+ <div class="content">
+
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+   <div class="divider-num">05</div>
+   <h2 class="title" style="font-size:40px;margin-top:10px">Valuation</h2>
+  </div>
+ </div>
+ 
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">19 / 23</span></div>
+</section>
+<section class="slide" data-region="s20.discounted-cash-flow">
+ <div class="eyebrow">05 Valuation</div>
+ <h2 class="title">Discounted cash flow</h2>
+ <div class="content">
+
+  <div class="grid g3">
+   <div class="card" data-region="s20.r1">
+    <h4>Inputs</h4>
+    <table data-region="s20.r5" style="font-size:11.5px"><tbody>
+     <tr><td>Revenue 2030, consensus</td><td class="hi">$971.7B</td></tr>
+     <tr><td>Free cash flow 2027 to 2031</td><td class="hi">60, 95, 165, 243, 300B</td></tr>
+     <tr><td>Free cash flow 2030 margin</td><td class="hi">25% of revenue</td></tr>
+     <tr><td>Discount rate</td><td class="hi">9.5%</td></tr>
+     <tr><td>Terminal growth</td><td class="hi">3.0%</td></tr>
+     <tr><td>Net cash plus equity stakes</td><td class="hi">$154.6B</td></tr>
+     <tr><td>Shares</td><td class="hi">12.10B</td></tr>
+    </tbody></table>
+   </div>
+   <div class="card" data-region="s20.r2">
+    <h4>Value per share sensitivity</h4>
+    <table data-region="s20.r6" style="font-size:11.5px">
+     <thead><tr><th>Discount rate</th><th>2.5%</th><th>3.0%</th><th>3.5%</th></tr></thead>
+     <tbody>
+      <tr><td>8.5%</td><td>347</td><td>374</td><td>407</td></tr>
+      <tr><td class="hi">9.5%</td><td class="hi">295</td><td class="hi">314</td><td class="hi">337</td></tr>
+      <tr><td>10.5%</td><td>255</td><td>269</td><td>285</td></tr>
+     </tbody></table>
+    <p style="font-size:11px;color:var(--subtle);margin-top:8px">Columns are terminal growth. Free cash flow ramps as backlog converts and the capex cycle normalizes.</p>
+   </div>
+   <div class="card" data-region="s20.r3">
+    <h4>Model against the market</h4>
+    <svg viewBox="0 0 520 240" style="width:100%;max-width:520px;height:auto;display:block;margin:0 auto"><line x1="10" y1="190" x2="510" y2="190" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="110" x2="510" y2="110" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="30" x2="510" y2="30" stroke="#D7DADB" stroke-width="1"/><rect x="24" y="41" width="137" height="149" rx="5" fill="#00583D"/><text x="93" y="31" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">$354.25</text><text x="93" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Current price</text><rect x="191" y="30" width="137" height="160" rx="5" fill="#51AB9F"/><text x="260" y="20" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">$380.17</text><text x="260" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Consensus target</text><rect x="359" y="58" width="137" height="132" rx="5" fill="#FFC425"/><text x="427" y="48" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">$314</text><text x="427" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Model value</text></svg>
+   </div>
+  </div>
+  <div class="card" data-region="s20.r4" style="display:flex;align-items:center;gap:32px;padding:14px 20px">
+   <div><h4 style="margin-bottom:2px">Value per share</h4><div class="serif" style="font-size:22px;color:var(--green-dark)">$314</div></div>
+   <div><h4 style="margin-bottom:2px">Against the price</h4><div class="serif" style="font-size:22px;color:var(--secondary-fg);background:var(--secondary);padding:2px 10px;border-radius:6px">-11%</div></div>
+   <div style="margin-left:auto;font-size:11.5px;color:var(--subtle);max-width:44ch;line-height:1.5">The market is pricing the 2030 free cash flow year almost exactly. The upside case needs the terminal free cash flow margin above 25%, or the backlog repricing higher.</div>
+  </div>
+ </div>
+ <div class="note">Sources: FMP stable/analyst-estimates and stable/quote, October 9, 2026. Free cash flow path is the analyst's estimate on consensus revenue.</div>
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">20 / 23</span></div>
+</section>
+<section class="slide" data-region="s21.the-bull-case">
+ <div class="eyebrow">05 Valuation</div>
+ <h2 class="title">The bull case</h2>
+ <div class="content">
+
+  <div class="grid g2">
+   <div class="card" data-region="s21.r1"><h4>1. The backlog is contracted revenue</h4><p style="font-size:12.5px;line-height:1.6">$514B converting within 24 months, at margins that just went from 20.7% to 35.6%. The model's free cash flow ramp may still be conservative.</p></div>
+   <div class="card" data-region="s21.r2"><h4>2. TPU systems is a new product line</h4><p style="font-size:12.5px;line-height:1.6">Selling the machine changes the compute layer from rental margin to hardware plus rental margin, the Amazon Web Services to Alphabet's own infrastructure.</p></div>
+  </div>
+  <div class="grid g2">
+   <div class="card" data-region="s21.r3"><h4>3. Distribution nobody can copy</h4><p style="font-size:12.5px;line-height:1.6">A billion monthly users of AI Mode, 90% of the Fortune 100 on the enterprise platform, and the default search box. Distribution is the hedge if models commoditize.</p></div>
+   <div class="card" data-region="s21.r4"><h4>4. The option portfolio is free</h4><p style="font-size:12.5px;line-height:1.6">Waymo, Isomorphic, and the $87.1B equity portfolio sit outside the model. Optionality the market is not paying for, per the model's own math.</p></div>
+  </div>
+ </div>
+ <div class="note">The bull case rests on the sourced figures above. The model value of $314 assumes none of the four land above their current run rates.</div>
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">21 / 23</span></div>
+</section>
+<section class="slide" data-region="s22.the-bear-case-and-the-risks">
+ <div class="eyebrow">05 Valuation</div>
+ <h2 class="title">The bear case and the risks</h2>
+ <div class="content">
+
+  <div class="grid g2">
+   <div class="card" data-region="s22.r1" style="border-left:5px solid var(--destructive)">
+    <h4>Backlog repricing</h4><p style="font-size:12.5px;line-height:1.6">Weight: medium. Compute commitments are priced at signing. If capacity loosens, renewals reprice down, and the 35.6% margin is the peak of the cycle.</p></div>
+   <div class="card" data-region="s22.r2" style="border-left:5px solid var(--destructive)">
+    <h4>Microsoft's agent frame</h4><p style="font-size:12.5px;line-height:1.6">Weight: medium. If enterprise agent workflows consolidate into the Microsoft 365 stack, Gemini Enterprise's penetration has to convert against Redmond's distribution advantage.</p></div>
+  </div>
+  <div class="grid g2">
+   <div class="card" data-region="s22.r3" style="border-left:5px solid var(--destructive)">
+    <h4>Search monetization under AI Mode</h4><p style="font-size:12.5px;line-height:1.6">Weight: medium. The cash cow funds $200B a year of capex. Artificial intelligence answers compress clicks; management reports incremental queries, the counter is lower revenue per query.</p></div>
+   <div class="card" data-region="s22.r4" style="border-left:5px solid var(--destructive)">
+    <h4>Open weights running elsewhere</h4><p style="font-size:12.5px;line-height:1.6">Weight: noise to low. Open weights run on any cloud, but the default surfaces and the enterprise contracts still route through Google.</p></div>
+  </div>
+  <div class="grid g2">
+   <div class="card" data-region="s22.r5" style="border-left:5px solid var(--destructive)">
+    <h4>Dilution from the June raise</h4><p style="font-size:12.5px;line-height:1.6">Weight: low to medium. $18B of common stock plus $16.75B of mandatory convertible preferred (6.25%, converting by May 2029) plus a $40B at-the-market program. The share count grows into the model's per-share value.</p></div>
+   <div class="card" data-region="s22.r6" style="border-left:5px solid var(--destructive)">
+    <h4>Securities class action, filed October 9, 2026</h4><p style="font-size:12.5px;line-height:1.6">Weight: low for the model, but it is the news of the week. The suit alleges misrepresentation of Gemini 3.5 Pro progress after a 4% stock drop. It is disclosure risk, not operating risk.</p></div>
+  </div>
+  <div class="card" data-region="s22.r7">
+   <h4>Key takeaway</h4>
+   <p style="font-size:13px;line-height:1.65">The analyst ruled the net-cash-evaporation case low weight: $126.8B of cash against a $200B year is deliberate, and the equity portfolio is a store of value, not a liability. The risks that matter are the two contract-priced ones: backlog repricing and the agent frame.</p>
+  </div>
+ </div>
+ 
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">22 / 23</span></div>
+</section>
+<section class="slide dark" data-region="s23.sources">
+ 
+ <h2 class="title">Sources</h2>
+ <div class="content">
+
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+   <h2 class="title" style="font-size:38px">Sources</h2>
+   <div style="margin-top:22px;font-size:12px;line-height:2.0;color:rgba(251,251,249,.78)">
+    <b style="color:var(--secondary)">Primary</b> - Alphabet Q2 2026 press release and earnings call, July 22, 2026 (transcript via Financial Modeling Prep) - segment revenues and backlog per company disclosures<br/>
+    <b style="color:var(--secondary)">Grounding</b> - Alphabet SEC exhibits for the June 2026 equity raise (sec.gov) - Reuters and CNBC for the six-year Meta Cloud agreement (August 2025) - securities class action notice (October 9, 2026)<br/>
+    <b style="color:var(--secondary)">Data</b> - Financial Modeling Prep stable API, October 9, 2026: income statement, cash flow statement, balance sheet, product segmentation, analyst estimates, price target summary, quote<br/>
+    <b style="color:var(--secondary)">Method</b> - Bison Fund discipline: analyst thesis first, every figure sourced and dated, mandatory bear case, model inputs stated, judgment calls with the analyst
+   </div>
+  </div>
+ </div>
+ 
+ <div class="foot"><span>Alphabet Inc Equity Pitch</span><span class="pageno">23 / 23</span></div>
+</section>
+</section>
+</div>
+<div id="cx-pop">
+  <div class="cx-pop-region" id="cx-pop-region"></div>
+  <textarea id="cx-pop-text" placeholder="What should change here?"></textarea>
+  <div class="cx-pop-actions">
+    <button class="cx-save" id="cx-pop-save">Save</button>
+    <button id="cx-pop-cancel" style="font-size:12px;color:var(--muted-fg)">Cancel</button>
+    <button class="cx-del" id="cx-pop-del">Delete</button>
+  </div>
+</div>
+<div id="cx-panel">
+  <header><span>Comments</span><button type="button" id="cx-panel-close" aria-label="Close comments">&times;</button></header>
+  <div id="cx-list"></div>
+  <footer>Click an item to jump to its pin. Copy feedback exports all of it as markdown.</footer>
+</div>
+<script>
+
+/* ============================================================
+   Comment layer. Comments are stored in localStorage and
+   exported as markdown via "Copy feedback". Each one is anchored
+   to a data-region name so the exported note says WHERE it applies.
+   Keep as-is.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  // Per-mockup storage key - change for each new mockup.
+  var STORE = 'bison-googl-pitch-comments-v1';
+  var comments = [];
+  var mode = false;
+  var editing = null;
+  var isNew = false;
+
+  // Screens in DOM order; the first is the default.
+  var SCREENS = Array.prototype.map.call(
+    document.querySelectorAll('.mock-screen'),
+    function (s) { return s.getAttribute('data-screen'); }
+  );
+
+  /* ---------- storage ---------- */
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORE);
+      comments = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(comments)) comments = [];
+    } catch (e) {
+      comments = [];  // private window / blocked storage must not break the mockup
+    }
+  }
+  function save() {
+    try {
+      localStorage.setItem(STORE, JSON.stringify(comments));
+    } catch (e) { /* pins still work for this session */ }
+  }
+
+  /* ---------- element lookups ---------- */
+  function $(id) { return document.getElementById(id); }
+  function regionEl(name) {
+    return document.querySelector('[data-region="' + name + '"]');
+  }
+  function activeScreenEl() {
+    return document.querySelector('.mock-screen.cx-active');
+  }
+  function activeScreen() {
+    var el = activeScreenEl();
+    return el ? el.getAttribute('data-screen') : (SCREENS[0] || '');
+  }
+  function gotoScreen(name) {
+    Array.prototype.forEach.call(document.querySelectorAll('.mock-screen'), function (s) {
+      s.classList.toggle('cx-active', s.getAttribute('data-screen') === name);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#cx-screens [data-goto]'), function (b) {
+      if (b.getAttribute('data-goto') === name) b.setAttribute('aria-current', 'true');
+      else b.removeAttribute('aria-current');
+    });
+    renderPins();
+  }
+
+  /* ---------- rendering ---------- */
+  function renumber() {
+    comments.forEach(function (c, i) { c.n = i + 1; });
+  }
+
+  function renderPins() {
+    Array.prototype.forEach.call(document.querySelectorAll('.cx-pin'), function (p) {
+      p.parentNode.removeChild(p);
+    });
+    comments.forEach(function (c) {
+      var host = regionEl(c.region);
+      if (!host) return;
+      var pin = document.createElement('button');
+      pin.type = 'button';
+      pin.className = 'cx-pin';
+      pin.textContent = c.n;
+      pin.style.left = c.x + '%';
+      pin.style.top = c.y + '%';
+      pin.title = c.text || '(empty)';
+      pin.setAttribute('data-cid', c.id);
+      host.appendChild(pin);
+    });
+  }
+
+  function renderList() {
+    var list = $('cx-list');
+    list.innerHTML = '';
+    if (!comments.length) {
+      list.innerHTML = '<div class="cx-empty">No comments yet. Turn on comment mode and click anything.</div>';
+      return;
+    }
+    comments.forEach(function (c) {
+      var item = document.createElement('div');
+      item.className = 'cx-item';
+      item.setAttribute('data-cid', c.id);
+      var n = document.createElement('span');
+      n.className = 'cx-n';
+      n.textContent = c.n;
+      var body = document.createElement('span');
+      body.className = 'cx-body';
+      var reg = document.createElement('span');
+      reg.className = 'cx-region';
+      reg.textContent = (c.screen ? c.screen + ':' : '') + c.region;
+      var txt = document.createElement('span');
+      txt.className = 'cx-text';
+      txt.textContent = c.text || '(empty)';
+      body.appendChild(reg);
+      body.appendChild(txt);
+      item.appendChild(n);
+      item.appendChild(body);
+      list.appendChild(item);
+    });
+  }
+
+  function renderCount() {
+    var n = comments.length;
+    $('cx-count').textContent = n === 1 ? '1 comment' : n + ' comments';
+  }
+
+  function render() {
+    renumber();
+    renderPins();
+    renderList();
+    renderCount();
+  }
+
+  /* ---------- popover ---------- */
+  function openPop(c, atX, atY, created) {
+    editing = c;
+    isNew = !!created;
+    $('cx-pop-region').textContent = c.region;
+    $('cx-pop-text').value = c.text || '';
+    var pop = $('cx-pop');
+    pop.classList.add('cx-show');
+    var w = 280, h = pop.offsetHeight || 160;
+    var left = Math.min(atX + 12, window.innerWidth - w - 8);
+    var top = Math.min(atY + 12, window.innerHeight - h - 8);
+    pop.style.left = Math.max(8, left) + 'px';
+    pop.style.top = Math.max(8, top) + 'px';
+    $('cx-pop-text').focus();
+  }
+  function closePop(discardEmptyNew) {
+    if (discardEmptyNew && editing && isNew && !editing.text.trim()) {
+      comments = comments.filter(function (c) { return c.id !== editing.id; });
+      save();
+      render();
+    }
+    editing = null;
+    isNew = false;
+    $('cx-pop').classList.remove('cx-show');
+  }
+
+  /* ---------- toast ---------- */
+  var toastTimer = null;
+  function toast(msg) {
+    var t = $('cx-toast');
+    t.textContent = msg;
+    t.classList.add('cx-show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('cx-show'); }, 1800);
+  }
+
+  /* ---------- comment mode ---------- */
+  function setMode(on) {
+    mode = on;
+    document.body.classList.toggle('cx-on', mode);
+    $('cx-toggle').setAttribute('aria-pressed', mode ? 'true' : 'false');
+    if (mode) toast('Comment mode on - click any part of the mockup.');
+  }
+  $('cx-toggle').addEventListener('click', function () { setMode(!mode); });
+
+  // Capture phase + stopPropagation so a comment click never triggers the
+  // mockup's own controls underneath it.
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (t.closest('#cx-bar, #cx-panel, #cx-pop, #cx-toast')) return;
+
+    var pin = t.closest('.cx-pin');
+    if (pin) {
+      e.preventDefault();
+      e.stopPropagation();
+      var cid = pin.getAttribute('data-cid');
+      var c = comments.filter(function (x) { return x.id === cid; })[0];
+      if (c) {
+        var r = pin.getBoundingClientRect();
+        openPop(c, r.left, r.bottom, false);
+      }
+      return;
+    }
+
+    // Screen navigation - only when comment mode is off, so a comment
+    // click on a nav element comments instead of navigating.
+    var nav = t.closest('[data-nav]');
+    if (nav && !mode) {
+      e.preventDefault();
+      e.stopPropagation();
+      gotoScreen(nav.getAttribute('data-nav'));
+      return;
+    }
+
+    if (!mode) return;
+    var region = t.closest('[data-region]');
+    if (!region) return;
+    // Regions on a hidden screen can't be clicked, but guard anyway so a
+    // stale event can't anchor a comment to the wrong screen.
+    if (!activeScreenEl().contains(region)) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    var box = region.getBoundingClientRect();
+    var c2 = {
+      id: 'c' + Date.now() + Math.floor(Math.random() * 1000),
+      screen: activeScreen(),
+      region: region.getAttribute('data-region'),
+      text: '',
+      x: +(((e.clientX - box.left) / box.width) * 100).toFixed(2),
+      y: +(((e.clientY - box.top) / box.height) * 100).toFixed(2)
+    };
+    comments.push(c2);
+    save();
+    render();
+    openPop(c2, e.clientX, e.clientY, true);
+  }, true);
+
+  /* ---------- popover actions ---------- */
+  $('cx-pop-save').addEventListener('click', function () {
+    if (!editing) return;
+    editing.text = $('cx-pop-text').value.trim();
+    if (!editing.text) {
+      comments = comments.filter(function (c) { return c.id !== editing.id; });
+    }
+    save();
+    var wasNew = isNew;
+    editing = null;
+    isNew = false;
+    $('cx-pop').classList.remove('cx-show');
+    render();
+    if (wasNew) toast('Comment saved.');
+  });
+  $('cx-pop-cancel').addEventListener('click', function () { closePop(true); });
+  $('cx-pop-del').addEventListener('click', function () {
+    if (!editing) return;
+    comments = comments.filter(function (c) { return c.id !== editing.id; });
+    save();
+    editing = null;
+    isNew = false;
+    $('cx-pop').classList.remove('cx-show');
+    render();
+  });
+  // Cmd/Ctrl+Enter saves; Escape backs out.
+  $('cx-pop-text').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); $('cx-pop-save').click(); }
+    if (e.key === 'Escape') { e.preventDefault(); closePop(true); }
+  });
+
+  /* ---------- panel ---------- */
+  $('cx-open-panel').addEventListener('click', function () {
+    $('cx-panel').classList.toggle('cx-show');
+  });
+  $('cx-panel-close').addEventListener('click', function () {
+    $('cx-panel').classList.remove('cx-show');
+  });
+  $('cx-list').addEventListener('click', function (e) {
+    var item = e.target.closest('.cx-item');
+    if (!item) return;
+    var cid = item.getAttribute('data-cid');
+    var pin = document.querySelector('.cx-pin[data-cid="' + cid + '"]');
+    if (!pin) return;
+    pin.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    pin.classList.add('cx-flash');
+    setTimeout(function () { pin.classList.remove('cx-flash'); }, 1200);
+  });
+
+  /* ---------- export ---------- */
+  function toMarkdown() {
+    if (!comments.length) return '';
+    var out = ['## Mockup feedback - ' + new Date().toISOString().slice(0, 10)];
+    out.push('');
+    SCREENS.forEach(function (scr) {
+      var mine = comments.filter(function (c) { return (c.screen || SCREENS[0]) === scr; });
+      if (!mine.length) return;
+      out.push('### screen: ' + scr);
+      mine.forEach(function (c) {
+        out.push(c.n + '. [' + c.region + '] ' + (c.text || '(empty)'));
+      });
+      out.push('');
+    });
+    return out.join('\n');
+  }
+
+  function copyText(text) {
+    // file:// pages can't always reach the async clipboard API, so fall back
+    // to the execCommand path rather than silently failing.
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(
+        function () { toast('Copied - paste it into your session.'); },
+        function () { toast(fallback() ? 'Copied - paste it into your session.' : 'Copy failed - select from the List panel.'); }
+      );
+    } else {
+      toast(fallback() ? 'Copied - paste it into your session.' : 'Copy failed - select from the List panel.');
+    }
+  }
+
+  $('cx-copy').addEventListener('click', function () {
+    var md = toMarkdown();
+    if (!md) { toast('No comments to copy yet.'); return; }
+    copyText(md);
+  });
+
+  $('cx-clear').addEventListener('click', function () {
+    if (!comments.length) { toast('Nothing to clear.'); return; }
+    if (!confirm('Delete all ' + comments.length + ' comments?')) return;
+    comments = [];
+    save();
+    closePop(false);
+    render();
+    toast('Cleared.');
+  });
+
+  /* ---------- screens bar ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll('#cx-screens [data-goto]'), function (b) {
+    b.addEventListener('click', function () {
+      gotoScreen(b.getAttribute('data-goto'));
+    });
+  });
+
+  /* ---------- keyboard ---------- */
+  document.addEventListener('keydown', function (e) {
+    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+    if (e.key === 'c' && !e.metaKey && !e.ctrlKey && !e.altKey) { setMode(!mode); }
+    if (e.key === 'Escape') { closePop(true); $('cx-panel').classList.remove('cx-show'); }
+  });
+
+  /* ---------- boot ---------- */
+  load();
+  render();
+  gotoScreen(SCREENS[0]);
+  window.addEventListener('resize', renderPins);
+})();
+
+</script>
+
+<script>
+(function () {
+  var b = document.getElementById('cx-pdf');
+  if (!b) return;
+  b.addEventListener('click', function () {
+    var t = document.getElementById('cx-toast');
+    if (t) { t.textContent = 'Save as PDF. For the dark design, tick Background graphics in More settings.';
+             t.classList.add('cx-show'); setTimeout(function(){ t.classList.remove('cx-show'); }, 2600); }
+    setTimeout(function () { window.print(); }, 250);
+  });
+})();
+</script>
+
+</body>
+</html>
