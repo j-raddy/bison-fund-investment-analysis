@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bison Fund, Uber equity pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+/* Bison Fund design tokens */
+:root{
+  --font-sans:"Montserrat","Gotham",ui-sans-serif,system-ui,sans-serif;
+  --font-serif:"Source Serif 4","New Spirit",ui-serif,Georgia,serif;
+  --background:#F2F3F3; --foreground:#282C2F; --card:#FFFFFF; --offwhite:#FBFBF9;
+  --primary:#00583D; --primary-fg:#FFFFFF; --secondary:#FFC425; --secondary-fg:#003524;
+  --muted:#F2F3F3; --muted-fg:#686E6D; --accent:#D4ECE6; --accent-fg:#003524;
+  --destructive:#C62828; --border:#D7DADB; --ring:#00583D;
+  --green-dark:#003524; --green-deep:#00221B; --teal:#51AB9F; --harvest:#BE5D27;
+  --night:#0E364B; --subtle:#686E6D; --link:#785D03;
+  --chart-1:#00583D; --chart-2:#FFC425; --chart-3:#51AB9F; --chart-4:#BE5D27; --chart-5:#0E364B;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body { height:100%; }
+body { font-family:var(--font-sans); color:var(--foreground); font-size:14px; line-height:1.5;
+       display:flex; flex-direction:column; overflow:hidden; -webkit-font-smoothing:antialiased; }
+a { color:var(--primary); text-decoration:none; }
+.slide { width:1280px; height:720px; margin:0 auto; flex:none; background:var(--background);
+  position:relative; padding:52px 64px 64px; overflow:hidden; display:flex; flex-direction:column; }
+.slide.dark { background:var(--green-dark); color:var(--offwhite); }
+.serif { font-family:var(--font-serif); font-weight:300; }
+.eyebrow { font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--primary); font-weight:700; margin-bottom:8px; }
+.dark .eyebrow { color:var(--secondary); }
+h2.title { font-family:var(--font-serif); font-weight:300; font-size:34px; line-height:1.12; color:var(--green-dark); margin-bottom:6px; }
+.dark h2.title { color:var(--offwhite); }
+p.sub { font-size:14px; color:var(--subtle); margin-bottom:22px; max-width:75ch; }
+.dark p.sub { color:rgba(251,251,249,.75); }
+.slide:has(.note) .content { padding-bottom:42px; }
+.content { flex:1; display:flex; flex-direction:column; gap:16px; min-height:0; justify-content:space-evenly; }
+.foot { position:absolute; left:64px; right:64px; bottom:26px; display:flex; justify-content:space-between;
+  font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--subtle); }
+.dark .foot { color:rgba(251,251,249,.55); }
+.foot .pageno { font-variant-numeric:tabular-nums; }
+.grid { display:grid; gap:14px; }
+.g2 { grid-template-columns:1fr 1fr; } .g3 { grid-template-columns:repeat(3,1fr); } .g4 { grid-template-columns:repeat(4,1fr); }
+.card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px 20px; }
+.card h4 { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--subtle); margin-bottom:8px; font-weight:600; }
+.card .v { font-family:var(--font-serif); font-weight:300; font-size:32px; color:var(--green-dark);
+  font-variant-numeric:tabular-nums; line-height:1.1; }
+.card .d { font-size:12px; color:var(--subtle); margin-top:6px; line-height:1.5; }
+.card .v.pos { color:var(--primary); } .card .v.neg { color:var(--destructive); }
+.card.y { background:#FFF4D6; border-color:#FFE68A; }
+.card.y h4, .card.y .v { color:var(--secondary-fg); }
+.card.y .d { color:#5A4A16; }
+.card.g { background:var(--accent); border-color:#A9D9CE; }
+.card.g h4, .card.g .v { color:var(--green-dark); }
+.card.g .d { color:#3D5B52; }
+.bullets { list-style:none; }
+.bullets li { font-size:14px; line-height:1.55; padding:9px 0 9px 22px; position:relative; border-bottom:1px solid var(--border); }
+.bullets li:last-child { border-bottom:0; }
+.bullets li:before { content:""; position:absolute; left:4px; top:16px; width:8px; height:8px; border-radius:50%; background:var(--secondary); }
+.bullets b { font-weight:600; color:var(--green-dark); }
+.note { font-size:10.5px; color:var(--subtle); line-height:1.5; position:absolute; left:64px; right:64px; bottom:48px; }
+.src { color:var(--muted-fg); font-style:italic; }
+table { width:100%; border-collapse:collapse; font-size:13px; background:var(--card);
+  border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+th, td { padding:9px 12px; text-align:right; border-bottom:1px solid var(--border); font-variant-numeric:tabular-nums; }
+th:first-child, td:first-child { text-align:left; font-variant-numeric:normal; font-weight:500; }
+thead th { background:var(--primary); color:#fff; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; font-weight:600; text-align:right; }
+thead th:first-child { text-align:left; }
+tbody tr:last-child td { border-bottom:0; }
+tbody tr:hover { background:var(--muted); }
+td.hi { color:var(--green-dark); font-weight:600; } td.neg { color:var(--destructive); }
+.chart { display:flex; align-items:flex-end; gap:18px; height:230px; margin-top:14px; }
+.bar { flex:1; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:6px; }
+.bar .col { width:100%; border-radius:6px 6px 0 0; position:relative; }
+.bar .lab { font-size:11.5px; color:var(--subtle); font-variant-numeric:tabular-nums; }
+.bar .cat { font-size:10.5px; color:var(--subtle); margin-top:2px; }
+.divider-num { font-family:var(--font-serif); font-weight:300; font-size:120px; line-height:1; color:var(--secondary); }
+.divider-list { margin-top:28px; font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:rgba(251,251,249,.65); line-height:2.2; }
+.divider-list b { color:var(--secondary); font-weight:600; }
+.own { border:1px solid #A9D9CE; background:var(--accent); border-radius:10px; padding:16px 20px; }
+.own h4 { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--green-dark); font-weight:700; margin-bottom:6px; }
+.own p { font-size:13px; color:#2C4A41; line-height:1.55; }
+.blank { display:inline-block; min-width:120px; border-bottom:2px solid var(--green-dark); height:16px; vertical-align:baseline; }
+.deal { background:var(--card); border:1px solid var(--border); border-left:5px solid var(--primary); border-radius:8px; padding:16px 20px; }
+.deal h3 { font-family:var(--font-serif); font-weight:400; font-size:19px; color:var(--green-dark); margin-bottom:6px; }
+.deal .meta { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--harvest); font-weight:600; margin-bottom:8px; }
+.deal p { font-size:13px; line-height:1.6; color:var(--foreground); }
+.pill { display:inline-block; background:var(--accent); color:var(--accent-fg); font-size:11px; font-weight:600; padding:4px 10px; border-radius:999px; margin:0 6px 6px 0; }
+.badge-buy { display:inline-block; background:var(--secondary); color:var(--secondary-fg); font-size:13px; font-weight:700; letter-spacing:.12em; padding:8px 22px; border-radius:6px; }
+
+/* ============================================================
+   1. Harness chrome - deliberately unlike the product. Keep as-is.
+   ============================================================ */
+#cx-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+  height: 44px;
+  background: var(--cx-bar);
+  color: var(--cx-bar-fg);
+  font-size: 12px;
+  z-index: 60;
+}
+#cx-bar .cx-brand {
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 11px;
+  opacity: 0.65;
+}
+#cx-bar .cx-spacer { flex: 1; }
+#cx-bar .cx-btn {
+  padding: 4px 10px;
+  border: 1px solid rgba(255,255,255,0.25);
+  white-space: nowrap;
+}
+#cx-bar .cx-btn:hover { border-color: rgba(255,255,255,0.6); }
+#cx-bar .cx-btn[aria-pressed="true"] {
+  background: var(--cx-accent);
+  border-color: var(--cx-accent);
+  color: #fff;
+  font-weight: 600;
+}
+#cx-bar .cx-screens { display: flex; gap: 2px; }
+#cx-bar .cx-screens button {
+  padding: 4px 10px;
+  opacity: 0.6;
+  border-bottom: 2px solid transparent;
+}
+#cx-bar .cx-screens button[aria-current="true"] {
+  opacity: 1;
+  border-bottom-color: var(--cx-accent);
+}
+#cx-bar .cx-count {
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+#cx-toast {
+  position: fixed;
+  left: 50%;
+  top: 54px;
+  transform: translateX(-50%);
+  background: var(--cx-bar);
+  color: var(--cx-bar-fg);
+  padding: 6px 14px;
+  font-size: 12px;
+  z-index: 80;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s;
+}
+#cx-toast.cx-show { opacity: 1; }
+
+/* ============================================================
+   2. Comment layer - keep as-is.
+   ============================================================ */
+body.cx-on [data-region] { cursor: crosshair; }
+body.cx-on [data-region]:hover {
+  outline: 2px dashed var(--cx-accent);
+  outline-offset: -2px;
+}
+body.cx-on [data-region]:hover [data-region]:not(:hover) { outline: none; }
+
+[data-region] { position: relative; }
+
+.cx-pin {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  background: var(--cx-accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+  z-index: 40;
+  font-variant-numeric: tabular-nums;
+}
+.cx-pin:hover, .cx-pin.cx-flash { outline: 3px solid rgba(109,40,217,0.35); }
+
+#cx-pop {
+  position: fixed;
+  width: 280px;
+  background: var(--card);
+  border: 1px solid var(--cx-bar);
+  padding: 10px;
+  z-index: 70;
+  display: none;
+}
+#cx-pop.cx-show { display: block; }
+#cx-pop .cx-pop-region {
+  font-size: 11px;
+  color: var(--muted-foreground);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  margin-bottom: 6px;
+  word-break: break-all;
+}
+#cx-pop textarea {
+  width: 100%;
+  min-height: 76px;
+  font: inherit;
+  font-size: 13px;
+  padding: 6px;
+  border: 1px solid var(--input);
+  background: #fff;
+  resize: vertical;
+}
+#cx-pop .cx-pop-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  align-items: center;
+}
+#cx-pop .cx-save {
+  background: var(--cx-bar);
+  color: var(--cx-bar-fg);
+  padding: 4px 12px;
+  font-size: 12px;
+}
+#cx-pop .cx-del {
+  color: var(--destructive);
+  font-size: 12px;
+  margin-left: auto;
+}
+
+#cx-panel {
+  position: fixed;
+  right: 0;
+  top: 44px;
+  bottom: 0;
+  width: 300px;
+  background: var(--cx-bar);
+  color: var(--cx-bar-fg);
+  z-index: 65;
+  display: none;
+  flex-direction: column;
+}
+#cx-panel.cx-show { display: flex; }
+#cx-panel header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+#cx-panel header button { margin-left: auto; opacity: 0.7; font-size: 16px; line-height: 1; }
+#cx-list { flex: 1; overflow-y: auto; padding: 8px; }
+#cx-list .cx-item {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+  font-size: 12.5px;
+}
+#cx-list .cx-item:hover { background: rgba(255,255,255,0.06); }
+#cx-list .cx-n {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  background: var(--cx-accent);
+  color: #fff;
+  text-align: center;
+  line-height: 18px;
+  font-size: 11px;
+  font-weight: 600;
+}
+#cx-list .cx-body { min-width: 0; }
+#cx-list .cx-region {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10.5px;
+  opacity: 0.55;
+  word-break: break-all;
+}
+#cx-list .cx-text { display: block; white-space: pre-wrap; }
+#cx-list .cx-empty { padding: 14px 8px; opacity: 0.5; font-size: 12px; }
+#cx-panel footer {
+  flex: none;
+  padding: 10px 12px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  font-size: 11px;
+  opacity: 0.55;
+}
+
+
+
+#cx-stage { flex:1; min-height:0; display:flex; }
+.mock-screen { flex:1; min-width:0; display:none; flex-direction:column; align-items:center;
+  gap:26px; padding:26px; background:#DDE1E1; overflow-y:auto; }
+.mock-screen.cx-active { display:flex; }
+:root { --cx-bar:#00583D; --cx-bar-fg:#FBFBF9; --cx-accent:#FFC425; --cx-accent-ink:#003524; }
+#cx-bar .cx-brand { opacity:.85; }
+#cx-bar .cx-btn[aria-pressed="true"] { color:var(--cx-accent-ink); }
+#cx-bar .cx-screens button[aria-current="true"] { border-bottom-color:var(--cx-accent); }
+.cx-pin { color:var(--cx-accent-ink); }
+#cx-list .cx-n { color:var(--cx-accent-ink); }
+@media print {
+  @page { size: 1280px 720px; margin: 0; }
+  html, body { height:auto !important; overflow:visible !important; display:block !important; background:#fff !important; margin:0 !important; padding:0 !important; }
+  #cx-bar, #cx-panel, #cx-pop, #cx-toast { display:none !important; }
+  #cx-stage { display:block !important; overflow:visible !important; }
+  .mock-screen { display:block !important; overflow:visible !important; background:#fff !important; padding:0 !important; gap:0 !important; }
+  .slide { page-break-after:always; break-after:page; box-shadow:none; margin:0; }
+  .slide.dark { background:#fff !important; }
+  .slide.dark * { color:#003524 !important; }
+  thead th { background:transparent !important; color:#003524 !important; border-bottom:2px solid #003524 !important; }
+  .badge-buy { background:transparent !important; color:#003524 !important; }
+  .cx-pin { display:none !important; }
+  body.cx-on [data-region]:hover { outline:none !important; }
+}
+
+</style>
+</head>
+<body>
+<div id="cx-bar">
+  <span class="cx-brand">Bison Fund, Uber pitch</span>
+  <div class="cx-screens" id="cx-screens">
+    <button type="button" data-goto="overview" aria-current="true">Overview</button><button type="button" data-goto="s01">01 Business</button><button type="button" data-goto="s02">02 Competition</button><button type="button" data-goto="s03">03 Key Deals</button><button type="button" data-goto="s04">04 Financials</button><button type="button" data-goto="s05">05 Valuation</button>
+  </div>
+  <span class="cx-spacer"></span>
+  <span class="cx-count" id="cx-count">0 comments</span>
+  <button type="button" class="cx-btn" id="cx-toggle" aria-pressed="false">Comment mode</button>
+  <button type="button" class="cx-btn" id="cx-open-panel">List</button>
+  <button type="button" class="cx-btn" id="cx-copy">Copy feedback</button>
+  <button type="button" class="cx-btn" id="cx-pdf">Download PDF</button>
+  <button type="button" class="cx-btn" id="cx-clear">Clear all</button>
+</div>
+<div id="cx-toast"></div>
+<div id="cx-stage">
+<section class="mock-screen cx-active" data-screen="overview">
+<section class="slide dark" data-region="s01.uber-technologies">
+ <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+ <h1 class="serif" style="font-size:64px;line-height:1.05;color:#fff">Uber Technologies</h1>
+ <div style="margin-top:14px;font-size:16px;letter-spacing:.18em;color:var(--secondary);font-weight:600">NYSE: UBER</div>
+ <p style="margin-top:26px;font-size:15px;max-width:60ch;line-height:1.7;color:rgba(251,251,249,.8)">
+ Uber's installed base is the fastest route to market for Waymo, Cybercab, and every
+ robotaxi that needs demand on day one. The thesis: Uber becomes the toll booth for
+ autonomous rideshare.</p>
+ <div style="margin-top:34px;font-size:12px;color:rgba(251,251,249,.6);line-height:1.9">
+ 
+ Data as of Q2 2026 (reported Aug 5, 2026).
+ </div>
+ </div>
+ <div class="foot"><span>Bison Fund Equity Pitch</span><span class="pageno">01 / 41</span></div>
+</section>
+<section class="slide" data-region="s02.executive-summary">
+ <h2 class="title">Executive Summary</h2>
+ <p class="sub">A record quarter, a stock 30% off its high, and an autonomous strategy the market prices as a cost instead of a moat.</p>
+ <div class="content">
+ <div class="grid g4">
+ <div class="card" data-region="s02.r1"><h4>Gross bookings</h4><div class="v">$58.0B</div><div class="d">+24% year over year, 4th straight quarter above 20% growth</div></div>
+ <div class="card" data-region="s02.r2"><h4>Adjusted EBITDA</h4><div class="v">$2.8B</div><div class="d">+33% year over year, 4.9% of gross bookings, up from 4.5%</div></div>
+ <div class="card" data-region="s02.r3"><h4>trailing free cash flow</h4><div class="v">>$10B</div><div class="d">First time in company history</div></div>
+ <div class="card y" data-region="s02.r4"><h4>Value per share</h4><div class="v">$113.98</div><div class="d">Discounted cash flow base case, 60% above the current price</div></div>
+ </div>
+ <div class="grid g2">
+ <div class="card" data-region="s02.r5">
+ <h4>Current market sentiment</h4>
+ <p style="font-size:13.5px;line-height:1.65;color:var(--foreground)">Uber trades about 30% below its 52-week high while bookings, margins, and free cash flow all
+        accelerate. The market reads the autonomous vehicle strategy as a $10B cost center. The
+        installed base is the scarce asset, and partners have committed about 120,000 vehicles to it.</p>
+ </div>
+ <div class="own" data-region="s02.r6">
+ <h4>Thesis</h4>
+ <p>Uber's installed base is the fastest route to market for Waymo, Cybercab, and other
+    autonomous vehicles. City adoption in Austin, San Francisco, LA, and Phoenix drives the
+    regulation. Uber becomes the toll booth for autonomous rideshare.</p>
+ </div>
+ </div>
+ </div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">02 / 41</span></div>
+</section>
+<section class="slide" data-region="s03.recommendation">
+ <h2 class="title">Recommendation</h2>
+  <div class="content">
+ <div class="grid g4">
+ <div class="card g" data-region="s03.r1"><h4>Recommendation</h4><div class="v">BUY</div><div class="d">The analyst's call</div></div>
+ <div class="card" data-region="s03.r2"><h4>Current price</h4><div class="v" style="font-size:26px;padding-top:8px">$71.45</div><div class="d">NYSE: UBER</div></div>
+ <div class="card g" data-region="s03.r3"><h4>Price target</h4><div class="v" style="font-size:26px;padding-top:8px">$113.98</div><div class="d">Discounted cash flow base case</div></div>
+ <div class="card g" data-region="s03.r4"><h4>Implied upside</h4><div class="v" style="font-size:26px;padding-top:8px">+60%</div><div class="d">versus the current price</div></div>
+ </div>
+ <div class="card" data-region="s03.r5">
+ <h4>Key risk</h4>
+    <p>A competitor's own app could out-scale Uber's installed base. Watch Waymo city and fleet counts, Tesla app adoption, and Uber growth in autonomous cities. Price target: $113.98 from the discounted cash flow model.</p>
+ </div>
+ </div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">03 / 41</span></div>
+</section>
+<section class="slide" data-region="s04.the-big-idea">
+ <h2 class="title">The big idea</h2>
+ <div class="content">
+  <div class="card" data-region="s04.r1" style="padding:26px 30px">
+   <p class="serif" style="font-size:26px;line-height:1.5;color:var(--green-dark)">Rideshare will cost a consumer less each year than maintaining a car. Ownership is the market Uber replaces.</p>
+   <p style="font-size:13.5px;line-height:1.7;margin-top:14px">Insurance, parking, depreciation, and repair are the annual cost of a vehicle. Autonomy removes the driver, the largest cost of a ride, and fleets spread the vehicle cost across many riders. Rideshare then becomes investor-backed fleets delivering always-on-demand rides at a lower annual cost than owning. Uber sits in the middle as the demand layer those fleets compete to reach.</p>
+  </div>
+  <div class="grid g3">
+   <div class="card" data-region="s04.r2"><h4>Autonomous supply at scale</h4><div class="v" style="font-size:24px">~120,000</div><div class="d">Partner vehicles committed to the Uber network</div></div>
+   <div class="card" data-region="s04.r3"><h4>Fleet capital exists</h4><div class="v" style="font-size:24px">Outside</div><div class="d">Third-party capital providers finance the fleets, so deployment does not consume the balance sheet</div></div>
+   <div class="card" data-region="s04.r4"><h4>The demand is already there</h4><div class="v" style="font-size:24px">208M</div><div class="d">Monthly active consumers who already open the app instead of reaching for keys</div></div>
+  </div>
+ </div>
+ <div class="note">Sources: Uber Q2 2026 press release and prepared remarks, August 5, 2026. The vision statement is the analyst's.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">04 / 41</span></div>
+</section>
+-->
+</section>
+<section class="mock-screen" data-screen="s01">
+<section class="slide dark" data-region="s05.business-products-industry-outlook">
+ <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+ <div class="divider-num">01</div>
+ <h2 class="title" style="font-size:40px;margin-top:10px">Business, Products & Industry Outlook</h2>
+ <div class="divider-list"><b>01</b> Business &nbsp; <b>02</b> Competition &nbsp; <b>03</b> Key Deals &nbsp; <b>04</b> Financials &nbsp; <b>05</b> Valuation</div>
+ </div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">05 / 41</span></div>
+</section>
+<section class="slide" data-region="s06.who-is-uber">
+ <div class="eyebrow">01 Business</div>
+ <h2 class="title">Who is Uber?</h2>
+  <div class="content">
+ <div class="card" data-region="s06.r1">
+ <h4>Company description</h4>
+ <p style="font-size:14px;line-height:1.7">Uber runs the largest mobility and delivery platform, in three segments: Mobility
+ (rides), Delivery (Uber Eats, grocery, retail), and Freight. It earns take rates on Gross
+ Bookings, subscription revenue from Uber One, and advertising revenue.</p>
+ </div>
+ <div class="grid g3">
+ <div class="card" data-region="s06.r2"><h4>Consumers</h4><div class="v">208M</div><div class="d">Monthly active platform consumers, +16% year over year</div></div>
+ <div class="card" data-region="s06.r3"><h4>Supply</h4><div class="v">10.2M</div><div class="d">Record drivers and couriers earning on the platform, who took home $25B+ in the quarter</div></div>
+ <div class="card" data-region="s06.r4"><h4>Trips</h4><div class="v">3.87B</div><div class="d">Trips in the quarter, +18% year over year</div></div>
+ </div>
+ </div>
+ <div class="note">Source: Uber Q2 2026 press release & prepared remarks, Aug 5, 2026, investor.uber.com</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">06 / 41</span></div>
+</section>
+<section class="slide" data-region="s07.products-services">
+ <div class="eyebrow">01 Business</div>
+ <h2 class="title">Products & services</h2>
+  <div class="content">
+ <div class="grid g3">
+ <div class="card" data-region="s07.r1"><h4>Mobility</h4><p style="font-size:12.5px;line-height:1.6">Rideshare across premium and lower-cost tiers; Uber for Business (+40% gross bookings); Uber Health.</p></div>
+ <div class="card" data-region="s07.r2"><h4>Delivery</h4><p style="font-size:12.5px;line-height:1.6">Restaurant delivery plus grocery & retail at a $15B annualized gross bookings run-rate, growing ~40% year over year.</p></div>
+ <div class="card" data-region="s07.r3"><h4>Freight</h4><p style="font-size:12.5px;line-height:1.6">Brokerage and logistics; gross bookings +25% year over year in the quarter.</p></div>
+ </div>
+ <div class="grid g3">
+ <div class="card g" data-region="s07.r4"><h4>Uber One</h4><p style="font-size:12.5px;line-height:1.6;">>50M members; roughly half of all Mobility + Delivery Gross bookings.</p></div>
+ <div class="card g" data-region="s07.r5"><h4>Advertising</h4><p style="font-size:12.5px;line-height:1.6;">>$2B annualized revenue run-rate, growing >50% year over year, near-pure margin on existing traffic.</p></div>
+ <div class="card y" data-region="s07.r6"><h4>Autonomous</h4><p style="font-size:12.5px;line-height:1.6;color:rgba(0,53,36,.85)">Hybrid network: autonomous vehicles and human drivers on one marketplace; ~120,000 partner vehicles committed.</p></div>
+ </div>
+ </div>
+ <div class="note">Sources: Uber Q2 2026 prepared remarks (Aug 5, 2026); Uber One and advertising run-rates as disclosed at Q1 2026. Confirm at Q3 results.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">07 / 41</span></div>
+</section>
+<section class="slide" data-region="s08.platform-kpis">
+ <div class="eyebrow">01 Business</div>
+ <h2 class="title">Platform KPIs</h2>
+  <div class="content">
+ <table data-region="s08.r2">
+ <thead><tr><th>Metric</th><th>Q2 2025</th><th>Q2 2026</th><th>Change</th></tr></thead>
+ <tbody>
+ <tr><td>Monthly Active Platform Consumers</td><td>180M</td><td class="hi">208M</td><td class="hi">+16%</td></tr>
+ <tr><td>Trips</td><td>3.27B</td><td class="hi">3.87B</td><td class="hi">+18%</td></tr>
+ <tr><td>Gross bookings</td><td>$46.8B</td><td class="hi">$58.0B</td><td class="hi">+24%</td></tr>
+ <tr><td>Revenue</td><td>$12.65B</td><td class="hi">$14.19B</td><td class="hi">+12%</td></tr>
+ <tr><td>Adjusted EBITDA</td><td>$2.12B</td><td class="hi">$2.82B</td><td class="hi">+33%</td></tr>
+ </tbody>
+ </table>
+ <div class="card" data-region="s08.r1">
+ <h4>Key takeaway</h4>
+ <p style="font-size:13.5px;line-height:1.65">Engagement is compounding, not just growing: consumers are up 16%, but trips per monthly active consumers
+ also rose 2%, frequency and audience moving together. Trips, not price, remain the primary
+ driver of Gross bookings growth.</p>
+ </div>
+ </div>
+ <div class="note">Source: Uber Q2 2026 press release, Aug 5, 2026, investor.uber.com</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">08 / 41</span></div>
+</section>
+<section class="slide" data-region="s09.industry-outlook">
+ <div class="eyebrow">01 Business</div>
+ <h2 class="title">Industry outlook</h2>
+  <div class="content">
+ <div class="grid g2">
+ <div class="card" data-region="s09.r1">
+ <h4>Structural drivers</h4>
+ <ul class="bullets">
+  <li><b>Autonomy commercializes now.</b> The industry has shifted "from proving the technology to commercializing it at scale", Uber's own framing on the Q2 call.</li>
+  <li><b>Cross-platform habits.</b> Members on subscriptions order more often and across both mobility and delivery, the strategic reason the Delivery Hero deal exists.</li>
+  <li><b>Premiumization.</b> Business travel and premium tiers are growing faster than economy rides and carry far higher profit per trip.</li>
+ </ul>
+ </div>
+ <div class="card" data-region="s09.r2">
+ <h4>Where adoption is showing up</h4>
+ <ul class="bullets">
+  <li><b>United States mobility accelerated</b> in the quarter on premium products, expansion into sparser areas, and reinvested insurance savings.</li>
+  <li><b>Delivery growth re-accelerated</b> to 25% year over year on grocery and retail, with a record 3.8% segment operating margin.</li>
+  <li><b>autonomous rides scaled 10x year over year</b> on the platform per the Q1 call, live in 8 cities with a target of up to 15 by year-end.</li>
+ </ul>
+ </div>
+ </div>
+ </div>
+ <div class="note">Sources: Uber Q2 2026 results; autonomous city counts as of the Q1 2026 call.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">09 / 41</span></div>
+</section>
+<section class="slide" data-region="s10.the-market-opportunity">
+ <div class="eyebrow">01 Business</div>
+ <h2 class="title">The market opportunity</h2>
+  <div class="content">
+ <div class="grid g3">
+ <div class="card" data-region="s10.r1"><h4>Combined platform run-rate</h4><div class="v">$232B</div><div class="d">Q2 2026 Gross bookings, annualized, </div></div>
+ <div class="card" data-region="s10.r2"><h4>Pro-forma with Delivery Hero</h4><div class="v">$236B</div><div class="d">Combined 2025 Gross bookings across 99 markets</div></div>
+ <div class="card y" data-region="s10.r3"><h4>Grocery & retail</h4><div class="v">$15B</div><div class="d">Annualized gross bookings run-rate, ~40% year over year for multiple quarters</div></div>
+ </div>
+ <div class="card" data-region="s10.r4">
+ <h4>Same consumer, more services</h4>
+ <p style="font-size:13.5px;line-height:1.65">Uber's opportunity is share of wallet. The same 208M monthly consumers can be served by
+  rides, restaurant delivery, grocery, retail, advertising, and autonomous vehicles. Each new line monetizes demand already on the platform rather than
+ buying new demand.</p>
+ </div>
+ </div>
+ <div class="note">Sources: Uber Q2 2026 press release & prepared remarks (Aug 5, 2026); Delivery Hero announcement, Jul 16, 2026.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">10 / 41</span></div>
+</section>
+<section class="slide" data-region="s11.where-uber-operates">
+ <div class="eyebrow">01 Business</div>
+ <h2 class="title">Where Uber operates</h2>
+  <div class="content">
+ <div class="grid g4">
+ <div class="card" data-region="s11.r1"><h4>Markets today</h4><div class="v">70+</div><div class="d">Countries with Uber mobility and/or delivery operations, <span class="src">company-reported, approximate</span></div></div>
+ <div class="card g" data-region="s11.r2"><h4>Pro-forma markets</h4><div class="v">99</div><div class="d">Markets if the Delivery Hero offer closes, expected H2 2027</div></div>
+ <div class="card" data-region="s11.r3"><h4>cities with autonomous vehicles</h4><div class="v">8</div><div class="d">Cities with autonomous vehicles on the app, targeting up to 15 by year-end</div></div>
+ <div class="card" data-region="s11.r4"><h4>Delivery markets added</h4><div class="v">~2×</div><div class="d">Markets offering both Mobility and Delivery, roughly doubling post-deal</div></div>
+ </div>
+ <div class="card" data-region="s11.r5">
+ <h4>Regional autonomous footprint</h4>
+ <p style="font-size:13px;line-height:1.7">
+ <span class="pill">United States</span> Austin, Atlanta, Dallas, Las Vegas (Motional, Zoox, May Mobility Arlington, Avride)
+ <span class="pill">Europe</span> Wayve London & Munich, Momenta Munich, Pony.ai + Verne Zagreb
+ <span class="pill">Middle East</span> WeRide + Baidu, Abu Dhabi, Dubai, Riyadh
+ </p>
+ </div>
+ </div>
+ <div class="note">Sources: Uber Q2 2026 results; Automotive World, August 2026.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">11 / 41</span></div>
+</section>
+</section>
+<section class="mock-screen" data-screen="s02">
+<section class="slide dark" data-region="s12.competition-acquisitions-leadership">
+ <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+ <div class="divider-num">02</div>
+ <h2 class="title" style="font-size:40px;margin-top:10px">Competition, acquisitions & Leadership</h2>
+ <div class="divider-list"><b>01</b> Business &nbsp; <b>02</b> Competition &nbsp; <b>03</b> Key Deals &nbsp; <b>04</b> Financials &nbsp; <b>05</b> Valuation</div>
+ </div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">12 / 41</span></div>
+</section>
+<section class="slide" data-region="s13.revenue-diversification">
+ <div class="eyebrow">02 Competition</div>
+ <h2 class="title">Revenue diversification</h2>
+ <div class="content">
+  <div class="grid" style="grid-template-columns:1.3fr 1fr">
+   <div class="card" data-region="s13.r1">
+    <h4>Gross bookings by segment, second quarter, $ billions</h4>
+    <svg viewBox="0 0 520 250" style="width:100%;height:auto;display:block"><line x1="10" y1="200" x2="510" y2="200" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="115" x2="510" y2="115" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="30" x2="510" y2="30" stroke="#D7DADB" stroke-width="1"/><rect x="24" y="30" width="135" height="170" rx="5" fill="#00583D"/><text x="91" y="20" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">$29B</text><text x="91" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Mobility</text><rect x="193" y="39" width="135" height="161" rx="5" fill="#51AB9F"/><text x="260" y="29" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">$27.5B</text><text x="260" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Delivery</text><rect x="361" y="191" width="135" height="9" rx="5" fill="#BE5D27"/><text x="429" y="181" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">$1.6B</text><text x="429" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Freight</text></svg>
+    <p style="font-size:11px;color:var(--subtle);margin-top:6px">Delivery gross bookings grew 26% year over year and now sit within reach of Mobility.</p>
+   </div>
+   <div class="card" data-region="s13.r2">
+    <h4>Segment margins</h4>
+    <div style="display:flex;gap:20px;margin-bottom:12px">
+     <div><div class="serif" style="font-size:26px;color:var(--green-dark)">7.6%</div><div class="cap" style="font-size:11px;color:var(--subtle)">Mobility, operating margin</div></div>
+     <div><div class="serif" style="font-size:26px;color:var(--green-dark)">3.8%</div><div class="cap" style="font-size:11px;color:var(--subtle)">Delivery, a record</div></div>
+    </div>
+    <h4>Key takeaway</h4>
+    <p style="font-size:13px;line-height:1.6">Delivery is a near-equal second engine and margins are expanding in both segments at the same time. Freight adds a third, smaller line. Leverage is showing up everywhere at once.</p>
+   </div>
+  </div>
+ </div>
+ <div class="note">Source: Uber Q2 2026 press release, August 5, 2026.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">13 / 41</span></div>
+</section>
+<section class="slide" data-region="s14.competitive-landscape">
+ <div class="eyebrow">02 Competition</div>
+ <h2 class="title">Competitive landscape</h2>
+ <div class="content">
+  <div class="grid g2">
+   <div class="card" data-region="s14.r1">
+    <h4>Gross bookings, second quarter, $ billions</h4>
+    <svg viewBox="0 0 760 250" style="width:100%;height:auto;display:block"><line x1="10" y1="200" x2="750" y2="200" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="115" x2="750" y2="115" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="30" x2="750" y2="30" stroke="#D7DADB" stroke-width="1"/><rect x="24" y="30" width="215" height="170" rx="5" fill="#00583D"/><text x="131" y="20" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">$58B</text><text x="131" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Uber</text><rect x="273" y="103" width="215" height="97" rx="5" fill="#51AB9F"/><text x="380" y="93" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">$33.1B</text><text x="380" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">DoorDash</text><rect x="521" y="184" width="215" height="16" rx="5" fill="#BE5D27"/><text x="629" y="174" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">$5.5B</text><text x="629" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Lyft</text></svg>
+   </div>
+   <div class="card" data-region="s14.r2">
+    <h4>Gross bookings growth, year over year</h4>
+    <svg viewBox="0 0 760 250" style="width:100%;height:auto;display:block"><line x1="10" y1="200" x2="750" y2="200" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="115" x2="750" y2="115" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="30" x2="750" y2="30" stroke="#D7DADB" stroke-width="1"/><rect x="24" y="87" width="215" height="113" rx="5" fill="#00583D"/><text x="131" y="77" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">$24%</text><text x="131" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Uber</text><rect x="273" y="30" width="215" height="170" rx="5" fill="#51AB9F"/><text x="380" y="20" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">$36%</text><text x="380" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">DoorDash</text><rect x="521" y="91" width="215" height="109" rx="5" fill="#BE5D27"/><text x="629" y="81" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">$23%</text><text x="629" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Lyft</text></svg>
+   </div>
+  </div>
+  <div class="card" data-region="s14.r3">
+   <h4>Key takeaway</h4>
+   <p style="font-size:13px;line-height:1.6">Uber is the largest platform and DoorDash is the fastest. DoorDash also took the autonomous delivery pilot in Phoenix when Waymo ended it with Uber. The answer is structural: the Delivery Hero offer plus cross-platform membership, which neither peer can replicate.</p>
+   <p style="font-size:11px;color:var(--subtle);margin-top:8px">Uber and Lyft report gross bookings; DoorDash reports gross order value. Growth rates are each company's reported basis.</p>
+  </div>
+ </div>
+ <div class="note">Sources: Uber, DoorDash, and Lyft second quarter 2026 releases, August 2026.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">14 / 41</span></div>
+</section>
+<section class="slide" data-region="s15.uber-one-and-advertising">
+ <div class="eyebrow">02 Competition</div>
+ <h2 class="title">Uber One and advertising</h2>
+  <div class="content">
+ <div class="grid g3">
+ <div class="card g" data-region="s15.r1"><h4>Uber One members</h4><div class="v">50M+</div><div class="d">Up 55% year over year as of Q1 2026 disclosure</div></div>
+ <div class="card g" data-region="s15.r2"><h4>Share of gross bookings</h4><div class="v">~50%</div><div class="d">Of Mobility + Delivery Gross bookings comes from members</div></div>
+ <div class="card y" data-region="s15.r3"><h4>Ads run-rate</h4><div class="v">$2B+</div><div class="d">Annualized revenue, growing >50% year over year; one recap cites $2.2B</div></div>
+ </div>
+ <div class="card" data-region="s15.r4">
+ <h4>Key takeaway</h4>
+ <p style="font-size:13.5px;line-height:1.65">The recurring objection to platform businesses is that growth is rented from promotions and
+ volume. Uber One members order more often across both sides of the platform and churn less;
+ advertising monetizes the same attention with near-pure margin and no incremental logistics.
+ Together they shift the revenue mix toward annuity-like earnings, the layer a robotaxi
+ operator cannot replicate by building an app.</p>
+ </div>
+ </div>
+ <div class="note">Uber One and advertising run-rates as disclosed at Q1 2026. Confirm at Q3 2026 results.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">15 / 41</span></div>
+</section>
+<section class="slide" data-region="s16.regulatory-landscape">
+ <div class="eyebrow">02 Competition</div>
+ <h2 class="title">Regulatory landscape</h2>
+  <div class="content">
+ <div class="grid g2">
+ <div class="card" data-region="s16.r1">
+ <h4>The "hybrid network" fight</h4>
+ <p style="font-size:13px;line-height:1.65">Uber has lobbied for rules that require autonomous operators to distribute through platforms with
+ human-driver networks. A New Jersey proposal would require human drivers to provide at least
+ 85% of rides during a three-year pilot, which would effectively force dedicated-app
+ operators like Tesla, Waymo, and Zoox onto third-party platforms.</p>
+ </div>
+ <div class="card" data-region="s16.r2">
+ <h4>The counter-lobby</h4>
+ <p style="font-size:13px;line-height:1.65">Waymo backs higher permitting costs that raise the bar for smaller autonomous operators, many of
+ whom depend on Uber for distribution. The regulatory battle is over <b>how autonomous rides
+ get distributed at all</b>, not just safety.</p>
+ </div>
+ </div>
+ <div class="card" data-region="s16.r3">
+ <h4>Accounting and labor</h4>
+ <p style="font-size:13px;line-height:1.65">The United Kingdom business-model change (driver pay reclassified to contra-revenue) cut reported revenue
+ growth by ~8pp in Q2 with no economic impact, a disclosure trap the verification pass catches.
+ Worker-classification rules remain the perennial labor overhang on the driver network.</p>
+ </div>
+ </div>
+ <div class="note">Sources: Uber Q2 2026 results; Automotive World on the distribution rules.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">16 / 41</span></div>
+</section>
+<section class="slide" data-region="s17.competitive-moat">
+ <div class="eyebrow">02 Competition</div>
+ <h2 class="title">Competitive moat</h2>
+  <div class="content">
+ <div class="grid g2">
+ <div class="card" data-region="s17.r1">
+ <h4>The installed base</h4>
+ <p style="font-size:13px;line-height:1.65">208M monthly consumers who already open the app for a ride or a meal, the demand an autonomous
+ operator needs on day one in a new city, before its own brand has a habit there.</p>
+ </div>
+ <div class="card" data-region="s17.r2">
+ <h4>Network density</h4>
+ <p style="font-size:13px;line-height:1.65">10.2M drivers and couriers provide the human supply that keeps coverage, ETAs, and pricing
+ competitive while autonomous fleets are still a small part of the network.</p>
+ </div>
+ </div>
+ <div class="grid g2">
+ <div class="card" data-region="s17.r3">
+ <h4>Cross-platform lock-in</h4>
+ <p style="font-size:13px;line-height:1.65">Uber One membership spanning mobility and delivery raises switching costs: leaving one
+ service means leaving the subscription benefits on the other.</p>
+ </div>
+ <div class="card" data-region="s17.r4">
+ <h4>Operations and capital</h4>
+ <p style="font-size:13px;line-height:1.65">Fleet ownership, charging, cleaning, maintenance, and dispatch: the work autonomous partners
+ outsource to Uber rather than build. External financing partners are being added to
+ amplify deployment without straining the balance sheet.</p>
+ </div>
+ </div>
+ </div>
+ <div class="note">Source: Uber Q2 2026 results.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">17 / 41</span></div>
+</section>
+<section class="slide" data-region="s18.recent-acquisitions-delivery-hero">
+ <div class="eyebrow">02 Competition</div>
+ <h2 class="title">Recent acquisitions: Delivery Hero</h2>
+  <div class="content">
+ <div class="deal" data-region="s18.r5">
+ <div class="meta">Announced Jul 16, 2026. Voluntary takeover offer. Closing expected H2 2027.</div>
+ <h3>Delivery Hero, €41.50 per share in cash</h3>
+ <p style="margin-bottom:12px">Equity value $14.8B implied for 100% (or $13.7B adjusted for Uber's prior stake purchases).
+ Creates a platform spanning <b>99 markets</b> with combined pro-forma 2025 Gross bookings of
+ <b>$236B</b>, and roughly doubles the markets offering both Mobility and Delivery.</p>
+ <div class="grid g3">
+ <div class="card" data-region="s18.r1"><h4>Multiple paid</h4><div class="v" style="font-size:26px">~8×</div><div class="d">EV / 2027E Adj. EBITDA, incl. existing ownership and >$1.2B run-rate synergies</div></div>
+ <div class="card" data-region="s18.r2"><h4>Uber's economic interest</h4><div class="v" style="font-size:26px">>53%</div><div class="d">24.77% voting + 11.74% derivatives + Prosus irrevocable (~17%)</div></div>
+ <div class="card" data-region="s18.r3"><h4>Overlap carve-out</h4><div class="v" style="font-size:26px">14 mkts</div><div class="d">Competing markets sold to SSW Partners for ~$1.6B</div></div>
+ </div>
+ </div>
+ <div class="card" data-region="s18.r4">
+ <h4>Key takeaway</h4>
+ <p style="font-size:13px;line-height:1.65">Extends Uber One to millions more consumers, deepens grocery and retail, and gives the autonomous
+ platform a second global demand surface. Accretive to non-GAAP EPS at closing, with
+ high-single-digit accretion by year three.</p>
+ </div>
+ </div>
+ <div class="note">Sources: Uber IR announcement & deal deck (Jul 16, 2026); SEC exhibit; Delivery Hero newsroom; Q2 2026 prepared remarks (Aug 5, 2026).</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">18 / 41</span></div>
+</section>
+<section class="slide" data-region="s19.management-and-compensation">
+ <div class="eyebrow">02 Competition</div>
+ <h2 class="title">Management and compensation</h2>
+ <div class="content">
+  <div class="grid g2">
+   <div class="card" data-region="s19.r1">
+    <h4>Dara Khosrowshahi, chief executive</h4>
+    <p style="font-size:13px;line-height:1.7">Tenured through the profitability turn. On the second quarter call: record consumers and engagement, profitable growth across the business, and building the world's largest platform for autonomous vehicles.</p>
+   </div>
+   <div class="card" data-region="s19.r2">
+    <h4>Balaji Krishnamurthy, chief financial officer</h4>
+    <p style="font-size:13px;line-height:1.7">Emphasis on converting growth into earnings: free cash flow above $10B on a trailing basis for the first time, with the flexibility to invest and reduce the share count.</p>
+   </div>
+  </div>
+  <div class="grid g3">
+   <div class="card" data-region="s19.r3"><h4>Chief executive pay, 2024</h4><div class="v" style="font-size:24px">$39.4M</div><div class="d">Total compensation, per the 2025 proxy statement</div></div>
+   <div class="card" data-region="s19.r4"><h4>Pay ratio</h4><div class="v" style="font-size:24px">424:1</div><div class="d">Chief executive to median employee</div></div>
+   <div class="card y" data-region="s19.r5"><h4>What to watch</h4><div class="v" style="font-size:24px">2026 proxy</div><div class="d">Compensation is equity weighted, so pay tracks the stock</div></div>
+  </div>
+ </div>
+ <div class="note">Sources: Uber 2025 proxy statement for 2024 compensation; Uber Q2 2026 prepared remarks. The 2026 proxy figures were not confirmed in time for this deck.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">19 / 41</span></div>
+</section>
+</section>
+<section class="mock-screen" data-screen="s03">
+<section class="slide dark" data-region="s20.key-deals">
+ <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+ <div class="divider-num">03</div>
+ <h2 class="title" style="font-size:40px;margin-top:10px">Key Deals</h2>
+ <div class="divider-list"><b>01</b> Business &nbsp; <b>02</b> Competition &nbsp; <b>03</b> Key Deals &nbsp; <b>04</b> Financials &nbsp; <b>05</b> Valuation</div>
+ </div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">20 / 41</span></div>
+</section>
+<section class="slide" data-region="s21.the-autonomous-strategy">
+ <div class="eyebrow">03 Key Deals</div>
+ <h2 class="title">The autonomous strategy</h2>
+  <div class="content">
+ <div class="grid g4">
+ <div class="card y" data-region="s21.r1"><h4>Partner vehicles committed</h4><div class="v">~120,000</div><div class="d">Committed to the Uber network over coming years</div></div>
+ <div class="card y" data-region="s21.r2"><h4>Uber's commitment</h4><div class="v">$10B+</div><div class="d">Committed to the robotaxi aggregator strategy</div></div>
+ <div class="card" data-region="s21.r3"><h4>Partnerships</h4><div class="v">30+</div><div class="d">Struck or invested in over the past two years</div></div>
+ <div class="card" data-region="s21.r4"><h4>Live now</h4><div class="v">7-8</div><div class="d">autonomous partnerships live globally; 15-city target by end-2026</div></div>
+ </div>
+ <div class="card" data-region="s21.r5">
+ <h4>Key takeaway</h4>
+ <p style="font-size:13.5px;line-height:1.65">Uber does not need to win autonomy. It needs to be the demand layer whichever technology wins.
+ autonomous Mobility trips grew more than 10x year over year per the Q1 call; the fleet is financed increasingly
+ with external capital; and the technology risk sits with partners whose economics still require
+ utilization Uber's 208M consumers provide.</p>
+ </div>
+ </div>
+ <div class="note">Sources: Uber Q2 2026 results; autonomous city counts as of the Q1 2026 call.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">21 / 41</span></div>
+</section>
+<section class="slide" data-region="s22.key-deal-lucid-and-nuro">
+ <div class="eyebrow">03 Key Deals</div>
+ <h2 class="title">Key deal: Lucid and Nuro</h2>
+  <div class="content">
+ <div class="deal" data-region="s22.r5">
+ <div class="meta">Announced 2025, expanded through 2026. First launch in a major United States city.</div>
+ <h3>Lucid Gravity robotaxis with the Nuro Driver</h3>
+ <p style="margin-bottom:12px">Uber invested <b>$300M in Lucid</b> with a plan to deploy <b>20,000 or more</b> Lucid
+ vehicles equipped with Nuro's autonomous-driving system over six years, owned and operated by
+ Uber or its fleet partners, and available to riders <b>exclusively via the Uber platform</b>.
+ Through 2026, Uber's total Lucid investment has grown to <b>$500M</b> for an ~11% stake, with
+ at least <b>35,000</b> robotaxi-ready vehicles ordered.</p>
+ <div class="grid g3">
+ <div class="card" data-region="s22.r1"><h4>Uber investment</h4><div class="v" style="font-size:26px">$500M</div><div class="d">Cumulative; ~11% stake in Lucid</div></div>
+ <div class="card" data-region="s22.r2"><h4>Vehicles committed</h4><div class="v" style="font-size:26px">35,000+</div><div class="d">Robotaxi-ready, over six years</div></div>
+ <div class="card" data-region="s22.r3"><h4>Distribution</h4><div class="v" style="font-size:26px">100%</div><div class="d">Exclusive to the Uber platform</div></div>
+ </div>
+ </div>
+ <div class="card" data-region="s22.r4">
+ <h4>Key takeaway</h4>
+ <p style="font-size:13px;line-height:1.65">This is the toll-booth thesis in contract form: Uber supplies the capital, the fleet
+ operations, and, critically, the demand, while the technology risk sits with Nuro and the
+ vehicle risk with Lucid. Exclusivity is the proof that at least one autonomous program believes the
+ platform is worth more than its own app.</p>
+ </div>
+ </div>
+ <div class="note">Sources: Lucid press release; Automotive World, August 2026.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">22 / 41</span></div>
+</section>
+<section class="slide" data-region="s23.the-rest-of-the-autonomous-portfolio">
+ <div class="eyebrow">03 Key Deals</div>
+ <h2 class="title">The rest of the autonomous portfolio</h2>
+  <div class="content">
+ <div class="deal" data-region="s23.r4">
+ <div class="meta">Up to $1.25B, 25 cities, by 2031</div>
+ <h3>Rivian, R2-based robotaxis at scale</h3>
+ <p>A deal worth up to <b>$1.25B</b> covering thousands of R2-based robotaxis for a 25-city rollout
+ by 2031. If it executes, it is the volume leg of the strategy, United States-built vehicles at automotive
+ scale rather than bespoke robotaxi platforms.</p>
+ </div>
+ <div class="grid g3">
+ <div class="card" data-region="s23.r1"><h4>Middle East</h4><p style="font-size:12.5px;line-height:1.6">WeRide and Baidu operating in Abu Dhabi, Dubai, and Riyadh, plans for at least 1,200 vehicles by 2027.</p></div>
+ <div class="card" data-region="s23.r2"><h4>Europe</h4><p style="font-size:12.5px;line-height:1.6">Wayve in London and Munich, Momenta in Munich, Pony.ai with Verne in Zagreb.</p></div>
+ <div class="card" data-region="s23.r3"><h4>United States</h4><p style="font-size:12.5px;line-height:1.6">Avride (Dallas), Motional (Las Vegas), May Mobility (Arlington), Zoox (Vegas 2026 → LA 2027).</p></div>
+ </div>
+ </div>
+ <div class="note">Partner map per Automotive World (Aug 2026). Rivian terms per the same reporting.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">23 / 41</span></div>
+</section>
+</section>
+<section class="mock-screen" data-screen="s04">
+<section class="slide dark" data-region="s24.financial-analysis">
+ <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+ <div class="divider-num">04</div>
+ <h2 class="title" style="font-size:40px;margin-top:10px">Financial Analysis</h2>
+ <div class="divider-list"><b>01</b> Business &nbsp; <b>02</b> Competition &nbsp; <b>03</b> Key Deals &nbsp; <b>04</b> Financials &nbsp; <b>05</b> Valuation</div>
+ </div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">24 / 41</span></div>
+</section>
+<section class="slide" data-region="s25.revenue-and-gross-bookings">
+ <div class="eyebrow">04 Financials</div>
+ <h2 class="title">Revenue and gross bookings</h2>
+ <div class="content">
+
+  <div class="grid" style="grid-template-columns:1.4fr 1fr">
+   <div class="card" data-region="s25.r1">
+    <h4>Revenue by quarter, $ billions</h4>
+    <svg viewBox="0 0 520 250" style="width:100%;height:auto;display:block"><line x1="10" y1="200" x2="510" y2="200" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="115" x2="510" y2="115" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="30" x2="510" y2="30" stroke="#D7DADB" stroke-width="1"/><rect x="24" y="62" width="96" height="138" rx="5" fill="#51AB9F"/><text x="72" y="52" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">11.5B</text><text x="72" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Q1 2025</text><rect x="150" y="48" width="96" height="152" rx="5" fill="#51AB9F"/><text x="197" y="38" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">12.7B</text><text x="197" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Q2 2025</text><rect x="275" y="42" width="96" height="158" rx="5" fill="#00583D"/><text x="323" y="32" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">13.2B</text><text x="323" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Q1 2026</text><rect x="400" y="30" width="96" height="170" rx="5" fill="#00583D"/><text x="448" y="20" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">14.2B</text><text x="448" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Q2 2026</text></svg>
+    <p style="font-size:11px;color:var(--subtle);margin-top:6px">Quarterly revenue derived from the six-month tables in the Q2 2026 press release.</p>
+   </div>
+   <div class="card" data-region="s25.r2">
+    <h4>Gross bookings</h4>
+    <div style="display:flex;gap:24px;margin-bottom:10px">
+     <div><div class="serif" style="font-size:30px;color:var(--green-dark)">$58.0B</div><div class="cap" style="font-size:11.5px;color:var(--subtle)">Q2 2026, +24% year over year</div></div>
+     <div><div class="serif" style="font-size:30px;color:var(--green-dark)">3.87B</div><div class="cap" style="font-size:11.5px;color:var(--subtle)">Trips, +18% year over year</div></div>
+    </div>
+    <h4>Key takeaway</h4>
+    <p style="font-size:13px;line-height:1.6">Growth is volume led. Monthly active consumers are up 16% and frequency is up 2%, so trips, not price, carry the bookings. Gross bookings have grown more than 20% for four straight quarters.</p>
+   </div>
+  </div>
+ </div>
+ <div class="note">Source: Uber Q2 2026 press release, August 5, 2026.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">25 / 41</span></div>
+</section>
+<section class="slide" data-region="s26.unit-economics">
+ <div class="eyebrow">04 Financials</div>
+ <h2 class="title">Unit economics</h2>
+ <div class="content">
+
+  <div class="grid g2">
+   <div class="card" data-region="s26.r1">
+    <h4>Revenue per consumer, trailing</h4>
+    <svg viewBox="0 0 520 250" style="width:100%;height:auto;display:block"><line x1="10" y1="200" x2="510" y2="200" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="115" x2="510" y2="115" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="30" x2="510" y2="30" stroke="#D7DADB" stroke-width="1"/><rect x="24" y="30" width="221" height="170" rx="5" fill="#51AB9F"/><text x="134" y="20" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">281</text><text x="134" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Q2 2025</text><rect x="275" y="35" width="221" height="165" rx="5" fill="#00583D"/><text x="386" y="25" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">273</text><text x="386" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Q2 2026</text></svg>
+    <p style="font-size:11px;color:var(--subtle);margin-top:6px">Quarterly revenue over monthly active consumers, annualized.</p>
+   </div>
+   <div class="card" data-region="s26.r2">
+    <h4>Revenue as a share of gross bookings</h4>
+    <svg viewBox="0 0 520 250" style="width:100%;height:auto;display:block"><line x1="10" y1="200" x2="510" y2="200" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="115" x2="510" y2="115" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="30" x2="510" y2="30" stroke="#D7DADB" stroke-width="1"/><rect x="24" y="30" width="221" height="170" rx="5" fill="#51AB9F"/><text x="134" y="20" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">27.1%</text><text x="134" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Q2 2025</text><rect x="275" y="46" width="221" height="154" rx="5" fill="#00583D"/><text x="386" y="36" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">24.5%</text><text x="386" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Q2 2026</text></svg>
+    <p style="font-size:11px;color:var(--subtle);margin-top:6px">About 4 points of the drop is the United Kingdom accounting change moving driver pay to contra-revenue.</p>
+   </div>
+  </div>
+  <div class="card" data-region="s26.r3">
+   <h4>Key takeaway</h4>
+   <p style="font-size:13px;line-height:1.6">The take-rate decline is presentation, not economics. On the demand side, Uber for Business grew more than 40% and premium products carry about twice the gross bookings and four times the contribution profit per trip of the economy tier.</p>
+  </div>
+ </div>
+ <div class="note">Source: Uber Q2 2026 press release and prepared remarks, August 5, 2026.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">26 / 41</span></div>
+</section>
+<section class="slide" data-region="s27.margins">
+ <div class="eyebrow">04 Financials</div>
+ <h2 class="title">Margins</h2>
+ <div class="content">
+
+  <div class="grid" style="grid-template-columns:1.2fr 1fr">
+   <div class="card" data-region="s27.r1">
+    <h4>Adjusted EBITDA margin, percent of gross bookings</h4>
+    <svg viewBox="0 0 520 250" style="width:100%;height:auto;display:block"><line x1="10" y1="200" x2="510" y2="200" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="115" x2="510" y2="115" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="30" x2="510" y2="30" stroke="#D7DADB" stroke-width="1"/><rect x="24" y="44" width="221" height="156" rx="5" fill="#51AB9F"/><text x="134" y="34" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">4.5%</text><text x="134" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Q2 2025</text><rect x="275" y="30" width="221" height="170" rx="5" fill="#00583D"/><text x="386" y="20" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">4.9%</text><text x="386" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Q2 2026</text></svg>
+   </div>
+   <div class="card" data-region="s27.r2">
+    <div class="grid g2" style="gap:10px">
+     <div class="statcard"><div class="k">Mobility segment</div><div class="v">7.6%</div></div>
+     <div class="statcard"><div class="k">Delivery segment</div><div class="v">3.8%</div></div>
+    </div>
+    <p style="font-size:12px;color:var(--subtle);margin:8px 0 12px">Segment operating income margins as reported; Delivery set a record while gross bookings grew 26%.</p>
+    <h4>Key takeaway</h4>
+    <p style="font-size:13px;line-height:1.6">Two things drove the margin: slower hiring as artificial intelligence productivity gains landed, with savings moved to higher-return work, and mix, since premium products, business travel, and advertising carry almost no incremental cost.</p>
+   </div>
+  </div>
+ </div>
+ <div class="note">Source: Uber Q2 2026 press release and prepared remarks, August 5, 2026.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">27 / 41</span></div>
+</section>
+<section class="slide" data-region="s28.profitability">
+ <div class="eyebrow">04 Financials</div>
+ <h2 class="title">Profitability</h2>
+ <div class="content">
+
+  <div class="grid" style="grid-template-columns:1.4fr 1fr">
+   <div class="card" data-region="s28.r1">
+    <h4>Adjusted EBITDA by quarter, $ billions</h4>
+    <svg viewBox="0 0 520 250" style="width:100%;height:auto;display:block"><line x1="10" y1="200" x2="510" y2="200" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="115" x2="510" y2="115" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="30" x2="510" y2="30" stroke="#D7DADB" stroke-width="1"/><rect x="24" y="87" width="96" height="113" rx="5" fill="#51AB9F"/><text x="72" y="77" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">1.87B</text><text x="72" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Q1 2025</text><rect x="150" y="72" width="96" height="128" rx="5" fill="#51AB9F"/><text x="197" y="62" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">2.12B</text><text x="197" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Q2 2025</text><rect x="275" y="50" width="96" height="150" rx="5" fill="#00583D"/><text x="323" y="40" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">2.48B</text><text x="323" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Q1 2026</text><rect x="400" y="30" width="96" height="170" rx="5" fill="#00583D"/><text x="448" y="20" text-anchor="middle" font-size="15" font-weight="600" fill="#282C2F" font-family="Montserrat">2.82B</text><text x="448" y="222" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Q2 2026</text></svg>
+    <p style="font-size:11px;color:var(--subtle);margin-top:6px">Quarterly figures derived from the six-month reconciliation in the Q2 2026 press release.</p>
+   </div>
+   <div class="card" data-region="s28.r2">
+    <h4>Key takeaway</h4>
+    <p style="font-size:13px;line-height:1.6">Adjusted EBITDA grew 33% year over year to $2.8B, and non-GAAP operating income grew 40% to $2.1B.</p>
+    <p style="font-size:12.5px;line-height:1.6;color:var(--subtle);margin-top:10px">The $2.4B GAAP net income includes a $1.6B pre-tax benefit from revaluing equity investments, which is mark-to-market on stakes like Lucid, not operating profit. The operating story is the 30% growth in GAAP operating income.</p>
+   </div>
+  </div>
+ </div>
+ <div class="note">Source: Uber Q2 2026 press release, August 5, 2026.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">28 / 41</span></div>
+</section>
+<section class="slide" data-region="s29.cash-flow">
+ <div class="eyebrow">04 Financials</div>
+ <h2 class="title">Cash flow</h2>
+ <div class="content">
+
+  <div class="grid g3">
+   <div class="card g" data-region="s29.r1"><h4>Trailing free cash flow</h4><div class="v">$10B+</div><div class="d">Above $10B for the first time in company history</div></div>
+   <div class="card" data-region="s29.r2"><h4>Q2 2026 free cash flow</h4><div class="v" style="font-size:26px">$2.8B</div><div class="d">A record quarter. Free cash flow is seasonal, so the trailing figure is the read.</div></div>
+   <div class="card" data-region="s29.r3"><h4>Cash and short-term investments</h4><div class="v" style="font-size:26px">$5.4B</div><div class="d">Unrestricted, at quarter end</div></div>
+  </div>
+  <div class="card" data-region="s29.r4">
+   <h4>Key takeaway</h4>
+   <p style="font-size:13px;line-height:1.6">The cash engine funds three things at once: quarterly repurchases, the $14.8B Delivery Hero offer, and the autonomous vehicle commitments, which are structured with outside capital so deployment does not consume the balance sheet.</p>
+  </div>
+ </div>
+ <div class="note">Sources: Uber Q2 2026 press release and prepared remarks; Uber investor relations for the repurchase authorizations.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">29 / 41</span></div>
+</section>
+</section>
+<section class="mock-screen" data-screen="s05">
+<section class="slide dark" data-region="s30.valuation-outlook">
+ <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+ <div class="divider-num">05</div>
+ <h2 class="title" style="font-size:40px;margin-top:10px">Valuation & Outlook</h2>
+ <div class="divider-list"><b>01</b> Business &nbsp; <b>02</b> Competition &nbsp; <b>03</b> Key Deals &nbsp; <b>04</b> Financials &nbsp; <b>05</b> Valuation</div>
+ </div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">30 / 41</span></div>
+</section>
+<section class="slide" data-region="s31.capital-allocation">
+ <div class="eyebrow">05 Valuation</div>
+ <h2 class="title">Capital allocation</h2>
+  <div class="content">
+ <div class="grid g4">
+ <div class="card y" data-region="s31.r1"><h4>autonomous commitment</h4><div class="v">$10B+</div><div class="d">Robotaxi aggregator strategy over coming years</div></div>
+ <div class="card y" data-region="s31.r2"><h4>Delivery Hero offer</h4><div class="v">$14.8B</div><div class="d">Equity value, 100% implied; closing H2 2027</div></div>
+ <div class="card" data-region="s31.r3"><h4>Buybacks</h4><div class="v" style="font-size:22px">$7B then $1.5B</div><div class="d">A $7B repurchase authorization in February 2024 and a $1.5B accelerated repurchase in January 2025. Repurchases continue each quarter.</div></div>
+ <div class="card" data-region="s31.r4"><h4>Strategic stakes</h4><div class="v">30+</div><div class="d">autonomous partnerships and investments, including ~11% of Lucid</div></div>
+ </div>
+ <div class="card" data-region="s31.r5">
+ <h4>Key takeaway</h4>
+ <p style="font-size:13.5px;line-height:1.65">This is the bull case and the bear case at once. Bull: $10B+ of annual free cash flow is
+ being turned into platforms, fleets, and membership. Bear: the same cash shows a company
+ with more capital than organic opportunities, spending about 8x EBITDA for Delivery Hero and
+ on unproven autonomous economics. Both are true. Valuation depends on which dominates.</p>
+ </div>
+ </div>
+ <div class="note">Sources: Uber Q2 2026 results; Uber investor relations for the buyback authorizations.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">31 / 41</span></div>
+</section>
+<section class="slide" data-region="s32.share-performance">
+ <div class="eyebrow">05 Valuation</div>
+ <h2 class="title">Share performance</h2>
+ <div class="content">
+  <div class="card" data-region="s32.r1">
+   <h4>Current price, 52-week high, and model value</h4>
+   <svg viewBox="0 0 1000 220" style="width:100%;height:auto;display:block"><line x1="10" y1="190" x2="990" y2="190" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="110" x2="990" y2="110" stroke="#D7DADB" stroke-width="1"/><line x1="10" y1="30" x2="990" y2="30" stroke="#D7DADB" stroke-width="1"/><rect x="24" y="90" width="291" height="100" rx="5" fill="#00583D"/><text x="169" y="80" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$71.45</text><text x="169" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Current price</text><rect x="355" y="48" width="291" height="142" rx="5" fill="#51AB9F"/><text x="500" y="38" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$101.3</text><text x="500" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">52-week high</text><rect x="685" y="30" width="291" height="160" rx="5" fill="#FFC425"/><text x="831" y="20" text-anchor="middle" font-size="14" font-weight="600" fill="#282C2F" font-family="Montserrat">$113.98</text><text x="831" y="210" text-anchor="middle" font-size="12.5" fill="#686E6D" font-family="Montserrat">Model value</text></svg>
+  </div>
+  <div class="card" data-region="s32.r2">
+   <h4>Key takeaway</h4>
+   <p style="font-size:13px;line-height:1.6">The stock trades about 30% below its 52-week high on a quarter with record gross bookings, record margins, and record free cash flow. The market prices either the autonomous spend as pure cost or the Waymo exit as thesis breaking. The model says neither. That is the claim to test.</p>
+  </div>
+ </div>
+ <div class="note">Source: market data as of October 9, 2026. Model value from the discounted cash flow base case.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">32 / 41</span></div>
+</section>
+<section class="slide" data-region="s33.discounted-cash-flow">
+  <div class="eyebrow">05 Valuation</div>
+  <h2 class="title">Discounted cash flow</h2>
+  <div class="content">
+    <div class="grid g3">
+      <div class="card" data-region="s33.r1">
+        <h4>Inputs</h4>
+        <table data-region="s33.r5" style="font-size:11.5px">
+          <tbody>
+            <tr><td>Free cash flow, trailing</td><td class="hi">$10.0B</td></tr>
+            <tr><td>Revenue, annualized</td><td class="hi">$56.8B</td></tr>
+            <tr><td>Free cash flow margin</td><td class="hi">17.6%</td></tr>
+            <tr><td>Growth, years 1 to 5</td><td class="hi">18, 16, 13, 10, 8%</td></tr>
+            <tr><td>Discount rate</td><td class="hi">9.5%</td></tr>
+            <tr><td>Terminal growth</td><td class="hi">2.5%</td></tr>
+            <tr><td>Diluted shares</td><td class="hi">2.05B</td></tr>
+            <tr><td>Cash and short-term investments</td><td class="hi">$5.4B</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card" data-region="s33.r2">
+        <h4>Free cash flow projection</h4>
+        <table data-region="s33.r6" style="font-size:11.5px">
+          <thead><tr><th>Year</th><th>Free cash flow</th><th>Present value</th></tr></thead>
+          <tbody>
+            <tr><td>2027</td><td>$11.8B</td><td>$10.8B</td></tr>
+            <tr><td>2028</td><td>$13.7B</td><td>$11.4B</td></tr>
+            <tr><td>2029</td><td>$15.5B</td><td>$11.8B</td></tr>
+            <tr><td>2030</td><td>$17.0B</td><td>$11.8B</td></tr>
+            <tr><td>2031</td><td>$18.4B</td><td>$11.7B</td></tr>
+            <tr><td>Terminal value</td><td>$269.1B</td><td>$170.9B</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card" data-region="s33.r3">
+        <h4>Value per share sensitivity</h4>
+        <table data-region="s33.r7" style="font-size:11.5px">
+          <thead><tr><th>Discount rate</th><th>1.5%</th><th>2.5%</th><th>3.5%</th></tr></thead>
+          <tbody>
+            <tr><td>8.5%</td><td>117.83</td><td>133.22</td><td>154.77</td></tr>
+            <tr><td class="hi">9.5%</td><td class="hi">102.85</td><td class="hi">113.98</td><td class="hi">128.81</td></tr>
+            <tr><td>10.5%</td><td>91.22</td><td>99.56</td><td>110.29</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:11px;color:var(--subtle);margin-top:8px">Columns are terminal growth.</p>
+      </div>
+    </div>
+    <div class="card" data-region="s33.r4" style="display:flex;align-items:center;gap:32px;padding:14px 20px">
+      <div><h4 style="margin-bottom:2px">Value per share</h4><div class="serif" style="font-size:22px;color:var(--green-dark)">$113.98</div></div>
+      <div><h4 style="margin-bottom:2px">Against the price</h4><div class="serif" style="font-size:22px;color:var(--secondary-fg);background:var(--secondary);padding:2px 10px;border-radius:6px">+60%</div></div>
+      <div style="margin-left:auto;font-size:11.5px;color:var(--subtle);max-width:46ch;line-height:1.5">Terminal value is 75% of enterprise value, at an exit multiple near 26 times EBITDA. That assumption carries the most weight.</div>
+    </div>
+  </div>
+  <div class="note">Source: Uber Q2 2026 press release. Share count from reported net income and diluted EPS.</div>
+  <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">33 / 41</span></div>
+</section>
+<section class="slide" data-region="s34.the-bull-case">
+ <div class="eyebrow">05 Valuation</div>
+ <h2 class="title">The bull case</h2>
+  <div class="content">
+ <div class="grid g2">
+ <div class="card" data-region="s34.r1">
+ <h4>1. The installed base</h4>
+ <p style="font-size:12.5px;line-height:1.6">208M monthly consumers and 10.2M earners cannot be replicated by a robotaxi operator in a
+ new city. Every autonomous program needs utilization from day one; Uber is the only marketplace that
+ provides it at scale today.</p>
+ </div>
+ <div class="card" data-region="s34.r2">
+ <h4>2. Cash flow funds the transition</h4>
+ <p style="font-size:12.5px;line-height:1.6">$10B+ trailing free cash flow, 33% EBITDA growth, and a shrinking share count mean Uber can buy
+ its position in the autonomous future without starving the core business.</p>
+ </div>
+ </div>
+ <div class="grid g2">
+ <div class="card" data-region="s34.r3">
+ <h4>3. Diversification works</h4>
+ <p style="font-size:12.5px;line-height:1.6">Delivery at 94% of Mobility's scale, grocery at $15B annualized and +40%, ads above $2B
+ growing >50%, the earnings base is no longer hostage to one business line's cycle.</p>
+ </div>
+ <div class="card" data-region="s34.r4">
+ <h4>4. The market prices fear, not the record</h4>
+ <p style="font-size:12.5px;line-height:1.6">A stock 31% below its high, on a quarter with record bookings, record margins, and record
+ cash flow, the disconnect is the entry point, if the bear case below is answerable.</p>
+ </div>
+ </div>
+ </div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">34 / 41</span></div>
+</section>
+<section class="slide" data-region="s35.the-bear-case">
+ <div class="eyebrow">05 Valuation</div>
+ <h2 class="title" style="color:var(--destructive)">The bear case</h2>
+  <div class="content">
+ <div class="grid g2">
+ <div class="card" data-region="s35.r1" style="border-left:5px solid var(--destructive)">
+ <h4>The strongest autonomous player is leaving</h4>
+ <p style="font-size:12.5px;line-height:1.6">The Phoenix pilot ended in June 2026, and Waymo has told Uber it will launch its
+ <b>own app in Austin and Atlanta from January 2028</b>, ending exclusivity when the contract
+ lapses in May 2028. Waymo is entering London entirely outside Uber with fleet operator Moove,
+ and rides with Lyft in Nashville non-exclusively. The largest, most credible robotaxi operator
+ is proving it does not need Uber's toll booth.</p>
+ </div>
+ <div class="card" data-region="s35.r2" style="border-left:5px solid var(--destructive)">
+ <h4>The substitutes are unproven</h4>
+ <p style="font-size:12.5px;line-height:1.6">Waymo runs ~4,000 vehicles across 15 United States cities doing ~500,000 paid rides a week. None of
+ Uber's 30+ partners operates at comparable scale today, some have never launched commercial
+ service. If the industry's best player walks, the hedge portfolio may be weaker than the
+ headline "120,000 vehicles committed" suggests.</p>
+ </div>
+ </div>
+ <div class="card" data-region="s35.r3">
+ <h4>The deeper risk</h4>
+ <p style="font-size:13px;line-height:1.65">Uber's real risk is not losing Waymo's vehicles. It is losing the <b>habit of riders opening
+ its app first</b> the moment a robotaxi alternative exists. The test is observable quarter by quarter: does a competitor's own app out-scale Uber's installed base?</p>
+ </div>
+ </div>
+ <div class="note">Sources: Reuters, CNBC, TechCrunch, and Automotive World, June to September 2026.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">35 / 41</span></div>
+</section>
+<section class="slide" data-region="s36.risk-matrix">
+ <div class="eyebrow">05 Valuation</div>
+ <h2 class="title">Risk matrix</h2>
+  <div class="content">
+ <div style="display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:8px;flex:1;min-height:0">
+ <div class="card" data-region="s36.r1" style="padding:12px"><h4>Impact: high</h4><p style="font-size:12px;line-height:1.5"><b>Waymo app launch (Jan '28)</b><br/><span style="color:var(--harvest)">Probability: high</span></p></div>
+ <div class="card" data-region="s36.r2" style="padding:12px;opacity:.55"><h4></h4></div>
+ <div class="card" data-region="s36.r3" style="padding:12px"><h4>Impact: high</h4><p style="font-size:12px;line-height:1.5"><b>Worker classification</b><br/><span style="color:var(--harvest)">Probability: medium</span></p></div>
+ <div class="card" data-region="s36.r4" style="padding:12px;opacity:.55"><h4>Impact: medium</h4><p style="font-size:12px"><b>Delivery Hero close (H2 '27)</b><br/><span style="color:var(--harvest)">Probability: medium</span></p></div>
+ <div class="card" data-region="s36.r5" style="padding:12px"><h4>Impact: medium</h4><p style="font-size:12px;line-height:1.5"><b>autonomous partner under-delivery</b><br/><span style="color:var(--harvest)">Probability: medium</span></p></div>
+ <div class="card" data-region="s36.r6" style="padding:12px;opacity:.55"><h4>Impact: medium</h4><p style="font-size:12px"><b>DASH share gains</b><br/><span style="color:var(--harvest)">Probability: medium</span></p></div>
+ <div class="card" data-region="s36.r7" style="padding:12px;opacity:.55"><h4>Impact: low</h4><p style="font-size:12px"><b>FX / macro</b><br/><span style="color:var(--harvest)">Probability: medium</span></p></div>
+ <div class="card" data-region="s36.r8" style="padding:12px;opacity:.55"><h4>Impact: low</h4><p style="font-size:12px"><b>Tesla app scale</b><br/><span style="color:var(--harvest)">Probability: low</span></p></div>
+ <div class="card" data-region="s36.r9" style="padding:12px"><h4>Impact: low</h4><p style="font-size:12px;line-height:1.5"><b>United Kingdom accounting noise</b><br/><span style="color:var(--harvest)">Probability: high (already known)</span></p></div>
+ </div>
+ <div class="own" data-region="s36.r10" style="flex:0 0 auto">
+ <h4>Analyst rules on each</h4>
+ <p>The analyst confirms or changes each placement.</p>
+ </div>
+ </div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">36 / 41</span></div>
+</section>
+<section class="slide" data-region="s37.investment-thesis">
+ <div class="eyebrow">05 Valuation</div>
+ <h2 class="title">Investment thesis</h2>
+  <div class="content">
+ <div class="grid g3" style="flex:1">
+ <div class="card" data-region="s37.r1" style="border-top:5px solid var(--primary)">
+ <h4>Pillar 01</h4>
+ <p class="serif" style="font-size:17px;line-height:1.5;color:var(--green-dark);margin-bottom:10px">The installed base is the fastest route to market for Waymo, Cybercab, and other autonomous vehicles.</p>
+ <p style="font-size:11.5px;color:var(--subtle);line-height:1.6">Evidence: ~120,000 partner vehicles committed; Lucid/Nuro exclusivity; autonomous trips +10x year over year.</p>
+ </div>
+ <div class="card" data-region="s37.r2" style="border-top:5px solid var(--primary)">
+ <h4>Pillar 02</h4>
+ <p class="serif" style="font-size:17px;line-height:1.5;color:var(--green-dark);margin-bottom:10px">City adoption in Austin, San Francisco, LA, and Phoenix drives regulation for this market.</p>
+ <p style="font-size:11.5px;color:var(--subtle);line-height:1.6">Evidence: 8 cities with autonomous vehicles, 15 targeted by year-end; hybrid-network lobbying advancing. <b>Waymo's Phoenix exit cuts against this pillar. The analyst rules on it.</b></p>
+ </div>
+ <div class="card" data-region="s37.r3" style="border-top:5px solid var(--primary)">
+ <h4>Pillar 03</h4>
+ <p class="serif" style="font-size:17px;line-height:1.5;color:var(--green-dark);margin-bottom:10px">Uber becomes the toll booth for autonomous rideshare.</p>
+ <p style="font-size:11.5px;color:var(--subtle);line-height:1.6">Evidence: this is now falsifiable, Waymo's own-app launch in Austin/Atlanta from Jan 2028 is the direct test.</p>
+ </div>
+ </div>
+ </div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">37 / 41</span></div>
+</section>
+<section class="slide dark" data-region="s38.slide-38">
+ <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+ <div style="display:flex;align-items:center;gap:24px;margin:18px 0 8px">
+ <span class="badge-buy">BUY</span>
+ <div>
+ <div class="serif" style="font-size:26px;color:#fff">BUY</div>
+         <div style="font-size:12px;color:rgba(251,251,249,.6)">The analyst's call</div>
+ </div>
+ </div>
+ <div class="grid g2" style="margin-top:26px">
+ <div class="own" data-region="s38.r1">
+ <h4>Key risk</h4>
+    <p>A competitor's own app could out-scale Uber's installed base. Watch Waymo city and fleet counts, Tesla app adoption, and Uber growth in autonomous cities. Price target: $113.98 from the discounted cash flow model.</p>
+ </div>
+ <div class="own" data-region="s38.r2">
+ <h4>What would upgrade the call</h4>
+ <p style="color:rgba(0,53,36,.85)">Lucid/Nuro first launch on schedule, hybrid-network rules advancing, Uber One and ads
+ run-rates holding at Q3 print, monthly active consumers still growing double digits in autonomous cities.</p>
+ </div>
+ </div>
+ </div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">38 / 41</span></div>
+</section>
+<section class="slide" data-region="s39.upcoming-milestones">
+ <div class="eyebrow">Outlook</div>
+ <h2 class="title">Upcoming milestones</h2>
+  <div class="content">
+ <table data-region="s39.r1">
+ <thead><tr><th>When</th><th>Catalyst</th><th>Why it matters to the thesis</th></tr></thead>
+ <tbody>
+ <tr><td>Nov 2026</td><td>Q3 2026 results (guide: gross bookings $58.25-60.25B, EPS $0.84-0.88)</td><td>Confirms the growth + margin trajectory; Uber One and ads run-rates updated</td></tr>
+ <tr><td>End 2026</td><td>autonomous city count vs. the 15-city target</td><td>Direct test of Pillar 01, is the installed base actually delivering autonomous vehicles to market?</td></tr>
+ <tr><td>2026-27</td><td>Lucid/Nuro first United States city launch</td><td>First owned-fleet exclusive-platform robotaxi launch; the toll booth's proof of concept</td></tr>
+ <tr><td>H2 2027</td><td>Delivery Hero closing</td><td>99-market pro-forma footprint; accretion begins</td></tr>
+ <tr><td>Jan 2028</td><td>Waymo's own app in Austin & Atlanta</td><td>The kill condition becomes measurable in the field</td></tr>
+ <tr><td>May 2028</td><td>Uber-Waymo Austin/Atlanta contract expiry</td><td>End of exclusivity, distribution economics repriced either way</td></tr>
+ </tbody>
+ </table>
+ </div>
+ <div class="note">Sources: Uber Q2 2026 press release; Delivery Hero announcement; Automotive World for autonomous timelines.</div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">39 / 41</span></div>
+</section>
+<section class="slide" data-region="s40.verification-pass">
+ <h2 class="title">Verification pass</h2>
+  <div class="content">
+ <div class="grid g2">
+ <div class="card" data-region="s40.r1">
+ <h4>Analyst checks before presenting</h4>
+ <ul class="bullets" style="font-size:12.5px">
+  <li>Reopen every source; confirm each figure against the original document</li>
+  <li>Refresh the market data before presenting</li>
+  <li>Confirm the unconfirmed $19B buyback figure stays out</li>
+  <li>Confirm GAAP vs non-GAAP: the $1.6B revaluation benefit is flagged on slide 27</li>
+ </ul>
+ </div>
+ <div class="card" data-region="s40.r2">
+ <h4>What remains open</h4>
+ <ul class="bullets" style="font-size:12.5px">
+  <li>Price target from the model, and the assumptions behind it</li>
+  <li>discounted cash flow assumptions: terminal growth and discount rate, still the analyst's; consensus supplies the earnings base</li>
+  <li>Risk matrix rulings, each risk confirmed, moved, or dismissed</li>
+  <li>Peer multiples (P/E, EV/EBITDA), not yet sourced, excluded from the deck</li>
+ </ul>
+ </div>
+ </div>
+ <div class="own" data-region="s40.r3">
+ <h4>Sign-off</h4>
+ <p>Analyst sign-off, every figure verified against source.<span class="blank" style="min-width:90px"></span> &nbsp;,&nbsp; Verified every figure against source: <span class="blank" style="min-width:60px"></span></p>
+ </div>
+ </div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">40 / 41</span></div>
+</section>
+<section class="slide dark" data-region="s41.sources">
+ <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+ <h2 class="title" style="font-size:40px">Sources</h2>
+ <div style="margin-top:24px;font-size:12px;line-height:2.0;color:rgba(251,251,249,.78)">
+ <b style="color:var(--secondary)">Primary</b>, Uber Q2 2026 press release & prepared remarks, investor.uber.com (Aug 5, 2026), Uber Delivery Hero announcement & deal deck (Jul 16, 2026), Uber IR: buyback releases (Feb 2024, Jan 2025), Lucid IR robotaxi partnership release<br/>
+ <b style="color:var(--secondary)">Secondary (company-reported, via reputable press)</b>, Reuters & CNBC (Jun 29, 2026, Waymo Phoenix), Automotive World (Aug 2026, autonomous strategy & Waymo split), TechCrunch (Sep 24, 2026, Waymo fleet data), Lyft IR Q2 2026 release, DoorDash Q2 2026 via Yahoo Finance, Uber One and advertising run-rates as disclosed at Q1 2026<br/>
+ <b style="color:var(--secondary)">Method</b> - Every figure carries a source and a date. The analyst owns the price target, thesis, and recommendation.
+ </div>
+ <p style="margin-top:34px" class="serif">The point is not to outsource thinking. It is to help students think critically and analyze faster.</p>
+ <div style="margin-top:10px;font-size:11px;color:rgba(251,251,249,.5)">Bison Fund, October 27, 2026.</div>
+ </div>
+ <div class="foot"><span>Uber Technologies Equity Pitch</span><span class="pageno">41 / 41</span></div>
+</section>
+</section>
+</div>
+<div id="cx-pop">
+  <div class="cx-pop-region" id="cx-pop-region"></div>
+  <textarea id="cx-pop-text" placeholder="What should change here?"></textarea>
+  <div class="cx-pop-actions">
+    <button class="cx-save" id="cx-pop-save">Save</button>
+    <button id="cx-pop-cancel" style="font-size:12px;color:var(--muted-fg)">Cancel</button>
+    <button class="cx-del" id="cx-pop-del">Delete</button>
+  </div>
+</div>
+<div id="cx-panel">
+  <header><span>Comments</span><button type="button" id="cx-panel-close" aria-label="Close comments">&times;</button></header>
+  <div id="cx-list"></div>
+  <footer>Click an item to jump to its pin. Copy feedback exports all of it as markdown.</footer>
+</div>
+<script>
+
+/* ============================================================
+   Comment layer. Comments are stored in localStorage and
+   exported as markdown via "Copy feedback". Each one is anchored
+   to a data-region name so the exported note says WHERE it applies.
+   Keep as-is.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  // Per-mockup storage key - change for each new mockup.
+  var STORE = 'bison-uber-pitch-comments-v1';
+  var comments = [];
+  var mode = false;
+  var editing = null;
+  var isNew = false;
+
+  // Screens in DOM order; the first is the default.
+  var SCREENS = Array.prototype.map.call(
+    document.querySelectorAll('.mock-screen'),
+    function (s) { return s.getAttribute('data-screen'); }
+  );
+
+  /* ---------- storage ---------- */
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORE);
+      comments = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(comments)) comments = [];
+    } catch (e) {
+      comments = [];  // private window / blocked storage must not break the mockup
+    }
+  }
+  function save() {
+    try {
+      localStorage.setItem(STORE, JSON.stringify(comments));
+    } catch (e) { /* pins still work for this session */ }
+  }
+
+  /* ---------- element lookups ---------- */
+  function $(id) { return document.getElementById(id); }
+  function regionEl(name) {
+    return document.querySelector('[data-region="' + name + '"]');
+  }
+  function activeScreenEl() {
+    return document.querySelector('.mock-screen.cx-active');
+  }
+  function activeScreen() {
+    var el = activeScreenEl();
+    return el ? el.getAttribute('data-screen') : (SCREENS[0] || '');
+  }
+  function gotoScreen(name) {
+    Array.prototype.forEach.call(document.querySelectorAll('.mock-screen'), function (s) {
+      s.classList.toggle('cx-active', s.getAttribute('data-screen') === name);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#cx-screens [data-goto]'), function (b) {
+      if (b.getAttribute('data-goto') === name) b.setAttribute('aria-current', 'true');
+      else b.removeAttribute('aria-current');
+    });
+    renderPins();
+  }
+
+  /* ---------- rendering ---------- */
+  function renumber() {
+    comments.forEach(function (c, i) { c.n = i + 1; });
+  }
+
+  function renderPins() {
+    Array.prototype.forEach.call(document.querySelectorAll('.cx-pin'), function (p) {
+      p.parentNode.removeChild(p);
+    });
+    comments.forEach(function (c) {
+      var host = regionEl(c.region);
+      if (!host) return;
+      var pin = document.createElement('button');
+      pin.type = 'button';
+      pin.className = 'cx-pin';
+      pin.textContent = c.n;
+      pin.style.left = c.x + '%';
+      pin.style.top = c.y + '%';
+      pin.title = c.text || '(empty)';
+      pin.setAttribute('data-cid', c.id);
+      host.appendChild(pin);
+    });
+  }
+
+  function renderList() {
+    var list = $('cx-list');
+    list.innerHTML = '';
+    if (!comments.length) {
+      list.innerHTML = '<div class="cx-empty">No comments yet. Turn on comment mode and click anything.</div>';
+      return;
+    }
+    comments.forEach(function (c) {
+      var item = document.createElement('div');
+      item.className = 'cx-item';
+      item.setAttribute('data-cid', c.id);
+      var n = document.createElement('span');
+      n.className = 'cx-n';
+      n.textContent = c.n;
+      var body = document.createElement('span');
+      body.className = 'cx-body';
+      var reg = document.createElement('span');
+      reg.className = 'cx-region';
+      reg.textContent = (c.screen ? c.screen + ':' : '') + c.region;
+      var txt = document.createElement('span');
+      txt.className = 'cx-text';
+      txt.textContent = c.text || '(empty)';
+      body.appendChild(reg);
+      body.appendChild(txt);
+      item.appendChild(n);
+      item.appendChild(body);
+      list.appendChild(item);
+    });
+  }
+
+  function renderCount() {
+    var n = comments.length;
+    $('cx-count').textContent = n === 1 ? '1 comment' : n + ' comments';
+  }
+
+  function render() {
+    renumber();
+    renderPins();
+    renderList();
+    renderCount();
+  }
+
+  /* ---------- popover ---------- */
+  function openPop(c, atX, atY, created) {
+    editing = c;
+    isNew = !!created;
+    $('cx-pop-region').textContent = c.region;
+    $('cx-pop-text').value = c.text || '';
+    var pop = $('cx-pop');
+    pop.classList.add('cx-show');
+    var w = 280, h = pop.offsetHeight || 160;
+    var left = Math.min(atX + 12, window.innerWidth - w - 8);
+    var top = Math.min(atY + 12, window.innerHeight - h - 8);
+    pop.style.left = Math.max(8, left) + 'px';
+    pop.style.top = Math.max(8, top) + 'px';
+    $('cx-pop-text').focus();
+  }
+  function closePop(discardEmptyNew) {
+    if (discardEmptyNew && editing && isNew && !editing.text.trim()) {
+      comments = comments.filter(function (c) { return c.id !== editing.id; });
+      save();
+      render();
+    }
+    editing = null;
+    isNew = false;
+    $('cx-pop').classList.remove('cx-show');
+  }
+
+  /* ---------- toast ---------- */
+  var toastTimer = null;
+  function toast(msg) {
+    var t = $('cx-toast');
+    t.textContent = msg;
+    t.classList.add('cx-show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('cx-show'); }, 1800);
+  }
+
+  /* ---------- comment mode ---------- */
+  function setMode(on) {
+    mode = on;
+    document.body.classList.toggle('cx-on', mode);
+    $('cx-toggle').setAttribute('aria-pressed', mode ? 'true' : 'false');
+    if (mode) toast('Comment mode on - click any part of the mockup.');
+  }
+  $('cx-toggle').addEventListener('click', function () { setMode(!mode); });
+
+  // Capture phase + stopPropagation so a comment click never triggers the
+  // mockup's own controls underneath it.
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (t.closest('#cx-bar, #cx-panel, #cx-pop, #cx-toast')) return;
+
+    var pin = t.closest('.cx-pin');
+    if (pin) {
+      e.preventDefault();
+      e.stopPropagation();
+      var cid = pin.getAttribute('data-cid');
+      var c = comments.filter(function (x) { return x.id === cid; })[0];
+      if (c) {
+        var r = pin.getBoundingClientRect();
+        openPop(c, r.left, r.bottom, false);
+      }
+      return;
+    }
+
+    // Screen navigation - only when comment mode is off, so a comment
+    // click on a nav element comments instead of navigating.
+    var nav = t.closest('[data-nav]');
+    if (nav && !mode) {
+      e.preventDefault();
+      e.stopPropagation();
+      gotoScreen(nav.getAttribute('data-nav'));
+      return;
+    }
+
+    if (!mode) return;
+    var region = t.closest('[data-region]');
+    if (!region) return;
+    // Regions on a hidden screen can't be clicked, but guard anyway so a
+    // stale event can't anchor a comment to the wrong screen.
+    if (!activeScreenEl().contains(region)) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    var box = region.getBoundingClientRect();
+    var c2 = {
+      id: 'c' + Date.now() + Math.floor(Math.random() * 1000),
+      screen: activeScreen(),
+      region: region.getAttribute('data-region'),
+      text: '',
+      x: +(((e.clientX - box.left) / box.width) * 100).toFixed(2),
+      y: +(((e.clientY - box.top) / box.height) * 100).toFixed(2)
+    };
+    comments.push(c2);
+    save();
+    render();
+    openPop(c2, e.clientX, e.clientY, true);
+  }, true);
+
+  /* ---------- popover actions ---------- */
+  $('cx-pop-save').addEventListener('click', function () {
+    if (!editing) return;
+    editing.text = $('cx-pop-text').value.trim();
+    if (!editing.text) {
+      comments = comments.filter(function (c) { return c.id !== editing.id; });
+    }
+    save();
+    var wasNew = isNew;
+    editing = null;
+    isNew = false;
+    $('cx-pop').classList.remove('cx-show');
+    render();
+    if (wasNew) toast('Comment saved.');
+  });
+  $('cx-pop-cancel').addEventListener('click', function () { closePop(true); });
+  $('cx-pop-del').addEventListener('click', function () {
+    if (!editing) return;
+    comments = comments.filter(function (c) { return c.id !== editing.id; });
+    save();
+    editing = null;
+    isNew = false;
+    $('cx-pop').classList.remove('cx-show');
+    render();
+  });
+  // Cmd/Ctrl+Enter saves; Escape backs out.
+  $('cx-pop-text').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); $('cx-pop-save').click(); }
+    if (e.key === 'Escape') { e.preventDefault(); closePop(true); }
+  });
+
+  /* ---------- panel ---------- */
+  $('cx-open-panel').addEventListener('click', function () {
+    $('cx-panel').classList.toggle('cx-show');
+  });
+  $('cx-panel-close').addEventListener('click', function () {
+    $('cx-panel').classList.remove('cx-show');
+  });
+  $('cx-list').addEventListener('click', function (e) {
+    var item = e.target.closest('.cx-item');
+    if (!item) return;
+    var cid = item.getAttribute('data-cid');
+    var pin = document.querySelector('.cx-pin[data-cid="' + cid + '"]');
+    if (!pin) return;
+    pin.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    pin.classList.add('cx-flash');
+    setTimeout(function () { pin.classList.remove('cx-flash'); }, 1200);
+  });
+
+  /* ---------- export ---------- */
+  function toMarkdown() {
+    if (!comments.length) return '';
+    var out = ['## Mockup feedback - ' + new Date().toISOString().slice(0, 10)];
+    out.push('');
+    SCREENS.forEach(function (scr) {
+      var mine = comments.filter(function (c) { return (c.screen || SCREENS[0]) === scr; });
+      if (!mine.length) return;
+      out.push('### screen: ' + scr);
+      mine.forEach(function (c) {
+        out.push(c.n + '. [' + c.region + '] ' + (c.text || '(empty)'));
+      });
+      out.push('');
+    });
+    return out.join('\n');
+  }
+
+  function copyText(text) {
+    // file:// pages can't always reach the async clipboard API, so fall back
+    // to the execCommand path rather than silently failing.
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(
+        function () { toast('Copied - paste it into your session.'); },
+        function () { toast(fallback() ? 'Copied - paste it into your session.' : 'Copy failed - select from the List panel.'); }
+      );
+    } else {
+      toast(fallback() ? 'Copied - paste it into your session.' : 'Copy failed - select from the List panel.');
+    }
+  }
+
+  $('cx-copy').addEventListener('click', function () {
+    var md = toMarkdown();
+    if (!md) { toast('No comments to copy yet.'); return; }
+    copyText(md);
+  });
+
+  $('cx-clear').addEventListener('click', function () {
+    if (!comments.length) { toast('Nothing to clear.'); return; }
+    if (!confirm('Delete all ' + comments.length + ' comments?')) return;
+    comments = [];
+    save();
+    closePop(false);
+    render();
+    toast('Cleared.');
+  });
+
+  /* ---------- screens bar ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll('#cx-screens [data-goto]'), function (b) {
+    b.addEventListener('click', function () {
+      gotoScreen(b.getAttribute('data-goto'));
+    });
+  });
+
+  /* ---------- keyboard ---------- */
+  document.addEventListener('keydown', function (e) {
+    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+    if (e.key === 'c' && !e.metaKey && !e.ctrlKey && !e.altKey) { setMode(!mode); }
+    if (e.key === 'Escape') { closePop(true); $('cx-panel').classList.remove('cx-show'); }
+  });
+
+  /* ---------- boot ---------- */
+  load();
+  render();
+  gotoScreen(SCREENS[0]);
+  window.addEventListener('resize', renderPins);
+})();
+
+</script>
+
+<script>
+/* Download PDF, wired independent of the harness IIFE */
+(function () {
+  var b = document.getElementById('cx-pdf');
+  if (!b) return;
+  b.addEventListener('click', function () {
+    var t = document.getElementById('cx-toast');
+    if (t) { t.textContent = 'Opening the print dialog. Choose Save as PDF.'; t.classList.add('cx-show');
+             setTimeout(function(){ t.classList.remove('cx-show'); }, 1800); }
+    setTimeout(function () { window.print(); }, 250);
+  });
+})();
+</script>
+</body>
+</html>
